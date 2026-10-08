@@ -1,4 +1,4 @@
-import { loadState } from './io.ts'
+import { loadState , saveState} from './io.ts'
 import { max, normal } from './config.ts'
 
 interface CritterOptions {
@@ -37,10 +37,11 @@ export class Critter {
                 return
             }
         }
+        saveState(this.state)
     }
 
     state = () => {
-        const { birth, age, hunger, happiness, energy, health } = this
+        const { name,error, birth, age, hunger, happiness, energy, health } = this
         return {
             birth,
             age,
@@ -48,6 +49,8 @@ export class Critter {
             happiness,
             energy,
             health,
+            error,
+            name,
             time: Date.now(),
         }
     }

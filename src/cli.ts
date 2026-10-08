@@ -45,8 +45,11 @@ export const cli = async () => {
         console.error(error instanceof Error ? error.message : String(error))
         process.exit(7)
     }
-    console.log(args)
-    const critter = new Critter({})
-    // await saveState(critter)
+    const {action, name } = args
+    const critter = new Critter({name})
     console.log(critter.state())
+    if(critter.error){
+        console.error(critter.error)
+        process.exit(1)
+    }
 }
