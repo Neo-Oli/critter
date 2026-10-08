@@ -20,7 +20,6 @@ export default tseslint.config(
         rules: {
             '@typescript-eslint/no-var-requires': 'off',
             eqeqeq: 'error',
-            indent: ['error', 4],
             'linebreak-style': ['error', 'unix'],
             'multiline-comment-style': ['error', 'starred-block'],
             'no-var': 1,
