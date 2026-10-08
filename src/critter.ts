@@ -47,7 +47,7 @@ export class Critter {
             }
         }
         this.process()
-        command === 'feed' && this.feed()
+        if (command === 'feed') this.feed()
         saveState(this.state())
     }
     process = () => {
@@ -55,9 +55,11 @@ export class Critter {
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
             if (this.actionTime === 0) this.action = 'idle'
-            this.action === 'feeding'
-                ? (this.satiety += satiety.action)
-                : (this.satiety += satiety.tick)
+            if (this.action === 'feeding') {
+                this.satiety += satiety.action
+            } else {
+                this.satiety += satiety.tick
+            }
             this.actionTime += 1
         }
     }
