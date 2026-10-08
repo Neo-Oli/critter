@@ -1,6 +1,6 @@
 import { Critter } from './critter.ts'
 const help = `
-Usage: critter [options] <action> [name]
+Usage: critter [options] <command> [name]
 
 Actions:
     new <name>
@@ -17,23 +17,23 @@ const parseArgs = (args: string[]) => {
         process.exit(0)
     }
 
-    const [action, name, ...rest] = args
+    const [command, name, ...rest] = args
 
-    if (!action) return { action: undefined, name: undefined }
+    if (!command) return { command: undefined, name: undefined }
 
-    switch (action) {
+    switch (command) {
         case 'new':
-            if (!name) throw new Error('Missing name for action: new')
+            if (!name) throw new Error('Missing name for command: new')
             if (rest.length) throw new Error(`Unexpected argument: ${rest[0]}`)
-            return { action, name }
+            return { command, name }
 
         case 'feed':
         case 'clean':
             if (name) throw new Error(`Unexpected argument: ${name}`)
-            return { action, name: undefined }
+            return { command, name: undefined }
 
         default:
-            throw new Error(`Unknown action: ${action}`)
+            throw new Error(`Unknown command: ${command}`)
     }
 }
 
@@ -45,10 +45,10 @@ export const cli = async () => {
         console.error(error instanceof Error ? error.message : String(error))
         process.exit(7)
     }
-    const {action, name } = args
-    const critter = new Critter({name})
+    const { command, name } = args
+    const critter = new Critter({ name, command })
     console.log(critter.state())
-    if(critter.error){
+    if (critter.error) {
         console.error(critter.error)
         process.exit(1)
     }
