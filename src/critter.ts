@@ -2,9 +2,8 @@ import { loadState, saveState } from './io.ts'
 import { max, normal } from './config.ts'
 import { now } from './utils.ts'
 
-
-type Action = "idle" | "sleeping"
-type Command= "sleep" | "feed" | "new"
+type Action = 'idle' | 'sleeping'
+type Command = 'sleep' | 'feed' | 'new' | 'clean'
 interface CritterOptions {
     name?: string
     command?:Command
