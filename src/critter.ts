@@ -40,6 +40,7 @@ export class Critter {
             this.energy = state?.energy ?? this.energy
             this.health = state?.health ?? this.health
             this.actionTime = state?.actionTime ?? this.actionTime
+            this.action = state?.action ?? this.action
             this.time = state?.time ?? this.time
             if (!this.name) {
                 this.error = 'No Critter'
@@ -54,13 +55,13 @@ export class Critter {
         const elapsed = now - this.time
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
-            if (this.actionTime === 0) this.action = 'idle'
+            if (this.actionTime <= 0) this.action = 'idle'
             if (this.action === 'feeding') {
-                this.satiety += satiety.action
+                this.satiety = Math.min(this.satiety+satiety.action,max)
             } else {
                 this.satiety += satiety.tick
             }
-            this.actionTime += 1
+            this.actionTime = Math.max(this.actionTime-1,0)
         }
     }
     feed = () => {

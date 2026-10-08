@@ -4,4 +4,4 @@ export const normal = Math.round(max / 2)
 export const low = Math.round(max / 4)
 export const binName = 'critter'
 
-export const satiety = { tick: -10, action: 1000, time: 60 }
+export const satiety =  { tick:-10, action: 10000, time:60 }
