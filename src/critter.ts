@@ -37,7 +37,7 @@ export class Critter {
                 return
             }
         }
-        saveState(this.state)
+        saveState(this.state())
     }
 
     state = () => {
