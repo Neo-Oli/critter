@@ -1,1 +1,1 @@
-export const now=()=>Math.round(Date.now()/1000)
+export const now = Math.round(Date.now() / 1000)
