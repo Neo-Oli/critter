@@ -22,18 +22,18 @@ const parseArgs = (args: string[]) => {
     if (!action) return { action: undefined, name: undefined }
 
     switch (action) {
-    case 'new':
-        if (!name) throw new Error('Missing name for action: new')
+        case 'new':
+            if (!name) throw new Error('Missing name for action: new')
             if (rest.length) throw new Error(`Unexpected argument: ${rest[0]}`)
             return { action, name }
 
-    case 'feed':
+        case 'feed':
         case 'clean':
-        if (name) throw new Error(`Unexpected argument: ${name}`)
+            if (name) throw new Error(`Unexpected argument: ${name}`)
             return { action, name: undefined }
 
-    default:
-        throw new Error(`Unknown action: ${action}`)
+        default:
+            throw new Error(`Unknown action: ${action}`)
     }
 }
 
