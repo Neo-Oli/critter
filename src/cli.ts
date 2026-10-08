@@ -38,7 +38,13 @@ const parseArgs = (args: string[]) => {
 }
 
 export const cli = async () => {
-    const args = parseArgs(process.argv.slice(2))
+    let args
+    try {
+        args = parseArgs(process.argv.slice(2))
+    } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error))
+        process.exit(7)
+    }
     console.log(args)
     const critter = new Critter({})
     // await saveState(critter)
