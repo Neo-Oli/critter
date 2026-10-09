@@ -4,6 +4,20 @@ import { now, minute, hour } from './utils.ts'
 
 type Action =
     'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
+
+export interface PersistedCritterState {
+    birth: number
+    age: number
+    satiety: number
+    happiness: number
+    energy: number
+    cleanliness: number
+    health: number
+    actionTime: number
+    action: Action
+    time: number
+}
+
 type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play' | 'stop'
 type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
 type HealthMood = 'sick' | 'ill' | 'dead'
@@ -79,7 +93,7 @@ export class Critter {
         if (command === 'stop') {
             this.stop()
         }
-        saveState(this.state())
+        saveState(this.persistedState())
     }
     process = () => {
         const elapsed = (now() - this.time) * 100
@@ -196,6 +210,32 @@ export class Critter {
         }
         this.action = 'idle'
         this.actionTime = 0
+    }
+
+    persistedState = (): PersistedCritterState => {
+        const {
+            birth,
+            age,
+            satiety,
+            happiness,
+            energy,
+            cleanliness,
+            health,
+            actionTime,
+            action,
+        } = this
+        return {
+            birth,
+            age,
+            satiety,
+            happiness,
+            energy,
+            cleanliness,
+            health,
+            actionTime,
+            action,
+            time: now(),
+        }
     }
 
     state = () => {

@@ -1,12 +1,14 @@
 import { binName } from './config.ts'
-import type { Critter } from './critter.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import type { PersistedCritterState } from './critter.ts'
+
+type Exact<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, never>
 
 const path = `${process.env.HOME}/.local/share/${binName}/state.json`
 
-export const loadState = () => {
+export const loadState = (): Partial<PersistedCritterState> | undefined => {
     try {
-        return JSON.parse(readFileSync(path, 'utf8'))
+        return JSON.parse(readFileSync(path, 'utf8')) as Partial<PersistedCritterState>
     } catch (error) {
         if (
             !(error instanceof Error) ||
@@ -17,7 +19,9 @@ export const loadState = () => {
     }
 }
 
-export const saveState = (state: ReturnType<Critter['state']>) => {
+export const saveState = <State extends PersistedCritterState>(
+    state: Exact<State, PersistedCritterState>,
+) => {
     mkdirSync(path.substring(0, path.lastIndexOf('/')), { recursive: true })
     writeFileSync(path, JSON.stringify(state, null, 4))
 }
