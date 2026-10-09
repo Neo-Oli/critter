@@ -85,7 +85,6 @@ export default defineConfig([
             'import/no-anonymous-default-export': 'error',
             'linebreak-style': ['error', 'unix'],
             'max-nested-callbacks': 'error',
-            'no-console': 'error',
             'no-promise-executor-return': 'error',
             'no-var': 'error',
             'prefer-template': 'error',

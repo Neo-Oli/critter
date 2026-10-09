@@ -1,53 +1,56 @@
+import { high, low, max, normal, speed, too_high } from './config.ts'
 import { loadState, saveState } from './io.ts'
-import { max, normal, high, low, too_high } from './config.ts'
-import { now, minute, hour } from './utils.ts'
 import { plain } from './plain.ts'
+import { hour, minute, now } from './utils.ts'
 
 export type Action =
-    'idle' | 'sleeping' | 'eating' | 'healing' | 'playing' | 'cleaning'
+    'cleaning' | 'eating' | 'healing' | 'idle' | 'playing' | 'sleeping'
+
+export type Mood =
+    CleanlinessMood | EnergyMood | FoodMood | HappinessMood | HealthMood
 
 export interface PersistedCritterState {
-    birth: number
-    age: number
-    satiety: number
-    happiness: number
-    energy: number
-    cleanliness: number
-    health: number
-    actionTime: number
     action: Action
+    actionTime: number
+    age: number
+    birth: number
+    cleanliness: number
+    energy: number
+    happiness: number
+    health: number
+    satiety: number
     time: number
 }
-
-type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play' | 'stop'
-type FoodMood = 'stuffed' | 'hungry' | 'eating'
-type HealthMood = 'sick' | 'dead' | 'healing'
-type EnergyMood = 'tired' | 'sleeping'
-type HappinessMood = 'happy' | 'sad'
 type CleanlinessMood = 'cleaning' | 'dirty'
-export type Mood =
-    FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
+type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
+}
+type EnergyMood = 'sleeping' | 'tired'
+type FoodMood = 'eating' | 'hungry' | 'stuffed'
+type HappinessMood = 'happy' | 'sad'
+type HealthMood = 'dead' | 'healing' | 'sick'
+interface Plain {
+    noNerdFonts: boolean
 }
 
 const set = (value: number, smin = 0, smax = max) => {
     return Math.min(smax, Math.max(smin, value))
 }
 export class Critter {
-    birth = 0
-    time = this.birth
-    actionTime = 0
-    alive = true
-    age = 0
-    satiety = normal
-    happiness = max
-    energy = normal
-    cleanliness = low
-    health = high
     action: Action = 'idle'
-    mood: Mood[] = []
+    actionTime = 0
+    age = 0
+    alive = true
+    birth = 0
+    cleanliness = low
+    energy = normal
     error: string | undefined = undefined
+    happiness = max
+    health = high
+    mood: Mood[] = []
+    satiety = normal
+    time = this.birth
 
     constructor({ command }: CritterOptions) {
         let state
@@ -97,8 +100,85 @@ export class Critter {
         }
         saveState(this.persistedState())
     }
+    clean = () => {
+        this.action = 'cleaning'
+        this.actionTime = 60
+    }
+    die = () => {
+        this.alive = false
+        this.mood = ['dead']
+    }
+    feed = () => {
+        this.action = 'eating'
+        this.actionTime = minute
+    }
+    getCritterState = (): Action | Mood => {
+        const moodPriority: Mood[] = [
+            'dead',
+            'sick',
+            'tired',
+            'stuffed',
+            'hungry',
+            'dirty',
+            'sad',
+            'stuffed',
+            'happy',
+        ]
+        if (this.action !== 'idle') return this.action
+
+        const mood = moodPriority.find((priority) =>
+            this.mood.includes(priority),
+        )
+        return mood ?? 'idle'
+    }
+    medicine = () => {
+        this.action = 'healing'
+        this.actionTime = 10
+    }
+    persistedState = (): PersistedCritterState => {
+        const {
+            action,
+            actionTime,
+            age,
+            birth,
+            cleanliness,
+            energy,
+            happiness,
+            health,
+            satiety,
+        } = this
+        return {
+            action,
+            actionTime,
+            age,
+            birth,
+            cleanliness,
+            energy,
+            happiness,
+            health,
+            satiety,
+            time: now(),
+        }
+    }
+    plain = ({ noNerdFonts }: Plain) =>
+        plain({
+            actionTime: this.actionTime,
+            age: this.age,
+            cleanliness: this.cleanliness,
+            energy: this.energy,
+            happiness: this.happiness,
+            health: this.health,
+            noNerdFonts,
+            satiety: this.satiety,
+            state: this.getCritterState(),
+        })
+    play = () => {
+        this.action = 'playing'
+        this.actionTime = 2 * minute
+    }
+
     process = () => {
-        const elapsed = (now() - this.time) * 100
+        const elapsed = (now() - this.time) * speed
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
             this.mood = []
@@ -176,29 +256,9 @@ export class Critter {
             }
         }
     }
-    die = () => {
-        this.alive = false
-        this.mood = ['dead']
-    }
-    feed = () => {
-        this.action = 'eating'
-        this.actionTime = minute
-    }
     sleep = () => {
         this.action = 'sleeping'
         this.actionTime = 2 * hour
-    }
-    play = () => {
-        this.action = 'playing'
-        this.actionTime = 2 * minute
-    }
-    medicine = () => {
-        this.action = 'healing'
-        this.actionTime = 10
-    }
-    clean = () => {
-        this.action = 'cleaning'
-        this.actionTime = 60
     }
     stop = () => {
         if (this.action === 'eating' || this.action === 'sleeping') {
@@ -207,54 +267,4 @@ export class Critter {
         this.action = 'idle'
         this.actionTime = 0
     }
-
-    persistedState = (): PersistedCritterState => {
-        const {
-            birth,
-            age,
-            satiety,
-            happiness,
-            energy,
-            cleanliness,
-            health,
-            actionTime,
-            action,
-        } = this
-        return {
-            birth,
-            age,
-            satiety,
-            happiness,
-            energy,
-            cleanliness,
-            health,
-            actionTime,
-            action,
-            time: now(),
-        }
-    }
-    getCritterState = (): Action | Mood => {
-        const moodPriority: Mood[] = [
-            'dead',
-            'sick',
-            'tired',
-            'stuffed',
-            'hungry',
-            'dirty',
-            'sad',
-            'stuffed',
-            'happy',
-        ]
-        if (this.action !== 'idle') return this.action
-
-        const mood = moodPriority.find((priority) =>
-            this.mood.includes(priority),
-        )
-        return mood ?? 'idle'
-    }
-    plain = () =>
-        plain({
-            state: this.getCritterState(),
-            satiety: this.satiety,
-        })
 }

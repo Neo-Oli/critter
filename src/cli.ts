@@ -13,28 +13,32 @@ stop
 
 
 Options:
-    -h, --help       Show help
+    -h, --help           Show help
+    -n, --no-nerd-fonts  Don't use nerd font icons
 `
 
 const parseArgs = (args: string[]) => {
     if (args.includes('-h') || args.includes('--help')) {
-        console.log(help)
+        process.stdout.write(`${help}\n`)
         process.exit(0)
     }
 
-    const [command] = args
+    const noNerdFonts = args.includes('-n') || args.includes('--no-nerd-fonts')
+    const [command] = args.filter(
+        (arg) => arg !== '-n' && arg !== '--no-nerd-fonts',
+    )
 
-    if (!command) return { command: undefined }
+    if (!command) return { command: undefined, noNerdFonts }
 
     switch (command) {
-        case 'new':
+        case 'clean':
         case 'feed':
         case 'medicine':
-        case 'clean':
+        case 'new':
         case 'play':
         case 'sleep':
         case 'stop':
-            return { command }
+            return { command, noNerdFonts }
 
         default:
             throw new Error(`Unknown command: ${command}`)
@@ -46,14 +50,16 @@ export const cli = async () => {
     try {
         args = parseArgs(process.argv.slice(2))
     } catch (error) {
-        console.error(error instanceof Error ? error.message : String(error))
+        process.stderr.write(
+            `${error instanceof Error ? error.message : String(error)}\n`,
+        )
         process.exit(7)
     }
-    const { command } = args
+    const { command, noNerdFonts } = args
     const critter = new Critter({ command })
-    console.log(critter.plain())
+    console.log(`${critter.plain({ noNerdFonts })}\n`)
     if (critter.error) {
-        console.error(critter.error)
+        process.stderr.write(`${critter.error}\n`)
         process.exit(1)
     }
 }

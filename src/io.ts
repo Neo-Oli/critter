@@ -1,8 +1,10 @@
-import { binName } from './config.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+
 import type { PersistedCritterState } from './critter.ts'
 
-type Exact<T, Shape> = T & Record<Exclude<keyof T, keyof Shape>, never>
+import { binName } from './config.ts'
+
+type Exact<T, Shape> = Record<Exclude<keyof T, keyof Shape>, never> & T
 
 const path = `${process.env.HOME}/.local/share/${binName}/state.json`
 
