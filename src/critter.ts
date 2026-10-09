@@ -6,7 +6,7 @@ type Action =
     'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
 type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play'
 type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
-type HealthMood = 'sick'
+type HealthMood = 'sick' | 'ill' | 'dead'
 type EnergyMood = 'energized' | 'rested' | 'tired' | 'exhausted'
 type HappinessMood = 'happy' | 'bored' | 'sad'
 type CleanlinessMood = 'clean' | 'dirty' | 'filthy'
@@ -23,6 +23,7 @@ export class Critter {
     birth = now()
     time = this.birth
     actionTime = 0
+    alive = true
     age = 0
     satiety = normal
     happiness = normal
@@ -84,6 +85,11 @@ export class Critter {
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
             this.mood = []
+            if (this.health===0){
+                this.alive=false
+                this.mood=['dead']
+                return
+            }
             if (this.actionTime <= 0) this.action = 'idle'
             if (this.action === 'feeding') {
                 this.satiety = set(this.satiety + 10000)
@@ -113,6 +119,7 @@ export class Critter {
             if (this.action === 'playing') {
                 this.happiness = set(this.happiness + 10000)
                 this.cleanliness = set(this.cleanliness - 1000)
+                this.energy = set(this.energy - 1000)
             } else {
                 this.happiness = set(this.happiness - 10)
             }
@@ -129,7 +136,11 @@ export class Critter {
                 this.mood.push('hungry')
             }
 
-            if (this.health < low) this.mood.push('sick')
+            if (this.health < low) {
+                this.mood.push('ill')
+            } else if (this.health < normal) {
+                this.mood.push('ill')
+            }
 
             if (this.energy === 0) {
                 this.mood.push('exhausted')
@@ -190,11 +201,13 @@ export class Critter {
             energy,
             cleanliness,
             health,
+            alive,
             action,
             actionTime,
             mood,
         } = this
         return {
+            alive,
             birth,
             age,
             satiety,
