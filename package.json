@@ -15,6 +15,7 @@
     "author": "glow",
     "license": "ISC",
     "devDependencies": {
+        "@cofy-x/pixel-to-ascii": "^0.2.0",
         "@types/node": "^26.6.4",
         "esbuild": "latest",
         "eslint": "latest",

@@ -12,7 +12,6 @@ type HappinessMood = 'happy' | 'bored' | 'sad'
 type CleanlinessMood = 'clean' | 'dirty' | 'filthy'
 type Mood = FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
 interface CritterOptions {
-    name?: string
     command?: Command
 }
 
@@ -20,22 +19,21 @@ const set = (value: number, smin = 0, smax = max) => {
     return Math.min(smax, Math.max(smin, value))
 }
 export class Critter {
-    birth = now()
+    birth = 0
     time = this.birth
     actionTime = 0
     alive = true
     age = 0
     satiety = normal
-    happiness = normal
+    happiness = max
     energy = normal
     cleanliness = low
     health = high
     action: Action = 'idle'
     mood: Mood[] = []
-    name: string | undefined = undefined
     error: string | undefined = undefined
 
-    constructor({ name, command }: CritterOptions) {
+    constructor({ command }: CritterOptions) {
         let state
 
         try {
@@ -44,9 +42,9 @@ export class Critter {
             state = {}
         }
         if (command === 'new') {
-            this.name = name
+            this.birth = now()
+            this.time = this.birth
         } else {
-            this.name = state?.name ?? this.name
             this.birth = state?.birth ?? this.birth
             this.age = state?.age ?? this.age
             this.satiety = state?.satiety ?? this.satiety
@@ -57,7 +55,7 @@ export class Critter {
             this.actionTime = state?.actionTime ?? this.actionTime
             this.action = state?.action ?? this.action
             this.time = state?.time ?? this.time
-            if (!this.name) {
+            if (!this.birth) {
                 this.error = 'No Critter'
                 return
             }
@@ -88,9 +86,9 @@ export class Critter {
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
             this.mood = []
-            if (this.health===0){
-                this.alive=false
-                this.mood=['dead']
+            if (this.health === 0) {
+                this.alive = false
+                this.mood = ['dead']
                 return
             }
             if (this.actionTime <= 0) this.action = 'idle'
@@ -202,7 +200,6 @@ export class Critter {
 
     state = () => {
         const {
-            name,
             error,
             birth,
             age,
@@ -227,7 +224,6 @@ export class Critter {
             actionTime,
             health,
             error,
-            name,
             mood,
             time: now(),
             action,
