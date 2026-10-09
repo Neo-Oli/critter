@@ -10,8 +10,8 @@ s/\e\[38;2;(\d+;\d+;\d+)m\e\[48;2;\1m▀/█/g;
 s/\e\[48;2;\d+;\d+;\d+m▄/▀/g;
 s/\e\[[0-9;?]*[A-Za-z]//g;
     ' \
-        |sed 's/^▀/ /' \
-        > "$target"
+        | sed 's/^▀/ /' \
+            > "$target"
     rm "$target"-trans
     cat "$target"
 done
