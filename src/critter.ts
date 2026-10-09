@@ -112,9 +112,10 @@ export class Critter {
     }
     feed = () => {
         this.action = 'eating'
-        this.actionTime = this.satiety < low
-            ? Math.floor((high - this.satiety) / 6250)
-            : minute
+        this.actionTime =
+            this.satiety < low
+                ? Math.floor((high - this.satiety) / 6250)
+                : minute
     }
     getCritterState = (): Action | Mood => {
         if (!this.alive) return 'dead'
@@ -184,7 +185,10 @@ export class Critter {
 
     process = () => {
         const currentTime = now()
-        const elapsed = Math.max(0, Math.floor((currentTime - this.time) * speed))
+        const elapsed = Math.max(
+            0,
+            Math.floor((currentTime - this.time) * speed),
+        )
         this.time = currentTime
         if (this.health === 0) {
             this.die()
@@ -211,12 +215,18 @@ export class Critter {
             }
 
             if (this.action === 'healing') {
-                this.health = set(this.health + 10000)
-            } else if (this.satiety > 0) {
-                this.health = set(this.health + 10)
+                this.health = set(this.health + 100000)
+            } else if (
+                this.satiety > 0 &&
+                this.satiety <= too_high &&
+                this.cleanliness >= low
+            ) {
+                this.health = set(this.health + 30)
             }
             if (this.action === 'playing') {
-                this.happiness = set(this.happiness + 8333)
+                this.happiness = set(
+                    this.happiness + (this.energy < low ? 4167 : 8333),
+                )
             } else {
                 this.happiness = set(this.happiness - 26)
             }
@@ -225,8 +235,10 @@ export class Critter {
             if (this.satiety === 0) {
                 this.health = set(this.health - (this.health > low ? 14 : 3))
             } else if (this.satiety > too_high) {
-                this.health = set(this.health - 100)
+                this.health = set(this.health - 14)
                 this.mood.push('stuffed')
+            } else if (this.cleanliness < low) {
+                this.health = set(this.health - 2)
             }
             if (this.health === 0) {
                 this.die()

@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "vitest run",
-        "test:check": "tsc --noEmit",
+        "test:check": "deno check src/index.ts src/*.test.ts vitest.config.ts",
         "test:watch": "vitest",
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
         "check": "deno check src/index.ts",
@@ -31,7 +31,6 @@
         "eslint-plugin-prettier": "latest",
         "globals": "latest",
         "prettier": "latest",
-        "typescript": "latest",
         "typescript-eslint": "latest",
         "vitest": "latest"
     }

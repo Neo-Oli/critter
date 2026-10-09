@@ -1,7 +1,7 @@
 # Tests
 
 Run `pnpm install`, then `pnpm test`. Run `pnpm test:check` to typecheck
-production code and tests. Use `pnpm test:watch` while developing,
+production code and tests with Deno. Use `pnpm test:watch` while developing,
 or `pnpm exec vitest run src/critter.test.ts` for the simulation tests alone.
 
 The suite exercises the real TypeScript modules and text sprites. Critter tests
@@ -23,7 +23,7 @@ All action durations and stat changes still run through the real process loop.
 | Dirty from full cleanliness        | Between 22 and 24 hours                                              |
 | Sick without food                  | Between 23 and 25 hours                                              |
 | Dead without food                  | Between 46 and 50 hours                                              |
-| Food-only survival                 | Four meals daily for seven days                                      |
+| Neglected cleaning                 | Four meals daily do not prevent death between six and seven days     |
 | Full care survival                 | Four meals, two sleeps, three plays, one cleaning daily for ten days |
 
 Starvation ranges start with full health and satiety at `high`, representing
@@ -34,5 +34,24 @@ Whole-second hungry meals finish at or just below `high`, never above it.
 Normal meals can cause stuffing; a newborn's first meal must not.
 Integer rounding makes cleaning due at about 23.15 hours rather than exactly
 24, so the full-care test allows a small cleanliness deficit just before the
-next daily cleaning. It still requires full health, sufficient energy and
+next daily cleaning. It requires health within one percent of full, sufficient energy and
 happiness, and no stuffing throughout the simulation.
+
+## Need Interactions
+
+- Cleanliness below `low` immediately costs two health per simulation second
+  and prevents natural recovery. Cleaning stops this damage and enables recovery;
+  there is no dirtiness timer or grace period.
+- Starvation takes precedence over dirtiness damage, preserving the food-neglect
+  deadlines. Stuffing damage also does not stack with dirtiness damage.
+- One extra meal from the stuffed threshold costs five to ten percent health
+  before satiety falls back into range. Repeated overfeeding accumulates damage.
+- Playing while tired restores approximately half as much happiness.
+- Sleeping still restores energy while starving, but starvation continues.
+  Interrupting sleep retains recovered energy and has a small happiness penalty.
+- A fed, clean pet naturally recovers thirty health per second. Starvation
+  illness can recover within eight hours of feeding and cleaning, without medicine.
+  Medicine restores health in ten seconds but does not replace food or cleaning.
+- Meal schedules shifted thirty or sixty minutes early or late remain safe
+  for a week when daily cleaning is maintained.
+- One missed meal can be recovered through normal feeding without medicine.

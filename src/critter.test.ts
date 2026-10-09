@@ -107,6 +107,21 @@ describe('construction and persistence', () => {
             'time',
         ])
     })
+
+    it('continues dirtiness damage after restoring and recovers after cleaning', () => {
+        const original = healthy()
+        original.cleanliness = low - 1
+        advance(original, 1)
+        storage.loadState.mockReturnValue(original.persistedState())
+        const restored = new Critter({})
+        const restoredHealth = restored.health
+        advance(restored, 1)
+        expect(restored.health).toBeLessThan(restoredHealth)
+        restored.clean()
+        advance(restored, minute)
+        expect(restored.health).toBe(max)
+        expect(restored.mood).not.toContain('dirty')
+    })
 })
 
 describe('actions', () => {
@@ -147,11 +162,12 @@ describe('actions', () => {
         advance(pet, minute)
         expect(pet.satiety).toBeLessThanOrEqual(too_high)
         expect(pet.mood).not.toContain('stuffed')
+        const healthBeforeExtraMeal = pet.health
         pet.feed()
         advance(pet, minute)
         expect(pet.satiety).toBe(max)
         expect(pet.mood).toContain('stuffed')
-        expect(pet.health).toBeLessThan(high)
+        expect(pet.health).toBeLessThan(healthBeforeExtraMeal)
     })
 
     it.each([
@@ -177,7 +193,7 @@ describe('actions', () => {
         pet.health = low
         pet.medicine()
         advance(pet, 10)
-        expect(pet.health).toBe(low + 100000)
+        expect(pet.health).toBe(max)
         expect(pet.action).toBe('idle')
     })
 
@@ -329,18 +345,18 @@ describe('accelerated balance', () => {
         expect(pet.age / hour).toBeLessThanOrEqual(50)
     })
 
-    it('four meals per day alone keep it alive for a week', () => {
+    it('four meals per day cannot prevent eventual death from neglected cleaning', () => {
         const pet = healthy()
         pet.satiety = normal
         runtime.speed = minute
-        for (let elapsed = 0; elapsed < 7 * 24 * 60; elapsed += 1) {
+        for (let elapsed = 0; elapsed < 8 * 24 * 60; elapsed += 1) {
             if (elapsed % (6 * 60) === 0) pet.feed()
             advance(pet, 1)
-            if (!pet.alive)
-                throw new Error(`Died at simulated minute ${elapsed}`)
+            if (!pet.alive) break
         }
-        expect(pet.health).toBe(max)
-        expect(pet.age).toBe(7 * 24 * hour)
+        expect(pet.alive).toBe(false)
+        expect(pet.age).toBeGreaterThan(6 * 24 * hour)
+        expect(pet.age).toBeLessThan(7 * 24 * hour)
     })
 
     it('the full daily care schedule keeps it healthy for ten days', () => {
@@ -368,10 +384,204 @@ describe('accelerated balance', () => {
                 )
             }
         }
-        expect(pet.health).toBe(max)
+        expect(pet.health).toBeGreaterThanOrEqual(max * 0.99)
         expect(pet.age).toBe(10 * 24 * hour)
         expect(pet.cleanliness).toBeGreaterThan(low - 30000)
         expect(pet.happiness).toBeGreaterThan(low)
         expect(pet.energy).toBeGreaterThan(low)
+    })
+})
+
+describe('need interactions', () => {
+    it.each([30, 60])(
+        'tolerates meals up to %i minutes early or late for a week',
+        (variation) => {
+            const pet = healthy()
+            pet.satiety = normal
+            runtime.speed = minute
+            let meal = 0
+            let nextMeal = 0
+            const offsets = [-variation, 0, variation, 0]
+            for (let elapsed = 0; elapsed < 7 * 24 * 60; elapsed += 1) {
+                if (elapsed === nextMeal) {
+                    pet.feed()
+                    meal += 1
+                    nextMeal =
+                        meal * 6 * 60 + offsets[(meal - 1) % offsets.length]
+                }
+                if (elapsed % (24 * 60) === 10) pet.clean()
+                advance(pet, 1)
+                if (!pet.alive || pet.mood.includes('stuffed')) {
+                    throw new Error(
+                        `Irregular feeding failed at minute ${elapsed}`,
+                    )
+                }
+            }
+            expect(pet.health).toBeGreaterThanOrEqual(max * 0.99)
+        },
+    )
+
+    it('recovers from one missed meal without medicine', () => {
+        const pet = healthy()
+        advance(pet, 12 * hour)
+        expect(pet.satiety).toBe(0)
+        expect(pet.health).toBeLessThan(max)
+        pet.feed()
+        advance(pet, pet.actionTime)
+        advance(pet, 6 * hour)
+        expect(pet.alive).toBe(true)
+        expect(pet.health).toBe(max)
+        expect(pet.mood).not.toContain('sick')
+    })
+
+    it('recovers naturally from starvation illness within eight hours after feeding and cleaning', () => {
+        const pet = healthy()
+        advance(pet, 24 * hour)
+        expect(pet.mood).toContain('sick')
+        pet.feed()
+        advance(pet, pet.actionTime)
+        pet.clean()
+        advance(pet, minute)
+        advance(pet, 8 * hour)
+        expect(pet.alive).toBe(true)
+        expect(pet.health).toBe(max)
+    })
+
+    it('medicine shortens fed illness recovery from hours to seconds', () => {
+        const natural = healthy()
+        natural.health = low - 1
+        const treated = healthy()
+        treated.health = low - 1
+        treated.medicine()
+        advance(treated, 10)
+        natural.process()
+        expect(treated.health).toBe(max)
+        expect(natural.health).toBeLessThan(low + max * 0.01)
+    })
+
+    it('combined food, sleep, and play neglect still follows the starvation deadline', () => {
+        const pet = healthy()
+        runtime.speed = hour
+        advance(pet, 46)
+        expect(pet.alive).toBe(true)
+        expect(pet.mood).toContain('sick')
+        expect(pet.mood).toContain('sad')
+        expect(pet.mood).toContain('dirty')
+        advance(pet, 4)
+        expect(pet.alive).toBe(false)
+        expect(pet.age / hour).toBeGreaterThanOrEqual(46)
+        expect(pet.age / hour).toBeLessThanOrEqual(50)
+    })
+
+    it('feeding alone does not cure illness caused by sustained dirtiness', () => {
+        const pet = healthy()
+        pet.cleanliness = low - 1
+        runtime.speed = hour
+        for (let elapsed = 0; elapsed < 5 * 24; elapsed += 1) {
+            if (pet.satiety < low) pet.feed()
+            advance(pet, 1)
+        }
+        expect(pet.alive).toBe(true)
+        expect(pet.mood).toContain('sick')
+        const neglectedHealth = pet.health
+        pet.feed()
+        advance(pet, 1)
+        expect(pet.health).toBeLessThan(neglectedHealth)
+        pet.clean()
+        advance(pet, 1)
+        expect(pet.health).toBeGreaterThan(neglectedHealth)
+        expect(pet.mood).not.toContain('dirty')
+    })
+
+    it('one accidental extra meal costs only five to ten percent health', () => {
+        const pet = healthy()
+        pet.satiety = too_high
+        pet.feed()
+        advance(pet, minute)
+        expect(pet.mood).toContain('stuffed')
+        advance(pet, Math.ceil((max - too_high) / 23))
+        expect(pet.mood).not.toContain('stuffed')
+        expect(pet.alive).toBe(true)
+        expect(max - pet.health).toBeGreaterThanOrEqual(max * 0.05)
+        expect(max - pet.health).toBeLessThanOrEqual(max * 0.1)
+    })
+
+    it('repeated overfeeding accumulates damage instead of healing it away', () => {
+        const pet = healthy()
+        pet.satiety = max
+        pet.feed()
+        advance(pet, minute)
+        const previousHealth = pet.health
+        pet.feed()
+        advance(pet, minute)
+        expect(pet.health).toBeLessThan(previousHealth)
+        expect(pet.mood).toContain('stuffed')
+    })
+
+    it('playing while tired restores about half as much happiness', () => {
+        const rested = healthy()
+        rested.happiness = 0
+        rested.play()
+        advance(rested, 2 * minute)
+        const tired = healthy()
+        tired.energy = low - 1
+        tired.happiness = 0
+        tired.play()
+        advance(tired, 2 * minute)
+        expect(tired.happiness / rested.happiness).toBeCloseTo(0.5, 2)
+    })
+
+    it('sleep restores energy while starvation continues', () => {
+        const pet = healthy()
+        pet.energy = 0
+        pet.satiety = 0
+        pet.sleep()
+        advance(pet, 2 * hour)
+        expect(pet.energy).toBe(max)
+        expect(pet.health).toBeLessThan(max)
+        expect(pet.satiety).toBe(0)
+    })
+
+    it('interrupting sleep preserves recovered energy with a small happiness penalty', () => {
+        const pet = healthy()
+        pet.energy = low
+        pet.sleep()
+        advance(pet, hour)
+        const recoveredEnergy = pet.energy
+        const happiness = pet.happiness
+        pet.stop()
+        expect(pet.energy).toBe(recoveredEnergy)
+        expect(pet.energy).toBeGreaterThan(low)
+        expect(happiness - pet.happiness).toBeLessThanOrEqual(max * 0.01)
+        advance(pet, minute)
+        expect(pet.energy).toBeLessThan(recoveredEnergy)
+    })
+
+    it('medicine restores health but leaves starvation unresolved', () => {
+        const pet = healthy()
+        pet.satiety = 0
+        pet.health = low - 1
+        pet.medicine()
+        advance(pet, 10)
+        expect(pet.health).toBeGreaterThan(high)
+        expect(pet.satiety).toBe(0)
+        const restoredHealth = pet.health
+        advance(pet, hour)
+        expect(pet.health).toBeLessThan(restoredHealth)
+    })
+
+    it('dirtiness damages health immediately below low and cleaning enables recovery', () => {
+        const pet = healthy()
+        pet.cleanliness = low + 9
+        advance(pet, 1)
+        expect(pet.health).toBe(max)
+        advance(pet, 1)
+        expect(pet.health).toBe(max - 2)
+        expect(pet.mood).toContain('dirty')
+        pet.clean()
+        advance(pet, minute)
+        expect(pet.cleanliness).toBeGreaterThan(low)
+        expect(pet.health).toBe(max)
+        expect(pet.mood).not.toContain('dirty')
     })
 })
