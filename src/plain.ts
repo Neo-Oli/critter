@@ -10,18 +10,16 @@ import sad from './sprites/sad.txt' with { type: 'text' }
 import sick from './sprites/sick.txt' with { type: 'text' }
 import sleeping from './sprites/sleeping.txt' with { type: 'text' }
 import tired from './sprites/tired.txt' with { type: 'text' }
+import {type Action, type Mood}  from './critter.ts'
+interface Plain {
+    state: Action | Mood
+    satiety: number
+}
+const loadSprite = (name:string) =>{
+    
 
-export const sprites = {
-	cleaning,
-	dirty,
-	eating,
-	happy,
-	hungry,
-	idle,
-	medicine,
-	playing,
-	sad,
-	sick,
-	sleeping,
-	tired,
-} as const
+}
+export const plain = ({ satiety , state}: Plain) => {
+    output=[]
+    console.log(state)
+}

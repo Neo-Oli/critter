@@ -1,8 +1,9 @@
 import { loadState, saveState } from './io.ts'
 import { max, normal, high, low, too_high } from './config.ts'
 import { now, minute, hour } from './utils.ts'
+import { plain } from './plain.ts'
 
-type Action =
+export type Action =
     'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
 
 export interface PersistedCritterState {
@@ -19,12 +20,12 @@ export interface PersistedCritterState {
 }
 
 type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play' | 'stop'
-type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
-type HealthMood = 'sick' | 'ill' | 'dead'
-type EnergyMood = 'energized' | 'rested' | 'tired' | 'exhausted'
-type HappinessMood = 'happy' | 'bored' | 'sad'
-type CleanlinessMood = 'clean' | 'dirty' | 'filthy'
-type Mood = FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
+type FoodMood = 'stuffed' | 'hungry' | 'eating'
+type HealthMood = 'sick' | 'dead' | 'medicine'
+type EnergyMood = 'tired' | 'sleeping'
+type HappinessMood = 'happy' | 'sad'
+type CleanlinessMood = 'cleaning' | 'dirty'
+export type Mood = FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
 interface CritterOptions {
     command?: Command
 }
@@ -101,8 +102,7 @@ export class Critter {
             this.age += 1
             this.mood = []
             if (this.health === 0) {
-                this.alive = false
-                this.mood = ['dead']
+                this.die()
                 return
             }
             if (this.actionTime <= 0) this.action = 'idle'
@@ -142,47 +142,42 @@ export class Critter {
             if (this.satiety > too_high) {
                 this.health = set(this.health - 100)
                 this.mood.push('stuffed')
-            } else if (this.satiety > high) {
-                this.mood.push('full')
             } else if (this.satiety === 0) {
-                this.mood.push('famished')
                 this.health = set(this.health - 1000)
             } else if (this.satiety < low) {
                 this.mood.push('hungry')
             }
 
             if (this.health < low) {
-                this.mood.push('ill')
-            } else if (this.health < normal) {
-                this.mood.push('ill')
+                this.mood.push('sick')
             }
 
-            if (this.energy === 0) {
-                this.mood.push('exhausted')
-            } else if (this.energy < low) {
+            if (this.energy === 0 && this.action !== 'sleeping') {
+                this.health = set(this.health - 1000)
+                this.happiness = set(this.happiness - 100000)
+                this.sleep()
+            }
+            if (this.energy < low) {
                 this.mood.push('tired')
-            } else if (this.energy > high) {
-                this.mood.push('energized')
-            } else {
-                this.mood.push('rested')
             }
 
             if (this.happiness > high) {
                 this.mood.push('happy')
             } else if (this.happiness < low) {
                 this.mood.push('sad')
-            } else {
-                this.mood.push('bored')
+            }
+            if (this.happiness ===0) {
+                this.health = set(this.health - 1000)
             }
 
-            if (this.cleanliness > high) {
-                this.mood.push('clean')
-            } else if (this.cleanliness < low) {
-                this.mood.push('filthy')
-            } else {
+            if (this.cleanliness < low) {
                 this.mood.push('dirty')
             }
         }
+    }
+    die = () => {
+        this.alive = false
+        this.mood = ['dead']
     }
     feed = () => {
         this.action = 'feeding'
@@ -236,5 +231,30 @@ export class Critter {
             action,
             time: now(),
         }
+    }
+    getCritterState = (): Action | Mood => {
+        const moodPriority: Mood[] = [
+            'dead',
+            'sick',
+            'tired',
+            'stuffed',
+            'hungry',
+            'dirty',
+            'sad',
+            'stuffed',
+            'happy',
+        ]
+        if (this.action !== 'idle') return this.action
+
+        const mood = moodPriority.find((priority) =>
+            this.mood.includes(priority),
+        )
+        return mood ?? 'idle'
+    }
+    plain = () => {
+        plain({
+            state: this.getCritterState(),
+            satiety: this.satiety,
+        })
     }
 }

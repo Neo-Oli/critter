@@ -8,7 +8,9 @@ const path = `${process.env.HOME}/.local/share/${binName}/state.json`
 
 export const loadState = (): Partial<PersistedCritterState> | undefined => {
     try {
-        return JSON.parse(readFileSync(path, 'utf8')) as Partial<PersistedCritterState>
+        return JSON.parse(
+            readFileSync(path, 'utf8'),
+        ) as Partial<PersistedCritterState>
     } catch (error) {
         if (
             !(error instanceof Error) ||
