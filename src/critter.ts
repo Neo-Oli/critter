@@ -105,14 +105,19 @@ export class Critter {
         this.actionTime = 60
     }
     die = () => {
+        this.action = 'idle'
+        this.actionTime = 0
         this.alive = false
         this.mood = ['dead']
     }
     feed = () => {
         this.action = 'eating'
-        this.actionTime = minute
+        this.actionTime = this.satiety < low
+            ? Math.floor((high - this.satiety) / 6250)
+            : minute
     }
     getCritterState = (): Action | Mood => {
+        if (!this.alive) return 'dead'
         const moodPriority: Mood[] = [
             'dead',
             'sick',
@@ -178,54 +183,56 @@ export class Critter {
     }
 
     process = () => {
-        const elapsed = (now() - this.time) * speed
-        for (let i = 0; i < elapsed; i += 1) {
+        const currentTime = now()
+        const elapsed = Math.max(0, Math.floor((currentTime - this.time) * speed))
+        this.time = currentTime
+        if (this.health === 0) {
+            this.die()
+            return
+        }
+        for (let tick = 0; tick < elapsed; tick += 1) {
             this.age += 1
             this.mood = []
-            if (this.health === 0) {
-                this.die()
-                return
-            }
             if (this.actionTime <= 0) this.action = 'idle'
             if (this.action === 'eating') {
-                this.satiety = set(this.satiety + 10000)
-                this.cleanliness = set(this.cleanliness - 1000)
+                this.satiety = set(this.satiety + 6250)
             } else {
-                this.satiety = set(this.satiety - 10)
+                this.satiety = set(this.satiety - 17)
             }
             if (this.action === 'sleeping') {
-                this.energy = set(this.energy + 10000)
-                this.cleanliness = set(this.cleanliness - 10)
+                this.energy = set(this.energy + 139)
             } else {
-                this.energy = set(this.energy - 10)
+                this.energy = set(this.energy - 21)
             }
             if (this.action === 'cleaning') {
-                this.cleanliness = set(this.cleanliness + 10000)
-                this.energy = set(this.energy - 10)
+                this.cleanliness = set(this.cleanliness + 16667)
             } else {
-                this.cleanliness = set(this.cleanliness - 10)
+                this.cleanliness = set(this.cleanliness - 9)
             }
 
             if (this.action === 'healing') {
                 this.health = set(this.health + 10000)
-                this.energy = set(this.energy - 1000)
-            } else {
+            } else if (this.satiety > 0) {
                 this.health = set(this.health + 10)
             }
             if (this.action === 'playing') {
-                this.happiness = set(this.happiness + 10000)
-                this.cleanliness = set(this.cleanliness - 1000)
-                this.energy = set(this.energy - 1000)
+                this.happiness = set(this.happiness + 8333)
             } else {
-                this.happiness = set(this.happiness - 10)
+                this.happiness = set(this.happiness - 26)
             }
             this.actionTime = set(this.actionTime - 1, 0, Infinity)
-            if (this.satiety > too_high) {
+            if (this.actionTime === 0) this.action = 'idle'
+            if (this.satiety === 0) {
+                this.health = set(this.health - (this.health > low ? 15 : 3))
+            } else if (this.satiety > too_high) {
                 this.health = set(this.health - 100)
                 this.mood.push('stuffed')
-            } else if (this.satiety === 0) {
-                this.health = set(this.health - 1000)
-            } else if (this.satiety < low) {
+            }
+            if (this.health === 0) {
+                this.die()
+                return
+            }
+            if (this.satiety < low) {
                 this.mood.push('hungry')
             }
 
@@ -234,8 +241,6 @@ export class Critter {
             }
 
             if (this.energy === 0 && this.action !== 'sleeping') {
-                this.health = set(this.health - 1000)
-                this.happiness = set(this.happiness - 100000)
                 this.sleep()
             }
             if (this.energy < low) {
@@ -246,9 +251,6 @@ export class Critter {
                 this.mood.push('happy')
             } else if (this.happiness < low) {
                 this.mood.push('sad')
-            }
-            if (this.happiness === 0) {
-                this.health = set(this.health - 1000)
             }
 
             if (this.cleanliness < low) {
