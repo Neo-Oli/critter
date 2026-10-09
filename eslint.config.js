@@ -1,30 +1,94 @@
+// @ts-check
+import json from '@eslint/json'
+import stylisticJs from '@stylistic/eslint-plugin'
+import gitignore from 'eslint-config-flat-gitignore'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
+import eslintPluginCommentLength from 'eslint-plugin-comment-length'
+import importPlugin from 'eslint-plugin-import'
+import perfectionist from 'eslint-plugin-perfectionist'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
-import tseslint from 'typescript-eslint'
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
+import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
-    ...tseslint.configs.recommended,
-    eslintPluginPrettierRecommended,
+const allJsFiles = '**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+const naturalPerfectionistConfig = perfectionist.configs['recommended-natural']
+
+export default defineConfig([
     {
-        ignores: ['dist/'],
+        ignores: [
+            'dist/',
+            'node_modules/',
+            '**/.next/',
+            '**/build/*.js',
+            '**/.cache/',
+        ],
+    },
+    gitignore(),
+    {
+        ...json.configs.recommended,
+        files: ['**/*.json'],
+        language: 'json/json',
     },
     {
-        name: 'glow-default',
-        files: ['**/*'],
+        files: [allJsFiles],
         languageOptions: {
             globals: {
                 ...globals.node,
                 ...globals.browser,
             },
         },
+    },
+    ...tseslint.configs.recommended,
+    eslintPluginPrettierRecommended,
+    {
+        ...eslintConfigPrettier,
+        files: [allJsFiles],
+    },
+    {
+        ...eslintPluginCommentLength.configs['flat/recommended'],
+        files: [allJsFiles],
+    },
+    {
+        ...naturalPerfectionistConfig,
+        files: [allJsFiles],
         rules: {
-            '@typescript-eslint/no-var-requires': 'off',
-            eqeqeq: 'error',
-            'linebreak-style': ['error', 'unix'],
-            'multiline-comment-style': ['error', 'starred-block'],
-            'no-var': 1,
-            'prefer-template': 'error',
-            'prettier/prettier': 'error',
+            ...naturalPerfectionistConfig.rules,
+            'perfectionist/sort-exports': 'error',
+            'perfectionist/sort-imports': 'error',
+            'perfectionist/sort-objects': 'error',
+            'perfectionist/sort-sets': 'error',
         },
     },
-)
+    {
+        files: [allJsFiles],
+        plugins: {
+            '@stylistic/js': stylisticJs,
+            '@typescript-eslint': tseslint.plugin,
+            import: importPlugin,
+        },
+        rules: {
+            '@stylistic/js/multiline-comment-style': ['error', 'starred-block'],
+            '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/no-require-imports': 'error',
+            '@typescript-eslint/no-unused-expressions': 'error',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    argsIgnorePattern: '^_',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                },
+            ],
+            eqeqeq: 'error',
+            'import/no-anonymous-default-export': 'error',
+            'linebreak-style': ['error', 'unix'],
+            'max-nested-callbacks': 'error',
+            'no-console': 'error',
+            'no-promise-executor-return': 'error',
+            'no-var': 'error',
+            'prefer-template': 'error',
+        },
+    },
+])
