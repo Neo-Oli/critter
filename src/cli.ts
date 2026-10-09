@@ -9,6 +9,7 @@ clean
 medicine
 play
 sleep
+stop
 
 
 Options:
@@ -36,6 +37,7 @@ const parseArgs = (args: string[]) => {
         case 'clean':
         case 'play':
         case 'sleep':
+        case 'stop':
             if (name) throw new Error(`Unexpected argument: ${name}`)
             return { command, name: undefined }
 

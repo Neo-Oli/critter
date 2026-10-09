@@ -4,7 +4,7 @@ import { now, minute, hour } from './utils.ts'
 
 type Action =
     'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
-type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play'
+type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play' | 'stop'
 type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
 type HealthMood = 'sick' | 'ill' | 'dead'
 type EnergyMood = 'energized' | 'rested' | 'tired' | 'exhausted'
@@ -77,6 +77,9 @@ export class Critter {
         }
         if (command === 'sleep') {
             this.sleep()
+        }
+        if (command === 'stop') {
+            this.stop()
         }
         saveState(this.state())
     }
@@ -188,6 +191,13 @@ export class Critter {
     clean = () => {
         this.action = 'cleaning'
         this.actionTime = 60
+    }
+    stop = () => {
+        if (this.action === 'feeding' || this.action === 'sleeping') {
+            this.happiness = set(this.happiness - 1000)
+        }
+        this.action = 'idle'
+        this.actionTime = 0
     }
 
     state = () => {
