@@ -9,7 +9,7 @@ for f in sprite_source/*; do
         | perl -pe 's/\e\[38;2;(\d+;\d+;\d+)m\e\[48;2;\1m▀/█/g;
 s/\e\[48;2;\d+;\d+;\d+m▄/▀/g;
 s/\e\[[0-9;?]*[A-Za-z]//g;' \
-        | sed -e 's/^▀/ /' -e 's/[[:space:]]*$//' \
+        | sed -e '1s/^▀/ /' -e 's/[[:space:]]*$//' \
             > "$target"
     rm "$target"-trans
     cat "$target"

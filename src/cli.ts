@@ -51,7 +51,7 @@ export const cli = async () => {
     }
     const { command } = args
     const critter = new Critter({ command })
-    console.log(critter.state())
+    console.log(critter.plain())
     if (critter.error) {
         console.error(critter.error)
         process.exit(1)

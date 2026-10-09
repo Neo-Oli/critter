@@ -237,36 +237,4 @@ export class Critter {
             time: now(),
         }
     }
-
-    state = () => {
-        const {
-            error,
-            birth,
-            age,
-            satiety,
-            happiness,
-            energy,
-            cleanliness,
-            health,
-            alive,
-            action,
-            actionTime,
-            mood,
-        } = this
-        return {
-            alive,
-            birth,
-            age,
-            satiety,
-            happiness,
-            energy,
-            cleanliness,
-            actionTime,
-            health,
-            error,
-            mood,
-            time: now(),
-            action,
-        }
-    }
 }
