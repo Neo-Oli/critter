@@ -2,7 +2,7 @@
     "name": "critter",
     "version": "0.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "./dist/index.js",
     "scripts": {
         "test": "vitest run",
         "test:check": "deno check src/index.ts src/*.test.ts vitest.config.ts",
@@ -12,7 +12,12 @@
         "build": "pnpm run check && esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
         "start": "node dist/index.js"
     },
-    "bin": "./dist/index.js",
+    "bin": {
+        "critter": "./dist/index.js"
+    },
+    "files": [
+        "dist"
+    ],
     "type": "module",
     "author": "glow",
     "license": "ISC",
