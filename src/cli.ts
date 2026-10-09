@@ -6,6 +6,10 @@ Actions:
     new <name>
 feed
 clean
+medicine
+play
+sleep
+
 
 Options:
     -h, --help       Show help
@@ -28,7 +32,10 @@ const parseArgs = (args: string[]) => {
             return { command, name }
 
         case 'feed':
+        case 'medicine':
         case 'clean':
+        case 'play':
+        case 'sleep':
             if (name) throw new Error(`Unexpected argument: ${name}`)
             return { command, name: undefined }
 

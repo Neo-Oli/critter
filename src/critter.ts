@@ -1,23 +1,35 @@
 import { loadState, saveState } from './io.ts'
-import { max, normal, satiety } from './config.ts'
-import { now } from './utils.ts'
+import { max, normal, high, low, too_high } from './config.ts'
+import { now, minute, hour } from './utils.ts'
 
-type Action = 'idle' | 'sleeping' | 'feeding'
-type Command = 'sleep' | 'feed' | 'new' | 'clean'
+type Action =
+    'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
+type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play'
+type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
+type HealthMood = 'sick'
+type HappinessMood = 'happy' | 'bored' | 'sad'
+type CleanlinessMood = 'clean' | 'dirty' | 'filthy'
+type Mood = FoodMood | HealthMood | HappinessMood | CleanlinessMood
 interface CritterOptions {
     name?: string
     command?: Command
 }
+
+const set = (value: number, smin = 0, smax = max) => {
+    return Math.min(smax, Math.max(smin, value))
+}
 export class Critter {
-    birth = now
+    birth = now()
     time = this.birth
     actionTime = 0
     age = 0
     satiety = normal
     happiness = normal
     energy = normal
-    health = max
+    cleanliness = low
+    health = high
     action: Action = 'idle'
+    mood: Mood[] = []
     name: string | undefined = undefined
     error: string | undefined = undefined
 
@@ -38,6 +50,7 @@ export class Critter {
             this.satiety = state?.satiety ?? this.satiety
             this.happiness = state?.happiness ?? this.happiness
             this.energy = state?.energy ?? this.energy
+            this.cleanliness = state?.cleanliness ?? this.cleanliness
             this.health = state?.health ?? this.health
             this.actionTime = state?.actionTime ?? this.actionTime
             this.action = state?.action ?? this.action
@@ -48,25 +61,93 @@ export class Critter {
             }
         }
         this.process()
-        if (command === 'feed') this.feed()
+        if (command === 'feed') {
+            this.feed()
+        }
+        if (command === 'clean') {
+            this.clean()
+        }
+        if (command === 'medicine') {
+            this.medicine()
+        }
+        if (command === 'play') {
+            this.play()
+        }
+        if (command === 'sleep') {
+            this.sleep()
+        }
         saveState(this.state())
     }
     process = () => {
-        const elapsed = now - this.time
+        const elapsed = (now() - this.time) * 100
         for (let i = 0; i < elapsed; i += 1) {
             this.age += 1
+            this.mood = []
             if (this.actionTime <= 0) this.action = 'idle'
             if (this.action === 'feeding') {
-                this.satiety = Math.min(this.satiety+satiety.action,max)
+                this.satiety = set(this.satiety + 10000)
+                this.cleanliness = set(this.cleanliness - 1000)
             } else {
-                this.satiety += satiety.tick
+                this.satiety = set(this.satiety - 10)
             }
-            this.actionTime = Math.max(this.actionTime-1,0)
+            if (this.action === 'sleeping') {
+                this.energy = set(this.energy + 10000)
+                this.cleanliness = set(this.cleanliness - 10)
+            } else {
+                this.energy = set(this.energy - 10)
+            }
+            if (this.action === 'cleaning') {
+                this.cleanliness = set(this.cleanliness + 10000)
+                this.energy = set(this.energy - 10)
+            } else {
+                this.cleanliness = set(this.cleanliness - 10)
+            }
+
+            if (this.action === 'healing') {
+                this.health = set(this.health + 10000)
+                this.energy = set(this.energy - 1000)
+            } else {
+                this.health = set(this.health + 10)
+            }
+            if (this.action === 'playing') {
+                this.happiness = set(this.happiness + 10000)
+                this.cleanliness = set(this.cleanliness - 1000)
+            } else {
+                this.happiness = set(this.happiness - 10)
+            }
+            this.actionTime = set(this.actionTime - 1, 0, Infinity)
+            if (this.satiety > too_high) {
+                this.health = set(this.health - 100)
+                this.mood.push('stuffed')
+            } else if (this.satiety > high) {
+                this.mood.push('full')
+            } else if (this.satiety < low) {
+                this.mood.push('hungry')
+            } else if ((this.satiety = 0)) {
+                this.mood.push('famished')
+                this.health = set(this.health - 1000)
+            }
         }
     }
     feed = () => {
         this.action = 'feeding'
-        this.actionTime = satiety.time
+        this.actionTime = minute
+    }
+    sleep = () => {
+        this.action = 'sleeping'
+        this.actionTime = 2 * hour
+    }
+    play = () => {
+        this.action = 'playing'
+        this.actionTime = 2 * minute
+    }
+    medicine = () => {
+        this.action = 'healing'
+        this.actionTime = 10
+    }
+    clean = () => {
+        this.action = 'cleaning'
+        this.actionTime = 60
     }
 
     state = () => {
@@ -78,9 +159,11 @@ export class Critter {
             satiety,
             happiness,
             energy,
+            cleanliness,
             health,
             action,
             actionTime,
+            mood,
         } = this
         return {
             birth,
@@ -88,11 +171,13 @@ export class Critter {
             satiety,
             happiness,
             energy,
+            cleanliness,
             actionTime,
             health,
             error,
             name,
-            time: now,
+            mood,
+            time: now(),
             action,
         }
     }
