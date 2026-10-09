@@ -1,4 +1,4 @@
-import { high, max, too_high } from './config.ts'
+import { max, too_high } from './config.ts'
 import { type Action, type Mood } from './critter.ts'
 import cleaning from './sprites/cleaning.txt' with { type: 'text' }
 import dead from './sprites/dead.txt' with { type: 'text' }
@@ -71,7 +71,6 @@ export const plain = ({
             half = '󰛞'
             full = '󰋑'
         }
-        const too_much = '!'
         const maxBarValue = Math.min(barValue, 10)
         let bar = full.repeat(Math.floor(maxBarValue / 2))
         if (maxBarValue % 2) {

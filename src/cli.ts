@@ -67,9 +67,10 @@ export const cli = async () => {
     }
     const { command, noNerdFonts } = args
     const critter = new Critter({ command })
-    console.log(`${critter.plain({ noNerdFonts })}\n`)
     if (critter.error) {
         process.stderr.write(`${critter.error}\n`)
         process.exit(1)
+    } else {
+        console.log(`${critter.plain({ noNerdFonts })}\n`)
     }
 }
