@@ -1,20 +1,30 @@
 import { Critter } from './critter.ts'
 const help = `
-Usage: critter [options] <command>
+critter - a terminal pet
 
-Actions:
-new
-feed
-clean
-medicine
-play
-sleep
-stop
+Usage: critter [options] [command]
 
+With no command, show your critter's current state.
+
+Commands:
+    new       Create a new critter, replacing your current pet
+    feed      Give it a meal; feeding when full can make it stuffed
+    clean     Wash it and stop health loss from dirtiness
+    medicine  Restore health; it still needs food and cleaning
+    play      Cheer it up; playing while tired is less effective
+    sleep     Let it rest for two hours
+    stop      Stop the current action
 
 Options:
-    -h, --help           Show help
-    -n, --no-nerd-fonts  Don't use nerd font icons
+    -h, --help           Show this help and exit
+    -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
+
+Daily care: about four meals, two sleeps, three plays, and one cleaning.
+
+Examples:
+    critter new
+    critter
+    critter -n feed
 `
 
 const parseArgs = (args: string[]) => {

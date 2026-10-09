@@ -58,8 +58,24 @@ describe('CLI and entry point', () => {
             const result = run(flag)
             expect(result.error).toBeUndefined()
             expect(result.status).toBe(0)
-            expect(result.stdout).toContain('Usage: critter')
-            expect(result.stdout).toContain('medicine')
+            expect(result.stdout).toContain(
+                'Usage: critter [options] [command]',
+            )
+            expect(result.stdout).toContain('With no command, show')
+            expect(result.stdout).toContain('replacing your current pet')
+            for (const command of [
+                'new',
+                'feed',
+                'clean',
+                'medicine',
+                'play',
+                'sleep',
+                'stop',
+            ]) {
+                expect(result.stdout).toMatch(
+                    new RegExp(`^[ \\t]+${command}[ \\t]{2,}\\S`, 'm'),
+                )
+            }
             expect(result.stderr).toBe('')
             expect(existsSync(statePath())).toBe(false)
         },
