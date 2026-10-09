@@ -7,9 +7,10 @@ type Action =
 type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play'
 type FoodMood = 'stuffed' | 'full' | 'hungry' | 'famished'
 type HealthMood = 'sick'
+type EnergyMood = 'energized' | 'rested' | 'tired' | 'exhausted'
 type HappinessMood = 'happy' | 'bored' | 'sad'
 type CleanlinessMood = 'clean' | 'dirty' | 'filthy'
-type Mood = FoodMood | HealthMood | HappinessMood | CleanlinessMood
+type Mood = FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
 interface CritterOptions {
     name?: string
     command?: Command
@@ -121,11 +122,39 @@ export class Critter {
                 this.mood.push('stuffed')
             } else if (this.satiety > high) {
                 this.mood.push('full')
-            } else if (this.satiety < low) {
-                this.mood.push('hungry')
-            } else if ((this.satiety = 0)) {
+            } else if (this.satiety === 0) {
                 this.mood.push('famished')
                 this.health = set(this.health - 1000)
+            } else if (this.satiety < low) {
+                this.mood.push('hungry')
+            }
+
+            if (this.health < low) this.mood.push('sick')
+
+            if (this.energy === 0) {
+                this.mood.push('exhausted')
+            } else if (this.energy < low) {
+                this.mood.push('tired')
+            } else if (this.energy > high) {
+                this.mood.push('energized')
+            } else {
+                this.mood.push('rested')
+            }
+
+            if (this.happiness > high) {
+                this.mood.push('happy')
+            } else if (this.happiness < low) {
+                this.mood.push('sad')
+            } else {
+                this.mood.push('bored')
+            }
+
+            if (this.cleanliness > high) {
+                this.mood.push('clean')
+            } else if (this.cleanliness < low) {
+                this.mood.push('filthy')
+            } else {
+                this.mood.push('dirty')
             }
         }
     }
