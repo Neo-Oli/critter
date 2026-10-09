@@ -197,7 +197,7 @@ export class Critter {
             if (this.action === 'eating') {
                 this.satiety = set(this.satiety + 6250)
             } else {
-                this.satiety = set(this.satiety - 17)
+                this.satiety = set(this.satiety - 23)
             }
             if (this.action === 'sleeping') {
                 this.energy = set(this.energy + 139)
@@ -223,7 +223,7 @@ export class Critter {
             this.actionTime = set(this.actionTime - 1, 0, Infinity)
             if (this.actionTime === 0) this.action = 'idle'
             if (this.satiety === 0) {
-                this.health = set(this.health - (this.health > low ? 15 : 3))
+                this.health = set(this.health - (this.health > low ? 14 : 3))
             } else if (this.satiety > too_high) {
                 this.health = set(this.health - 100)
                 this.mood.push('stuffed')

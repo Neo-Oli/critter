@@ -4,7 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "vitest run",
+        "test:check": "tsc --noEmit",
+        "test:watch": "vitest",
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
         "check": "deno check src/index.ts",
         "build": "pnpm run check && esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
@@ -29,6 +31,8 @@
         "eslint-plugin-prettier": "latest",
         "globals": "latest",
         "prettier": "latest",
-        "typescript-eslint": "latest"
+        "typescript": "latest",
+        "typescript-eslint": "latest",
+        "vitest": "latest"
     }
 }
