@@ -4,7 +4,7 @@ import { now, minute, hour } from './utils.ts'
 import { plain } from './plain.ts'
 
 export type Action =
-    'idle' | 'sleeping' | 'feeding' | 'healing' | 'playing' | 'cleaning'
+    'idle' | 'sleeping' | 'eating' | 'healing' | 'playing' | 'cleaning'
 
 export interface PersistedCritterState {
     birth: number
@@ -21,11 +21,12 @@ export interface PersistedCritterState {
 
 type Command = 'sleep' | 'feed' | 'new' | 'clean' | 'medicine' | 'play' | 'stop'
 type FoodMood = 'stuffed' | 'hungry' | 'eating'
-type HealthMood = 'sick' | 'dead' | 'medicine'
+type HealthMood = 'sick' | 'dead' | 'healing'
 type EnergyMood = 'tired' | 'sleeping'
 type HappinessMood = 'happy' | 'sad'
 type CleanlinessMood = 'cleaning' | 'dirty'
-export type Mood = FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
+export type Mood =
+    FoodMood | HealthMood | EnergyMood | HappinessMood | CleanlinessMood
 interface CritterOptions {
     command?: Command
 }
@@ -106,7 +107,7 @@ export class Critter {
                 return
             }
             if (this.actionTime <= 0) this.action = 'idle'
-            if (this.action === 'feeding') {
+            if (this.action === 'eating') {
                 this.satiety = set(this.satiety + 10000)
                 this.cleanliness = set(this.cleanliness - 1000)
             } else {
@@ -166,7 +167,7 @@ export class Critter {
             } else if (this.happiness < low) {
                 this.mood.push('sad')
             }
-            if (this.happiness ===0) {
+            if (this.happiness === 0) {
                 this.health = set(this.health - 1000)
             }
 
@@ -180,7 +181,7 @@ export class Critter {
         this.mood = ['dead']
     }
     feed = () => {
-        this.action = 'feeding'
+        this.action = 'eating'
         this.actionTime = minute
     }
     sleep = () => {
@@ -200,7 +201,7 @@ export class Critter {
         this.actionTime = 60
     }
     stop = () => {
-        if (this.action === 'feeding' || this.action === 'sleeping') {
+        if (this.action === 'eating' || this.action === 'sleeping') {
             this.happiness = set(this.happiness - 1000)
         }
         this.action = 'idle'
@@ -251,10 +252,9 @@ export class Critter {
         )
         return mood ?? 'idle'
     }
-    plain = () => {
+    plain = () =>
         plain({
             state: this.getCritterState(),
             satiety: this.satiety,
         })
-    }
 }
