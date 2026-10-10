@@ -20,7 +20,7 @@
     ],
     "type": "module",
     "author": "glow",
-    "license": "ISC",
+    "license": "GPL-3.0-only",
     "devDependencies": {
         "@cofy-x/pixel-to-ascii": "latest",
         "@eslint/json": "latest",
