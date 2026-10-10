@@ -4,9 +4,11 @@ A small terminal pet to feed, clean, play with, and put to sleep.
 
 ## Install
 
-Requires Node.js. From this checkout:
+Requires Node.js 22.12 or newer and pnpm. From this checkout:
 
 ```sh
+pnpm install
+pnpm run build
 npm install -g .
 critter new
 critter
@@ -28,12 +30,15 @@ State is saved to `$HOME/.local/share/critter/state.json`.
 
 ## Development
 
-Uses pnpm and Deno.
+Uses Node.js, TypeScript, and pnpm. esbuild bundles the TypeScript and text
+sprites into a Node.js executable.
 
 ```sh
 pnpm install
+pnpm run check
 pnpm test
 pnpm run build
+pnpm start -- --help
 ```
 
 Rebuild and include `dist/` when changing the source. Test details are in

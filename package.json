@@ -5,10 +5,10 @@
     "main": "./dist/index.js",
     "scripts": {
         "test": "vitest run",
-        "test:check": "deno check src/index.ts src/*.test.ts vitest.config.ts",
+        "test:check": "pnpm run check",
         "test:watch": "vitest",
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
-        "check": "deno check src/index.ts",
+        "check": "tsc --noEmit",
         "build": "pnpm run check && esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
         "start": "node dist/index.js"
     },
@@ -19,6 +19,9 @@
         "dist"
     ],
     "type": "module",
+    "engines": {
+        "node": ">=22.12.0"
+    },
     "author": "glow",
     "license": "GPL-3.0-only",
     "devDependencies": {
@@ -36,6 +39,7 @@
         "eslint-plugin-prettier": "latest",
         "globals": "latest",
         "prettier": "latest",
+        "typescript": "^6.0.3",
         "typescript-eslint": "latest",
         "vitest": "latest"
     }

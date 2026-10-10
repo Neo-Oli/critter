@@ -1,7 +1,8 @@
 # Tests
 
 Run `pnpm install`, then `pnpm test`. Run `pnpm test:check` to typecheck
-production code and tests with Deno. Use `pnpm test:watch` while developing,
+production code, tests, and the Vitest config with TypeScript (also available
+as `pnpm run check`). Use `pnpm test:watch` while developing,
 or `pnpm exec vitest run src/critter.test.ts` for the simulation tests alone.
 
 The suite exercises the real TypeScript modules and text sprites. Critter tests
