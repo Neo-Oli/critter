@@ -85,9 +85,6 @@ var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\
 // src/sprites/happy.txt
 var happy_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580   \u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584\u2584\u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
-// src/sprites/healing.txt
-var healing_default = "            \u2580\u2584\n        \u2580\u2584  \u2584\u2580\u2580\u2584\n       \u2584\u2580 \u2580\u2588\n     \u2584\u2580    \u2584\u2580\u2584\n   \u2584\u2588\u2588\u2588\u2584 \u2584\u2580\n   \u2588\u2588\u2588\u2588\u2588\u2580\n  \u2584\u2580\u2580\u2580\u2580\n\u2584\u2580\n";
-
 // src/sprites/hungry.txt
 var hungry_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588  \u2584 \u2584  \u2588\n\u2588  \u2584\u2584\u2584  \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588  \u2580\u2580\u2588  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
@@ -96,6 +93,9 @@ var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u25
 
 // src/sprites/ill.txt
 var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
+
+// src/sprites/medicine.txt
+var medicine_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\n\u2588 \u2580\u2588\u2580 \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
@@ -134,10 +134,10 @@ var loadSprite = ({
     dead: dead_default,
     food: food_default,
     happy: happy_default,
-    healing: healing_default,
     hungry: hungry_default,
     idle: idle_default,
     ill: ill_default,
+    medicine: medicine_default,
     none: "",
     poo: poo_default,
     refusing: refusing_default,
@@ -337,8 +337,8 @@ var Critter = class {
       bottom: main === "playing" ? "toy" : main === "eating" ? "food" : this.poo ? "poo" : "none",
       main,
       reverse: ["eating", "playing"].includes(main),
-      sprite: main === "eating" || main === "playing" ? mood : main,
-      top: this.health < low ? "ill" : "none"
+      sprite: ["eating", "healing", "playing"].includes(main) ? mood : main,
+      top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
     };
   };
   medicine = () => {
@@ -528,7 +528,7 @@ var Critter = class {
     this.actionTime = schedules.energy.sleeping;
   };
   stop = () => {
-    if (this.action === "eating" || this.action === "sleeping") {
+    if (["eating", "sleeping"].includes(this.action)) {
       this.happiness = set(this.happiness - happinessPenalty);
     }
     this.action = "idle";
@@ -584,15 +584,17 @@ Examples:
     critter -d
 `;
 var parseArgs = (args) => {
-  if (args.includes("-h") || args.includes("--help")) {
+  if (args.some((arg) => ["--help", "-h"].includes(arg))) {
     process.stdout.write(`${help}
 `);
     process.exit(0);
   }
-  const noNerdFonts = args.includes("-n") || args.includes("--no-nerd-fonts");
-  const debug = args.includes("-d") || args.includes("--debug");
+  const noNerdFonts = args.some(
+    (arg) => ["--no-nerd-fonts", "-n"].includes(arg)
+  );
+  const debug = args.some((arg) => ["--debug", "-d"].includes(arg));
   const [command] = args.filter(
-    (arg) => arg !== "-n" && arg !== "--no-nerd-fonts" && arg !== "-d" && arg !== "--debug"
+    (arg) => !["--debug", "--no-nerd-fonts", "-d", "-n"].includes(arg)
   );
   if (!command) return { command: void 0, debug, noNerdFonts };
   switch (command) {
