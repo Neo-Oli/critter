@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, schedules } from '../config.ts'
+import { high, low, max, normal, schedules } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { day, hour, minute } from '../utils.ts'
 
@@ -34,6 +34,12 @@ const healthy = () => {
     return pet
 }
 
+const maxed = () => {
+    const pet = healthy()
+    pet.satiety = max
+    return pet
+}
+
 beforeEach(() => {
     runtime.speed = 1
     runtime.time = 1000000
@@ -42,6 +48,14 @@ beforeEach(() => {
 })
 
 describe('stat schedule simulations', () => {
+    it('fills half a satiety bar during a one-minute feed action', () => {
+        const pet = healthy()
+        pet.satiety = normal
+        pet.feed()
+        advance(pet, minute)
+        expect(pet.satiety).toBe(max)
+    })
+
     it('ends a refusal action after thirty seconds', () => {
         const pet = healthy()
         pet.satiety = high + 1
@@ -157,6 +171,64 @@ describe('stat schedule simulations', () => {
 })
 
 describe('daily care balance', () => {
+    it('is dead by thirty days when only fed daily and poo is cleaned', () => {
+        const pet = maxed()
+        pet.satiety = high
+        pet.feed()
+        runtime.speed = minute
+
+        for (
+            let elapsedMinutes = 1;
+            elapsedMinutes <= 30 * 24 * 60;
+            elapsedMinutes += 1
+        ) {
+            advance(pet, 1)
+            if (pet.poo) pet.clean()
+            if (!pet.alive) break
+            if (elapsedMinutes % (24 * 60) === 0) pet.feed()
+        }
+
+        expect(
+            pet.alive,
+            `still alive after ${pet.age / hour} hours with health=${pet.health}, satiety=${pet.satiety}`,
+        ).toBe(false)
+    })
+
+    it('survives two days without care when all stats start maxed', () => {
+        const pet = maxed()
+        advance(pet, 2 * day)
+        expect(pet.alive).toBe(true)
+    })
+
+    it('is dead after three days without care when all stats start maxed', () => {
+        const pet = maxed()
+        advance(pet, 3 * day)
+        expect(pet.alive).toBe(false)
+    })
+
+    it('does not starve when fed once every five hours', () => {
+        const pet = maxed()
+        let minimumSatiety = pet.satiety
+
+        for (
+            let elapsedSeconds = 0;
+            elapsedSeconds < 10 * day;
+            elapsedSeconds += 1
+        ) {
+            if (elapsedSeconds % (5 * hour) === 0) pet.feed()
+            advance(pet, 1)
+            if (pet.poo) pet.clean()
+            minimumSatiety = Math.min(minimumSatiety, pet.satiety)
+            if (!pet.alive) break
+        }
+
+        expect(
+            minimumSatiety,
+            `minimum satiety was ${minimumSatiety}`,
+        ).toBeGreaterThan(0)
+        expect(pet.age).toBe(10 * day)
+    })
+
     it('keeps the critter alive for ten days with regular care', () => {
         const pet = healthy()
         pet.satiety = max

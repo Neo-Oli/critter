@@ -27,7 +27,7 @@ export const schedules = {
         starving: 2 * day,
     },
     satiety: {
-        eating: 160,
+        eating: 2 * minute,
         idle: day / 3,
         playing: 5 * 2 * minute,
     },
