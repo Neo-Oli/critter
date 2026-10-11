@@ -24,7 +24,7 @@ var high = Math.round(max / 4 * 3);
 var normal = Math.round(max / 2);
 var low = Math.round(max / 4);
 var binName = "critter";
-var happinessPenalty = 1e4;
+var penalty = 0.1;
 var speed = 1;
 var schedules = {
   energy: {
@@ -232,6 +232,7 @@ var set = (value, smin = 0, smax = max) => {
   return Math.round(Math.min(smax, Math.max(smin, value)));
 };
 var changeBySchedule = (value, secondsPerCycle, direction) => set(value + Math.ceil(max / secondsPerCycle) * direction);
+var applyPenalty = (value) => set(value * (1 - penalty));
 var Critter = class {
   action = "idle";
   actionTime = 0;
@@ -510,6 +511,8 @@ var Critter = class {
       }
       if (this.energy === 0 && this.action !== "sleeping") {
         this.sleep();
+        this.health = applyPenalty(this.health);
+        this.happiness = applyPenalty(this.happiness);
       }
     }
     this.updateMood();
@@ -517,7 +520,7 @@ var Critter = class {
   refuse = () => {
     this.action = "refusing";
     this.actionTime = 30;
-    this.happiness = set(this.happiness - happinessPenalty);
+    this.happiness = applyPenalty(this.happiness);
   };
   sleep = () => {
     if (this.energy >= normal) {
@@ -529,7 +532,7 @@ var Critter = class {
   };
   stop = () => {
     if (["eating", "sleeping"].includes(this.action)) {
-      this.happiness = set(this.happiness - happinessPenalty);
+      this.happiness = applyPenalty(this.happiness);
     }
     this.action = "idle";
     this.actionTime = 0;
