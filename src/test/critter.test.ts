@@ -1,13 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-    happinessPenalty,
-    high,
-    low,
-    max,
-    normal,
-    schedules,
-} from '../config.ts'
+import { high, low, max, normal, penalty, schedules } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { minute } from '../utils.ts'
 
@@ -131,8 +124,19 @@ describe('actions', () => {
         pet.feed()
         expect(pet.action).toBe('refusing')
         expect(pet.actionTime).toBe(30)
-        expect(before - pet.happiness).toBe(happinessPenalty)
+        expect(pet.happiness).toBe(Math.round(before * (1 - penalty)))
     })
+
+    it.each(['eating', 'sleeping'] as const)(
+        'applies the percentage penalty when stopping %s',
+        (action) => {
+            const pet = healthy()
+            pet.action = action
+            pet.happiness = normal
+            pet.stop()
+            expect(pet.happiness).toBe(Math.round(normal * (1 - penalty)))
+        },
+    )
 
     it('refuses sleep at or above normal energy and allows it below normal', () => {
         const rested = healthy()

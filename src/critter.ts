@@ -1,12 +1,4 @@
-import {
-    happinessPenalty,
-    high,
-    low,
-    max,
-    normal,
-    schedules,
-    speed,
-} from './config.ts'
+import { high, low, max, normal, penalty, schedules, speed } from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { type Plain, plain } from './plain.ts'
 import { minute, now } from './utils.ts'
@@ -55,6 +47,7 @@ const changeBySchedule = (
     secondsPerCycle: number,
     direction: -1 | 1,
 ) => set(value + Math.ceil(max / secondsPerCycle) * direction)
+const applyPenalty = (value: number) => set(value * (1 - penalty))
 export class Critter {
     action: Action = 'idle'
     actionTime = 0
@@ -372,6 +365,8 @@ export class Critter {
             }
             if (this.energy === 0 && this.action !== 'sleeping') {
                 this.sleep()
+                this.health = applyPenalty(this.health)
+                this.happiness = applyPenalty(this.happiness)
             }
         }
         this.updateMood()
@@ -379,7 +374,7 @@ export class Critter {
     refuse = () => {
         this.action = 'refusing'
         this.actionTime = 30
-        this.happiness = set(this.happiness - happinessPenalty)
+        this.happiness = applyPenalty(this.happiness)
     }
 
     sleep = () => {
@@ -392,7 +387,7 @@ export class Critter {
     }
     stop = () => {
         if (['eating', 'sleeping'].includes(this.action)) {
-            this.happiness = set(this.happiness - happinessPenalty)
+            this.happiness = applyPenalty(this.happiness)
         }
         this.action = 'idle'
         this.actionTime = 0
