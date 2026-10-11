@@ -307,8 +307,11 @@ var emoticon = (state) => {
   return state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite];
 };
 var bar = (value, icon) => {
-  const bars2 = "\u2581\u2582\u2583\u2585\u2587\u2588".split("");
-  const barValue = Math.round(value / max * bars2.length - 1);
+  const bars2 = " \u2581\u2582\u2583\u2585\u2587\u2588".split("");
+  const barValue = Math.min(
+    bars2.length - 1,
+    Math.max(0, Math.ceil(value / max * (bars2.length - 1)))
+  );
   return `${icon}${bars2[barValue]}`;
 };
 var bars = ({
@@ -320,12 +323,26 @@ var bars = ({
   toilet
 }) => {
   return [
-    bar(energy, noNerdFonts ? "E" : "\u{F12A3}"),
     bar(happiness, noNerdFonts ? "H" : "\u{F0C71}"),
-    bar(health, noNerdFonts ? "+" : "\uE221"),
     bar(satiety, noNerdFonts ? "S" : "\u{F025B}"),
-    bar(toilet, noNerdFonts ? "T" : "\uF2FE")
+    bar(energy, noNerdFonts ? "E" : "\u{F12A3}"),
+    bar(health, noNerdFonts ? "+" : "\uE221"),
+    bar(toilet, noNerdFonts ? "T" : "\u{F09AB}")
   ].join(" ");
+};
+var conditions = ({
+  noNerdFonts,
+  state
+}) => {
+  const icons = {
+    food: ["\u2668", "\u{F025B}"],
+    ill: ["!", "\u{F068C}"],
+    medicine: ["\u271A", "\uE221"],
+    none: ["", ""],
+    poo: ["\u224B", "\uEEAF "],
+    toy: ["\u25CB", "\u{F0A26}"]
+  };
+  return [state.bottom, state.top].map((condition) => icons[condition][noNerdFonts ? 0 : 1]).filter(Boolean).join("");
 };
 var short = ({
   energy,
@@ -336,7 +353,7 @@ var short = ({
   state,
   toilet
 }) => {
-  return `${emoticon(state)} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
+  return `${emoticon(state)}${conditions({ noNerdFonts, state })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
 };
 
 // src/critter.ts

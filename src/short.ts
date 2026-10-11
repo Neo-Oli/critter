@@ -56,7 +56,7 @@ export const bars = ({
         bar(satiety, noNerdFonts ? 'S' : '󰉛'),
         bar(energy, noNerdFonts ? 'E' : '󱊣'),
         bar(health, noNerdFonts ? '+' : ''),
-        bar(toilet, noNerdFonts ? 'T' : ''),
+        bar(toilet, noNerdFonts ? 'T' : '󰦫'),
     ].join(' ')
 }
 
@@ -69,11 +69,11 @@ export const conditions = ({
 }) => {
     const icons: Record<CritterRenderState['top'], [string, string]> = {
         food: ['♨', '󰉛'],
-        ill: ['!', '󰀦'],
-        medicine: ['✚', '󰤓'],
+        ill: ['!', '󰚌'],
+        medicine: ['✚', ''],
         none: ['', ''],
-        poo: ['≋', '󰟝'],
-        toy: ['○', '󰝺'],
+        poo: ['≋', ' '],
+        toy: ['○', '󰨦'],
     }
     return [state.bottom, state.top]
         .map((condition) => icons[condition][noNerdFonts ? 0 : 1])
