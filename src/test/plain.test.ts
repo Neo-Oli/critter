@@ -45,19 +45,63 @@ beforeEach(() => {
 })
 
 describe('plain rendering', () => {
+    it('makes every sprite row exactly the requested width', () => {
+        const names = [
+            'dead',
+            'food',
+            'happy',
+            'healing',
+            'hungry',
+            'idle',
+            'ill',
+            'none',
+            'poo',
+            'refusing',
+            'sad',
+            'sick',
+            'sleeping',
+            'tired',
+            'toy',
+        ] as const
+
+        for (const name of names) {
+            for (const reverse of [false, true]) {
+                const rows = loadSprite({
+                    height: 8,
+                    name,
+                    reverse,
+                    width: 11,
+                })
+                expect(rows).toHaveLength(8)
+                expect(rows.every((row) => row.length === 11)).toBe(true)
+            }
+        }
+    })
+
     it('adds fixed padding after optional width padding and reversal', () => {
-        expect(
-            loadSprite({
-                height: 1,
-                name: 'ill',
-                padding: 2,
-                reverse: true,
-                width: 10,
-            }),
-        ).toEqual(['   ▄█▀█▀█▄  '])
-        expect(loadSprite({ height: 1, name: 'ill', padding: 2 })).toEqual([
-            '▄█▀█▀█▄  ',
-        ])
+        const reversed = loadSprite({
+            height: 1,
+            name: 'ill',
+            reverse: true,
+            width: 10,
+        })
+        const paddedReversed = loadSprite({
+            height: 1,
+            name: 'ill',
+            padding: 2,
+            reverse: true,
+            width: 10,
+        })
+        expect(paddedReversed).toEqual([`${reversed[0]}  `])
+
+        const normal = loadSprite({ height: 1, name: 'ill', width: 10 })
+        const padded = loadSprite({
+            height: 1,
+            name: 'ill',
+            padding: 2,
+            width: 10,
+        })
+        expect(padded).toEqual([`${normal[0]}  `])
     })
 
     it('matches snapshots across key life stages', () => {

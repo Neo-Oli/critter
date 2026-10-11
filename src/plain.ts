@@ -58,9 +58,10 @@ export const loadSprite = ({
         .concat(Array(height).fill(''))
         .slice(0, height)
         .map((line: string) => {
+            const sized = line.slice(0, width).padEnd(width)
             const oriented = reverse
-                ? line.padEnd(width).split('').reverse().join('')
-                : line
+                ? sized.split('').reverse().join('')
+                : sized
             return `${oriented}${' '.repeat(padding)}`
         })
 }
