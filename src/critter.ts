@@ -1,10 +1,18 @@
 import { happinessPenalty, high, low, max, normal, speed } from './config.ts'
 import { loadState, saveState } from './io.ts'
-import { plain } from './plain.ts'
+import { type Plain, plain } from './plain.ts'
 import { hour, minute, now } from './utils.ts'
 
 export type Action =
     'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping'
+
+export interface CritterRenderState {
+    bottom: SpriteAsset
+    main: Action | Mood
+    reverse: boolean
+    sprite: Exclude<Action | Mood, 'eating' | 'playing'>
+    top: SpriteAsset
+}
 
 export type Mood = EnergyMood | FoodMood | HappinessMood | HealthMood
 
@@ -21,19 +29,16 @@ export interface PersistedCritterState {
     time: number
     toilet: number
 }
+
+export type SpriteAsset = 'food' | 'none' | 'poo' | 'toy'
 type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
 }
 type EnergyMood = 'sleeping' | 'tired'
-type FoodMood = 'eating' | 'hungry'
+type FoodMood = 'hungry'
 type HappinessMood = 'happy' | 'sad'
 type HealthMood = 'dead' | 'healing' | 'sick'
-interface Plain {
-    debug?: boolean
-    noNerdFonts: boolean
-}
-
 const set = (value: number, smin = 0, smax = max) => {
     return Math.min(smax, Math.max(smin, value))
 }
@@ -122,8 +127,15 @@ export class Critter {
                 ? Math.floor((high - this.satiety) / 6250)
                 : minute
     }
-    getCritterState = (): Action | Mood => {
-        if (!this.alive) return 'dead'
+    getCritterState = (): CritterRenderState => {
+        if (!this.alive)
+            return {
+                bottom: 'none',
+                main: 'dead',
+                reverse: false,
+                sprite: 'dead',
+                top: 'none',
+            }
         const moodPriority: Mood[] = [
             'dead',
             'sick',
@@ -183,7 +195,7 @@ export class Critter {
             toilet,
         }
     }
-    plain = ({ debug, noNerdFonts }: Plain) =>
+    plain = ({ debug, noNerdFonts }: Pick<Plain, 'debug' | 'noNerdFonts'>) =>
         plain({
             actionTime: this.actionTime,
             age: this.age,
@@ -192,7 +204,6 @@ export class Critter {
             happiness: this.happiness,
             health: this.health,
             noNerdFonts,
-            poo: this.poo,
             satiety: this.satiety,
             state: this.getCritterState(),
             toilet: this.toilet,
@@ -257,9 +268,23 @@ export class Critter {
             if (this.energy === 0 && this.action !== 'sleeping') {
                 this.sleep()
             }
-            if (this.toilet === 0) {
-                this.poo = true
-                this.toilet = set(max)
+            const toiletSchedule =
+                this.satiety > high
+                    ? 3
+                    : this.satiety > normal
+                      ? 2
+                      : this.satiety > low
+                        ? 1
+                        : 0
+            if (this.satiety <= 0) {
+                this.toilet = set(this.toilet, 0, max)
+            } else if (toiletSchedule > 0) {
+                const secondsPerCycle = (24 * hour) / toiletSchedule
+                this.toilet = set(this.toilet - max / secondsPerCycle)
+                if (this.toilet <= 0) {
+                    this.poo = true
+                    this.toilet = max
+                }
             }
         }
         this.updateMood()

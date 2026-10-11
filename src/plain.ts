@@ -1,5 +1,5 @@
 import { max } from './config.ts'
-import { type Action, type Mood } from './critter.ts'
+import { type CritterRenderState } from './critter.ts'
 import dead from './sprites/dead.txt' with { type: 'text' }
 import food from './sprites/food.txt' with { type: 'text' }
 import happy from './sprites/happy.txt' with { type: 'text' }
@@ -18,39 +18,42 @@ const spriteWidth = 16
 const spriteHeight = 8
 const iconWidth = 8
 const iconHeight = 4
-type AdditionalSprites = 'food' | 'none' | 'poo' | 'toy'
+type SpriteName =
+    | CritterRenderState['bottom']
+    | CritterRenderState['sprite']
+    | CritterRenderState['top']
 const loadSprite = (
-    name: AdditionalSprites | Mood | Omit<Action, 'eating'>,
+    name: SpriteName,
     width = spriteWidth,
     height = spriteHeight,
     reverse = false,
 ) => {
-    const sprites = {
-        dead: dead,
-        food: food,
-        happy: happy,
-        healing: healing,
-        hungry: hungry,
-        idle: idle,
+    const sprites: Record<SpriteName, string> = {
+        dead,
+        food,
+        happy,
+        healing,
+        hungry,
+        idle,
         none: '',
-        poo: poo,
-        refusing: refusing,
-        sad: sad,
-        sick: sick,
-        sleeping: sleeping,
-        tired: tired,
-        toy: toy,
+        poo,
+        refusing,
+        sad,
+        sick,
+        sleeping,
+        tired,
+        toy,
     }
     return sprites[name]
         .split(/\r?\n/)
         .concat(Array(height).fill(''))
         .slice(0, height)
-        .map((line) =>
+        .map((line: string) =>
             reverse ? line.padEnd(width).split('').reverse().join('') : line,
         )
 }
 
-interface Plain {
+export interface Plain {
     actionTime: number
     age: number
     debug?: boolean
@@ -59,7 +62,7 @@ interface Plain {
     health: number
     noNerdFonts: boolean
     satiety: number
-    state: Action | Mood
+    state: CritterRenderState
     toilet: number
 }
 export const plain = ({
