@@ -7,6 +7,11 @@ export const low = Math.round(max / 4)
 export const binName = 'critter'
 export const penalty = 0.1
 export const speed = 1
+export type Stage = 0 | 1 | 2
+export const stagingSchedule = {
+    stage0: 5 * minute,
+    stage1: 6 * hour,
+}
 export const schedules = {
     energy: {
         awake: day,
