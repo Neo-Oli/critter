@@ -1,4 +1,5 @@
 import { Critter } from './critter.ts'
+import { short } from './short.ts'
 const help = `
 critter - a terminal pet
 
@@ -19,6 +20,7 @@ Options:
     -h, --help           Show this help and exit
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
     -d, --debug           Show exact stat values
+    -s, --short           Show only the current state
 
 Daily care: about four meals, two sleeps, and three plays; clean whenever poo appears.
 
@@ -39,11 +41,20 @@ const parseArgs = (args: string[]) => {
         ['--no-nerd-fonts', '-n'].includes(arg),
     )
     const debug = args.some((arg) => ['--debug', '-d'].includes(arg))
+    const shortOutput = args.some((arg) => ['--short', '-s'].includes(arg))
     const [command] = args.filter(
-        (arg) => !['--debug', '--no-nerd-fonts', '-d', '-n'].includes(arg),
+        (arg) =>
+            ![
+                '--debug',
+                '--no-nerd-fonts',
+                '--short',
+                '-d',
+                '-n',
+                '-s',
+            ].includes(arg),
     )
 
-    if (!command) return { command: undefined, debug, noNerdFonts }
+    if (!command) return { command: undefined, debug, noNerdFonts, shortOutput }
 
     switch (command) {
         case 'clean':
@@ -53,7 +64,7 @@ const parseArgs = (args: string[]) => {
         case 'play':
         case 'sleep':
         case 'stop':
-            return { command, debug, noNerdFonts }
+            return { command, debug, noNerdFonts, shortOutput }
 
         default:
             throw new Error(`Unknown command: ${command}`)
@@ -70,12 +81,16 @@ export const cli = async () => {
         )
         process.exit(7)
     }
-    const { command, debug, noNerdFonts } = args
+    const { command, debug, noNerdFonts, shortOutput } = args
     const critter = new Critter({ command })
     if (critter.error) {
         process.stderr.write(`${critter.error}\n`)
         process.exit(1)
     } else {
-        console.log(`${critter.plain({ debug, noNerdFonts })}\n`)
+        if (shortOutput) {
+            console.log(short(critter.getCritterState()))
+        } else {
+            console.log(`${critter.plain({ debug, noNerdFonts })}\n`)
+        }
     }
 }
