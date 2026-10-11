@@ -26,6 +26,10 @@ var low = Math.round(max / 4);
 var binName = "critter";
 var penalty = 0.1;
 var speed = 1;
+var stagingSchedule = {
+  stage0: 5 * minute,
+  stage1: 6 * hour
+};
 var schedules = {
   energy: {
     awake: day,
@@ -78,20 +82,8 @@ var saveState = (state) => {
   writeFileSync(path, JSON.stringify(state, null, 4));
 };
 
-// src/sprites/dead.txt
-var dead_default = "  \u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2584\u2580        \u2584\u2584\u2584 \u2580\u2584\n\u2588 \u2580\u2580\u2580\u2580   \u2588\u2580\u2588\u2580\u2588 \u2588\n\u2588 \u2580\u2580\u2580\u2580   \u2580\u2588\u2588\u2588\u2580 \u2588\n\u2588 \u2580\u2580\u2580\u2580    \u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588\n";
-
 // src/sprites/food.txt
 var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588  \u2580\u2588 \u2588\n\u2580\u2584\u2584\u2584\u2584\u2584\u2580\n";
-
-// src/sprites/happy.txt
-var happy_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580   \u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584\u2584\u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
-
-// src/sprites/hungry.txt
-var hungry_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588  \u2584 \u2584  \u2588\n\u2588  \u2584\u2584\u2584  \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588  \u2580\u2580\u2588  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
-
-// src/sprites/idle.txt
-var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588   \u2588 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
 // src/sprites/ill.txt
 var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
@@ -102,20 +94,62 @@ var medicine_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
 
-// src/sprites/refusing.txt
-var refusing_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588 \u2584   \u2584 \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2584\u2580\u2580\u2580\u2584 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+// src/sprites/stage-0/idle.txt
+var idle_default = "\n\n\n     \u2584\u2580\u2580\u2580\u2584\n    \u2584\u2580\u2584  \u2580\u2584\n   \u2584\u2580   \u2580 \u2580\u2584\n   \u2580\u2584 \u2580 \u2584 \u2584\u2580\n    \u2580\u2584\u2584\u2584\u2584\u2584\u2580\n";
 
-// src/sprites/sad.txt
-var sad_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588\u2580 \u2588\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2580 \u2584\u2580  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+// src/sprites/stage-1/dead.txt
+var dead_default = "  \u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2584\u2580        \u2584\u2584\u2584 \u2580\u2584\n\u2588 \u2580\u2580\u2580\u2580   \u2588\u2580\u2588\u2580\u2588 \u2588\n\u2588 \u2580\u2580\u2580\u2580   \u2580\u2588\u2588\u2588\u2580 \u2588\n\u2588 \u2580\u2580\u2580\u2580    \u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
-// src/sprites/sick.txt
-var sick_default = "\n\u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588 \u2584\u2588 \u2588\u2584 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+// src/sprites/stage-1/happy.txt
+var happy_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588 \u2580 \u2580 \u2588\n     \u2588 \u2584\u2584\u2580 \u2588\n     \u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
-// src/sprites/sleeping.txt
+// src/sprites/stage-1/hungry.txt
+var hungry_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588 \u2580 \u2580 \u2588\n     \u2588 \u2580\u2580\u2588 \u2588\n     \u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/stage-1/idle.txt
+var idle_default2 = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588 \u2588 \u2588 \u2588\n     \u2588  \u2584  \u2588\n     \u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/stage-1/refusing.txt
+var refusing_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588 \u2580 \u2580 \u2588\n     \u2588 \u2584\u2580\u2584 \u2588\n     \u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/stage-1/sad.txt
+var sad_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588\u2588\u2580 \u2588\u2580\u2588\n     \u2588\u2580 \u2584\u2580 \u2588\n     \u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/stage-1/sick.txt
+var sick_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588 \u2584 \u2584 \u2588\n     \u2588\u2580\u2580 \u2580\u2580\u2588\n     \u2588\u2584\u2584\u2588\u2584\u2584\u2588\n";
+
+// src/sprites/stage-1/sleeping.txt
 var sleeping_default = "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2584\u2584\u2584 \u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 \u2580\u2580\u2580\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2580\u2580\u2580\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2584\u2584\u2584\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n";
 
-// src/sprites/tired.txt
-var tired_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2588   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+// src/sprites/stage-1/tired.txt
+var tired_default = "\n\n\n\n     \u2584\u2580\u2580\u2580\u2580\u2580\u2584\n     \u2588     \u2588\n     \u2588\u2580\u2580 \u2580\u2580\u2588\n     \u2588\u2584\u2584\u2588\u2584\u2584\u2588\n";
+
+// src/sprites/stage-2/dead.txt
+var dead_default2 = "  \u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2584\u2580        \u2584\u2584\u2584 \u2580\u2584\n\u2588 \u2580\u2580\u2580\u2580   \u2588\u2580\u2588\u2580\u2588 \u2588\n\u2588 \u2580\u2580\u2580\u2580   \u2580\u2588\u2588\u2588\u2580 \u2588\n\u2588 \u2580\u2580\u2580\u2580    \u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/stage-2/happy.txt
+var happy_default2 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580   \u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584\u2584\u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/hungry.txt
+var hungry_default2 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588  \u2584 \u2584  \u2588\n\u2588  \u2584\u2584\u2584  \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588  \u2580\u2580\u2588  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/idle.txt
+var idle_default3 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588   \u2588 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/refusing.txt
+var refusing_default2 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588 \u2584   \u2584 \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2584\u2580\u2580\u2580\u2584 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/sad.txt
+var sad_default2 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588\u2580 \u2588\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2580 \u2584\u2580  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/sick.txt
+var sick_default2 = "\n\u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588 \u2584\u2588 \u2588\u2584 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
+// src/sprites/stage-2/sleeping.txt
+var sleeping_default2 = "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2584\u2584\u2584 \u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 \u2580\u2580\u2580\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2580\u2580\u2580\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2584\u2584\u2584\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n";
+
+// src/sprites/stage-2/tired.txt
+var tired_default2 = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2588   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
 // src/sprites/toy.txt
 var toy_default = " \u2584\u2580\u2580\u2580\u2580\u2584\n\u2588   \u2580\u2584 \u2588\n\u2588      \u2588\n \u2580\u2584\u2584\u2584\u2584\u2580\n";
@@ -125,31 +159,49 @@ var spriteWidth = 16;
 var spriteHeight = 8;
 var iconWidth = 8;
 var iconHeight = 4;
+var sharedSprites = {
+  food: food_default,
+  ill: ill_default,
+  medicine: medicine_default,
+  none: "",
+  poo: poo_default,
+  toy: toy_default
+};
+var stageSprites = {
+  0: { idle: idle_default },
+  1: {
+    dead: dead_default,
+    happy: happy_default,
+    hungry: hungry_default,
+    idle: idle_default2,
+    refusing: refusing_default,
+    sad: sad_default,
+    sick: sick_default,
+    sleeping: sleeping_default,
+    tired: tired_default
+  },
+  2: {
+    dead: dead_default2,
+    happy: happy_default2,
+    hungry: hungry_default2,
+    idle: idle_default3,
+    refusing: refusing_default2,
+    sad: sad_default2,
+    sick: sick_default2,
+    sleeping: sleeping_default2,
+    tired: tired_default2
+  }
+};
 var loadSprite = ({
   height = spriteHeight,
   name,
   padding = 0,
   reverse = false,
+  stage = 2,
   width = spriteWidth
 }) => {
-  const sprites = {
-    dead: dead_default,
-    food: food_default,
-    happy: happy_default,
-    hungry: hungry_default,
-    idle: idle_default,
-    ill: ill_default,
-    medicine: medicine_default,
-    none: "",
-    poo: poo_default,
-    refusing: refusing_default,
-    sad: sad_default,
-    sick: sick_default,
-    sleeping: sleeping_default,
-    tired: tired_default,
-    toy: toy_default
-  };
-  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map((line) => {
+  const sprite = sharedSprites[name] ?? stageSprites[stage][name] ?? "";
+  return sprite.split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map((line) => {
     const sized = line.slice(0, width).padEnd(width);
     const oriented = reverse ? sized.split("").reverse().join("") : sized;
     return `${oriented}${" ".repeat(padding)}`;
@@ -171,11 +223,13 @@ var plain = ({
   const topSprite = loadSprite({
     height: iconHeight,
     name: top,
+    stage: state.stage,
     width: iconWidth
   });
   const bottomSprite = loadSprite({
     height: iconHeight,
     name: bottom,
+    stage: state.stage,
     width: iconWidth
   });
   const output = loadSprite({
@@ -183,6 +237,7 @@ var plain = ({
     name: sprite,
     padding: 1,
     reverse,
+    stage: state.stage,
     width: spriteWidth
   });
   for (let i = 0; i < iconHeight; i++) {
@@ -219,12 +274,14 @@ var plain = ({
     output.push(`${line}`);
   };
   o();
-  o(`${main.toUpperCase()}${remaining}`);
-  o(stat("Happy", happiness));
-  o(stat("Hunger", satiety));
-  o(stat("Energy", energy));
-  o(stat("Health", health));
-  o(stat("Toilet", toilet));
+  if (state.stage !== 0) {
+    o(`${main.toUpperCase()}${remaining}`);
+    o(stat("Happy", happiness));
+    o(stat("Hunger", satiety));
+    o(stat("Energy", energy));
+    o(stat("Health", health));
+    o(stat("Toilet", toilet));
+  }
   o(label("Age") + duration(age));
   return output.map((line) => line.trimEnd()).join("\n");
 };
@@ -250,6 +307,11 @@ var Critter = class {
   satiety = normal;
   time = this.birth;
   toilet = low;
+  get stage() {
+    if (this.age < stagingSchedule.stage0) return 0;
+    if (this.age < stagingSchedule.stage0 + stagingSchedule.stage1) return 1;
+    return 2;
+  }
   constructor({ command }) {
     let state;
     try {
@@ -277,6 +339,10 @@ var Critter = class {
         return;
       }
     }
+    if (this.stage === 0) {
+      this.action = "idle";
+      this.actionTime = 0;
+    }
     this.process();
     if (command === "feed") {
       this.feed();
@@ -299,6 +365,7 @@ var Critter = class {
     saveState(this.persistedState());
   }
   clean = () => {
+    if (this.stage === 0) return;
     this.poo = false;
   };
   die = () => {
@@ -308,6 +375,7 @@ var Critter = class {
     this.mood = ["dead"];
   };
   feed = () => {
+    if (this.stage === 0) return;
     if (this.satiety > high) {
       this.refuse();
       return;
@@ -318,12 +386,22 @@ var Critter = class {
     ) : minute;
   };
   getCritterState = () => {
+    if (this.stage === 0)
+      return {
+        bottom: "none",
+        main: "idle",
+        reverse: false,
+        sprite: "idle",
+        stage: 0,
+        top: "none"
+      };
     if (!this.alive)
       return {
         bottom: "none",
         main: "dead",
         reverse: false,
         sprite: "dead",
+        stage: this.stage,
         top: "none"
       };
     const moodPriority = [
@@ -341,10 +419,12 @@ var Critter = class {
       main,
       reverse: ["eating", "playing"].includes(main),
       sprite: ["eating", "healing", "playing"].includes(main) ? mood : main,
+      stage: this.stage,
       top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
     };
   };
   medicine = () => {
+    if (this.stage === 0) return;
     this.action = "healing";
     this.actionTime = schedules.health.healingAction;
   };
@@ -388,6 +468,7 @@ var Critter = class {
     toilet: this.toilet
   });
   play = () => {
+    if (this.stage === 0) return;
     this.action = "playing";
     this.actionTime = 2 * minute;
   };
@@ -399,11 +480,18 @@ var Critter = class {
     );
     this.time = currentTime;
     if (this.health === 0) {
-      this.die();
-      return;
+      if (this.stage !== 0) {
+        this.die();
+        return;
+      }
     }
     for (let tick = 0; tick < elapsed; tick += 1) {
       this.age += 1;
+      if (this.stage === 0) continue;
+      if (this.health === 0) {
+        this.die();
+        return;
+      }
       if (this.actionTime <= 0) this.action = "idle";
       const healing = this.action === "healing";
       if (this.action === "eating") {
@@ -530,14 +618,16 @@ var Critter = class {
         this.happiness = applyPenalty(this.happiness);
       }
     }
-    this.updateMood();
+    if (this.stage !== 0) this.updateMood();
   };
   refuse = () => {
+    if (this.stage === 0) return;
     this.action = "refusing";
     this.actionTime = 30;
     this.happiness = applyPenalty(this.happiness);
   };
   sleep = () => {
+    if (this.stage === 0) return;
     if (this.energy >= normal) {
       this.refuse();
       return;
@@ -546,6 +636,7 @@ var Critter = class {
     this.actionTime = schedules.energy.sleeping;
   };
   stop = () => {
+    if (this.stage === 0) return;
     if (["eating", "sleeping"].includes(this.action)) {
       this.happiness = applyPenalty(this.happiness);
     }
