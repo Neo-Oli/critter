@@ -3,10 +3,10 @@ import { type CritterRenderState } from './critter.ts'
 import dead from './sprites/dead.txt' with { type: 'text' }
 import food from './sprites/food.txt' with { type: 'text' }
 import happy from './sprites/happy.txt' with { type: 'text' }
-import healing from './sprites/healing.txt' with { type: 'text' }
 import hungry from './sprites/hungry.txt' with { type: 'text' }
 import idle from './sprites/idle.txt' with { type: 'text' }
 import ill from './sprites/ill.txt' with { type: 'text' }
+import medicine from './sprites/medicine.txt' with { type: 'text' }
 import poo from './sprites/poo.txt' with { type: 'text' }
 import refusing from './sprites/refusing.txt' with { type: 'text' }
 import sad from './sprites/sad.txt' with { type: 'text' }
@@ -40,10 +40,10 @@ export const loadSprite = ({
         dead,
         food,
         happy,
-        healing,
         hungry,
         idle,
         ill,
+        medicine,
         none: '',
         poo,
         refusing,

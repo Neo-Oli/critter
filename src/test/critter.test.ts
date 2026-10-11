@@ -115,6 +115,11 @@ describe('construction and persistence', () => {
         pet.updateMood()
         expect(pet.getCritterState().sprite).toBe('sick')
         expect(pet.getCritterState().top).toBe('ill')
+
+        pet.action = 'healing'
+        expect(pet.getCritterState().main).toBe('healing')
+        expect(pet.getCritterState().sprite).toBe('sick')
+        expect(pet.getCritterState().top).toBe('medicine')
     })
 })
 

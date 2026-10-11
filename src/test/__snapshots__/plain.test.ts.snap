@@ -65,14 +65,14 @@ Age:    30 seconds
 
 exports[`plain rendering > matches snapshots across key life stages > healing 1`] = `
 "
-            ▀▄
-        ▀▄  ▄▀▀▄
-       ▄▀ ▀█
-     ▄▀    ▄▀▄
-   ▄███▄ ▄▀
-   █████▀
-  ▄▀▀▀▀
-▄▀
+                  █▀▀▀█
+▄▀▀▀▀▀▀▀▄        █  ▄  █
+█ ▄█ █▄ █▄▄▄▄▄▄  █ ▀█▀ █
+█   ▄   █     ██ █▄▄▄▄▄█
+█▄▄▄▄▄▄▄█     █
+ █            █
+ █  █▀█  █▀▀█ █
+ █▄▄█ █▄▄█  █▄█
 
 HEALING (10 seconds)
 Happy:  󰋑󰋑󰛞󰋕󰋕

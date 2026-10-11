@@ -30,19 +30,17 @@ Examples:
 `
 
 const parseArgs = (args: string[]) => {
-    if (args.includes('-h') || args.includes('--help')) {
+    if (args.some((arg) => ['--help', '-h'].includes(arg))) {
         process.stdout.write(`${help}\n`)
         process.exit(0)
     }
 
-    const noNerdFonts = args.includes('-n') || args.includes('--no-nerd-fonts')
-    const debug = args.includes('-d') || args.includes('--debug')
+    const noNerdFonts = args.some((arg) =>
+        ['--no-nerd-fonts', '-n'].includes(arg),
+    )
+    const debug = args.some((arg) => ['--debug', '-d'].includes(arg))
     const [command] = args.filter(
-        (arg) =>
-            arg !== '-n' &&
-            arg !== '--no-nerd-fonts' &&
-            arg !== '-d' &&
-            arg !== '--debug',
+        (arg) => !['--debug', '--no-nerd-fonts', '-d', '-n'].includes(arg),
     )
 
     if (!command) return { command: undefined, debug, noNerdFonts }

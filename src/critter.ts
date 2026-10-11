@@ -18,7 +18,7 @@ export interface CritterRenderState {
     bottom: SpriteAsset
     main: Action | Mood
     reverse: boolean
-    sprite: Exclude<Action | Mood, 'eating' | 'playing'>
+    sprite: Exclude<Action | Mood, 'eating' | 'healing' | 'playing'>
     top: SpriteAsset
 }
 
@@ -38,7 +38,7 @@ export interface PersistedCritterState {
     toilet: number
 }
 
-export type SpriteAsset = 'food' | 'ill' | 'none' | 'poo' | 'toy'
+export type SpriteAsset = 'food' | 'ill' | 'medicine' | 'none' | 'poo' | 'toy'
 type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
@@ -46,7 +46,7 @@ interface CritterOptions {
 type EnergyMood = 'sleeping' | 'tired'
 type FoodMood = 'hungry'
 type HappinessMood = 'happy' | 'sad'
-type HealthMood = 'dead' | 'healing' | 'sick'
+type HealthMood = 'dead' | 'sick'
 const set = (value: number, smin = 0, smax = max) => {
     return Math.round(Math.min(smax, Math.max(smin, value)))
 }
@@ -175,8 +175,15 @@ export class Critter {
                         : 'none',
             main: main,
             reverse: ['eating', 'playing'].includes(main),
-            sprite: main === 'eating' || main === 'playing' ? mood : main,
-            top: this.health < low ? 'ill' : 'none',
+            sprite: ['eating', 'healing', 'playing'].includes(main as Action)
+                ? mood
+                : (main as CritterRenderState['sprite']),
+            top:
+                this.action === 'healing'
+                    ? 'medicine'
+                    : this.health < low
+                      ? 'ill'
+                      : 'none',
         }
     }
     medicine = () => {
@@ -384,7 +391,7 @@ export class Critter {
         this.actionTime = schedules.energy.sleeping
     }
     stop = () => {
-        if (this.action === 'eating' || this.action === 'sleeping') {
+        if (['eating', 'sleeping'].includes(this.action)) {
             this.happiness = set(this.happiness - happinessPenalty)
         }
         this.action = 'idle'
