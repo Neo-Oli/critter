@@ -133,18 +133,23 @@ export class Critter {
             'happy',
         ]
 
-        const mood = moodPriority.find((priority) =>
-            this.mood.includes(priority),
-        )
-        const main=this.action !== 'idle' ? this.action : mood ?? 'idle'
-        return { 
+        const mood =
+            moodPriority.find((priority) => this.mood.includes(priority)) ??
+            'idle'
+        const main = this.action !== 'idle' ? this.action : mood
+        return {
+            bottom:
+                main === 'playing'
+                    ? 'toy'
+                    : main === 'eating'
+                      ? 'food'
+                      : this.poo
+                        ? 'poo'
+                        : 'none',
             main: main,
-
-            sprite: main!=='eating' ? main :mood??'idle',
-            bottom: main === 'eating' ? 'food' :
-            this.poo? 'poo':'none',
-            top:'none'
-            ,reverse: main==="eating"
+            reverse: ['eating', 'playing'].includes(main),
+            sprite: ['eating', 'playing'].includes(main) ? mood : main,
+            top: 'none',
         }
     }
     medicine = () => {

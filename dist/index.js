@@ -45,8 +45,8 @@ var hungry_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u
 // src/sprites/idle.txt
 var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588   \u2588 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
-// src/sprites/playing.txt
-var playing_default = "\n\n\n\n        \u2584\u2588\u2584\n \u2584\u2580\u2580\u2584  \u2588  \u2588\u2584\u2584\u2584\u2584\u2584\n\u2588    \u2588 \u2580\u2580\u2580\u2588   \u2588\n \u2580\u2584\u2584\u2580     \u2588\u2580\u2580\u2580\u2588\n";
+// src/sprites/poo.txt
+var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
 
 // src/sprites/refusing.txt
 var refusing_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588 \u2584   \u2584 \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2584\u2580\u2580\u2580\u2584 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
@@ -63,8 +63,8 @@ var sleeping_default = "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u
 // src/sprites/tired.txt
 var tired_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2588   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
-// src/sprites/poo.txt
-var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
+// src/sprites/toy.txt
+var toy_default = " \u2584\u2580\u2580\u2580\u2580\u2584\n\u2588   \u2580\u2584 \u2588\n\u2588      \u2588\n \u2580\u2584\u2584\u2584\u2584\u2580\n";
 
 // src/utils.ts
 var now = () => Math.round(Date.now() / 1e3);
@@ -90,36 +90,38 @@ var iconWidth = 8;
 var iconHeight = 4;
 var loadSprite = (name, width = spriteWidth, height = spriteHeight, reverse = false) => {
   const sprites = {
-    poo: poo_default,
     dead: dead_default,
     food: food_default,
     happy: happy_default,
     healing: healing_default,
     hungry: hungry_default,
     idle: idle_default,
-    playing: playing_default,
+    none: "",
+    poo: poo_default,
     refusing: refusing_default,
     sad: sad_default,
     sick: sick_default,
     sleeping: sleeping_default,
     tired: tired_default,
-    none: ""
+    toy: toy_default
   };
-  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map((line) => reverse ? line.padEnd(width).split("").reverse().join("") : line);
+  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map(
+    (line) => reverse ? line.padEnd(width).split("").reverse().join("") : line
+  );
 };
 var plain = ({
   actionTime,
   age,
-  toilet,
   debug = false,
   energy,
   happiness,
   health,
   noNerdFonts,
   satiety,
-  state
+  state,
+  toilet
 }) => {
-  const { main, top, bottom, sprite, reverse } = state;
+  const { bottom, main, reverse, sprite, top } = state;
   const topSprite = loadSprite(top, iconWidth, iconHeight);
   const bottomSprite = loadSprite(bottom, iconWidth, iconHeight);
   const output = loadSprite(sprite, spriteWidth, spriteHeight, reverse);
@@ -261,16 +263,14 @@ var Critter = class {
       "sad",
       "happy"
     ];
-    const mood = moodPriority.find(
-      (priority) => this.mood.includes(priority)
-    );
-    const main = this.action !== "idle" ? this.action : mood ?? "idle";
+    const mood = moodPriority.find((priority) => this.mood.includes(priority)) ?? "idle";
+    const main = this.action !== "idle" ? this.action : mood;
     return {
+      bottom: main === "playing" ? "toy" : main === "eating" ? "food" : this.poo ? "poo" : "none",
       main,
-      sprite: main !== "eating" ? main : mood ?? "idle",
-      bottom: main === "eating" ? "food" : this.poo ? "poo" : "none",
-      top: "none",
-      reverse: main === "eating"
+      reverse: ["eating", "playing"].includes(main),
+      sprite: ["eating", "playing"].includes(main) ? mood : main,
+      top: "none"
     };
   };
   medicine = () => {
