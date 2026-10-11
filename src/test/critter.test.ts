@@ -1,21 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { happinessPenalty, high, low, max, normal } from './config.ts'
-import { Critter } from './critter.ts'
-import { hour, minute } from './utils.ts'
+import { happinessPenalty, high, low, max, normal } from '../config.ts'
+import { Critter } from '../critter.ts'
+import { hour, minute } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ speed: 1, time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
 
-vi.mock('./config.ts', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('./config.ts')>()),
+vi.mock('../config.ts', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../config.ts')>()),
     get speed() {
         return runtime.speed
     },
 }))
-vi.mock('./io.ts', () => storage)
-vi.mock('./utils.ts', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('./utils.ts')>()),
+vi.mock('../io.ts', () => storage)
+vi.mock('../utils.ts', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../utils.ts')>()),
     now: () => runtime.time,
 }))
 
@@ -236,9 +236,9 @@ describe('actions', () => {
             pet.stop()
             expect(pet.action).toBe('idle')
             expect(pet.actionTime).toBe(0)
-            expect(
-                pet.happiness,
-            ).toBe(action === 'play' ? max : max - happinessPenalty)
+            expect(pet.happiness).toBe(
+                action === 'play' ? max : max - happinessPenalty,
+            )
         },
     )
 })

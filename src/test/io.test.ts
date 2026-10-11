@@ -9,13 +9,13 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { PersistedCritterState } from './critter.ts'
+import type { PersistedCritterState } from '../critter.ts'
 
-import { binName, high, low, max, normal } from './config.ts'
+import { binName, high, low, max, normal } from '../config.ts'
 
 let home: string
 let statePath: string
-let storage: typeof import('./io.ts')
+let storage: typeof import('../io.ts')
 const state: PersistedCritterState = {
     action: 'idle',
     actionTime: 0,
@@ -34,7 +34,7 @@ beforeEach(async () => {
     statePath = join(home, '.local', 'share', binName, 'state.json')
     vi.stubEnv('HOME', home)
     vi.resetModules()
-    storage = await import('./io.ts')
+    storage = await import('../io.ts')
 })
 
 afterEach(() => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { max } from './config.ts'
-import { plain } from './plain.ts'
+import { max } from '../config.ts'
+import { plain } from '../plain.ts'
 
 const full = String.fromCodePoint(0x25cf)
 const half = String.fromCodePoint(0x25d0)

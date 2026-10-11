@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { duration, now } from './utils.ts'
+import { duration, now } from '../utils.ts'
 
 describe('time utilities', () => {
     it.each([

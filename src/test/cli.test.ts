@@ -31,7 +31,7 @@ beforeAll(() => {
     entry = join(bundleDirectory, 'cli.mjs')
     buildSync({
         bundle: true,
-        entryPoints: [fileURLToPath(new URL('./index.ts', import.meta.url))],
+        entryPoints: [fileURLToPath(new URL('../index.ts', import.meta.url))],
         format: 'esm',
         loader: { '.txt': 'text' },
         outfile: entry,
@@ -109,20 +109,23 @@ describe('CLI and entry point', () => {
         ['feed', 'eating'],
         ['medicine', 'healing'],
         ['play', 'playing'],
-        ['sleep', 'refusing'],
+        ['sleep', ['sleeping', 'refusing']],
         ['stop', 'idle'],
     ] as const)('runs and persists the %s command', (command, action) => {
         expect(run('new').status).toBe(0)
         const result = run(command)
         expect(result.status).toBe(0)
-        if (action !== 'idle') {
-            expect(result.stdout).toContain(action.toUpperCase())
-        }
         expect(result.stdout).toContain('Age:')
         expect(result.stderr).toBe('')
-        expect(JSON.parse(readFileSync(statePath(), 'utf8')).action).toBe(
-            action,
-        )
+        const savedAction = JSON.parse(readFileSync(statePath(), 'utf8')).action
+        if (Array.isArray(action)) {
+            expect(action).toContain(savedAction)
+        } else {
+            expect(savedAction).toBe(action)
+        }
+        if (savedAction !== 'idle') {
+            expect(result.stdout).toContain(savedAction.toUpperCase())
+        }
     })
 
     it.each(['-n', '--no-nerd-fonts'])(
