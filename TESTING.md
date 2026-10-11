@@ -1,59 +1,33 @@
-# Tests
+# Testing
 
-Run `pnpm install`, then `pnpm test`. Run `pnpm test:check` to typecheck
-production code, tests, and the Vitest config with TypeScript (also available
-as `pnpm run check`). Use `pnpm test:watch` while developing,
-or `pnpm exec vitest run src/critter.test.ts` for the simulation tests alone.
+Install dependencies with `pnpm install`. The main commands are:
 
-The suite exercises the real TypeScript modules and text sprites. Critter tests
-replace state storage with in-memory mocks and use a controlled clock. IO and
-CLI tests use temporary HOME directories that are removed after each test;
-the user's saved critter is never read or written. CLI tests bundle the actual
-entry point into a temporary directory and execute it as a subprocess.
+```sh
+pnpm test
+pnpm exec vitest run --reporter=verbose
+pnpm test:watch
+pnpm test:snap
+pnpm test:check
+```
 
-## Balance Targets
+`pnpm test` runs the full suite. Use the verbose command to print every test
+case. `pnpm test:snap` updates render snapshots, and `pnpm test:check` runs
+TypeScript's no-emit check (also available as `pnpm run check`). To run one
+area, use `pnpm exec vitest run src/test/critter.test.ts` or
+`pnpm exec vitest run src/test/simulate.test.ts`.
 
-Accelerated tests run at 60x or 3600x speed without waiting for real time.
-All action durations and stat changes still run through the real process loop.
+## Test Layout
 
-| Behavior                           | Test Range or Schedule                                               |
-| ---------------------------------- | -------------------------------------------------------------------- |
-| Hungry after a hungry-started meal | Between 5 and 7 hours                                                |
-| Tired from full energy             | Between 9 and 10 awake hours                                         |
-| Sad from full happiness            | Between 7 and 9 hours                                                |
-| Dirty from full cleanliness        | Between 22 and 24 hours                                              |
-| Sick without food                  | Between 23 and 25 hours                                              |
-| Dead without food                  | Between 46 and 50 hours                                              |
-| Neglected cleaning                 | Four meals daily do not prevent death between six and seven days     |
-| Full care survival                 | Four meals, two sleeps, three plays, one cleaning daily for ten days |
+- `src/test/critter.test.ts` covers direct behavior, construction, persistence,
+  single-tick toilet transitions, and rendering.
+- `src/test/simulate.test.ts` advances the controlled clock to test schedules
+  and longer-term outcomes. It includes daily-care and neglect scenarios.
+- `src/test/plain.test.ts` checks rendering and snapshots; snapshots are stored
+  under `src/test/__snapshots/`.
+- `src/test/io.test.ts` and `src/test/cli.test.ts` use isolated temporary state
+  locations. CLI tests bundle the real entry point into a temporary directory
+  and run it as a subprocess.
 
-Starvation ranges start with full health and satiety at `high`, representing
-a healthy pet after feeding while hungry. New pets have different initial
-stats, and injured pets have different survival times.
-
-Whole-second hungry meals finish at or just below `high`, never above it.
-Feeding at full satiety starts a 30-second refusal, causes only a small
-happiness loss, and does not damage health.
-Integer rounding makes cleaning due at about 23.15 hours rather than exactly
-24, so the full-care test allows a small cleanliness deficit just before the
-next daily cleaning. It requires health within one percent of full, sufficient
-energy, and happiness throughout the simulation.
-
-## Need Interactions
-
-- Cleanliness below `low` immediately costs two health per simulation second
-  and prevents natural recovery. Cleaning stops this damage and enables recovery;
-  there is no dirtiness timer or grace period.
-- Starvation takes precedence over dirtiness damage, preserving the food-neglect
-  deadlines. Feeding at full satiety does not cause health damage.
-- A full critter refuses food for thirty seconds and loses a small amount of
-  happiness.
-- Playing while tired restores approximately half as much happiness.
-- Sleeping still restores energy while starving, but starvation continues.
-  Interrupting sleep retains recovered energy and has a small happiness penalty.
-- A fed, clean pet naturally recovers thirty health per second. Starvation
-  illness can recover within eight hours of feeding and cleaning, without medicine.
-  Medicine restores health in ten seconds but does not replace food or cleaning.
-- Meal schedules shifted thirty or sixty minutes early or late remain safe
-  for a week when daily cleaning is maintained.
-- One missed meal can be recovered through normal feeding without medicine.
+Tests exercise the real TypeScript modules. Vitest's Vite config loads sprite
+`.txt` files as text. Simulation tests use a controlled clock and may advance
+it by seconds, minutes, or hours without waiting in real time.
