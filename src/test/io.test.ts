@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { PersistedCritterState } from '../critter.ts'
 
-import { binName, high, low, max, normal } from '../config.ts'
+import { binName, high, max, normal } from '../config.ts'
 
 let home: string
 let statePath: string
@@ -21,12 +21,13 @@ const state: PersistedCritterState = {
     actionTime: 0,
     age: 0,
     birth: 1000000,
-    cleanliness: low,
     energy: normal,
     happiness: max,
     health: high,
+    poo: false,
     satiety: normal,
     time: 1000000,
+    toilet: max,
 }
 
 beforeEach(async () => {
