@@ -74,6 +74,15 @@ describe('plain rendering', () => {
                 }),
             hungry: () => makeCritter({ mood: ['hungry'], satiety: low }),
             ill: () => makeCritter({ health: low - 1, mood: ['sick'] }),
+            'ill-playing': () =>
+                makeCritter({
+                    action: 'playing',
+                    actionTime: 2 * 60,
+                    health: low - 1,
+                    mood: ['sick'],
+                }),
+            'ill-poo': () =>
+                makeCritter({ health: low - 1, mood: ['sick'], poo: true }),
             playing: () =>
                 makeCritter({
                     action: 'playing',
@@ -103,12 +112,11 @@ describe('plain rendering', () => {
         }
 
         for (const [stage, create] of Object.entries(stages)) {
-            expect(
-                create().plain({
-                    debug: stage === 'debug',
-                    noNerdFonts: false,
-                }),
-            ).toMatchSnapshot(stage)
+            const output = create().plain({
+                debug: stage === 'debug',
+                noNerdFonts: false,
+            })
+            expect(`\n${output}\n`).toMatchSnapshot(stage)
         }
     })
 

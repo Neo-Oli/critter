@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`plain rendering > matches snapshots across key life stages > dead 1`] = `
-"  ▄▀▀▀▀▀▀▀▀▀▀▄
+"
+  ▄▀▀▀▀▀▀▀▀▀▀▄
 ▄▀        ▄▄▄ ▀▄
 █ ▀▀▀▀   █▀█▀█ █
 █ ▀▀▀▀   ▀███▀ █
@@ -16,11 +17,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > debug 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █       █
 █ █   █ █▄▄▄▄▄▄
 █   ▄   █     ██
@@ -35,11 +38,13 @@ Hunger: 󰋑󰋕󰋕󰋕󰋕 (234567)
 Energy: 󰋑󰛞󰋕󰋕󰋕 (345678)
 Health: 󰋑󰋑󰛞󰋕󰋕 (456789)
 Toilet: 󰋑󰋑󰋑󰋕󰋕 (567890)
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > eating 1`] = `
-"       █▀█▄▄▄█▀█
+"
+       █▀█▄▄▄█▀█
        █       █
  ▄▄▄▄▄▄█ █   █ █
 ██     █   ▄   █
@@ -54,11 +59,13 @@ Hunger: 󰋑󰋑󰋑󰋑󰋕
 Energy: 󰋑󰋑󰋑󰋑󰋕
 Health: 󰋑󰋑󰋑󰋑󰋑
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    30 seconds"
+Age:    30 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > healing 1`] = `
-"            ▀▄
+"
+            ▀▄
         ▀▄  ▄▀▀▄
        ▄▀ ▀█
      ▄▀    ▄▀▄
@@ -73,11 +80,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰛞󰋕󰋕󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > hungry 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █  ▄ ▄  █
 █  ▄▄▄  █▄▄▄▄▄▄
 █  ▀▀█  █     ██
@@ -92,11 +101,76 @@ Hunger: 󰋑󰛞󰋕󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > ill 1`] = `
+"
+▄█▀█▀█▄
+▄▀▀▀▀▀▀▀▄██▄█▄██
+█ ▄█ █▄ █▄▄▄▄▄▄▀██▄██▀
+█   ▄   █     ██ ▀ ▀ ▀
+█▄▄▄▄▄▄▄█     █
+ █            █
+ █  █▀█  █▀▀█ █
+ █▄▄█ █▄▄█  █▄█
+
+SICK
+Happy:  󰋑󰋑󰛞󰋕󰋕
+Hunger: 󰋑󰋑󰛞󰋕󰋕
+Energy: 󰋑󰋑󰛞󰋕󰋕
+Health: 󰋑󰋕󰋕󰋕󰋕
+Toilet: 󰋑󰛞󰋕󰋕󰋕
+Age:    0 seconds
+"
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > ill-playing 1`] = `
+"
+                ▄█▀█▀█▄
+       ▄▀▀▀▀▀▀▀▄██▄█▄██
+ ▄▄▄▄▄▄█ ▄█ █▄ █▀██▄██▀
+██     █   ▄   █ ▀ ▀ ▀
+ █     █▄▄▄▄▄▄▄█ ▄▀▀▀▀▄
+ █            █ █   ▀▄ █
+ █ █▀▀█  █▀█  █ █      █
+ █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▀
+
+PLAYING (2 minutes)
+Happy:  󰋑󰋑󰛞󰋕󰋕
+Hunger: 󰋑󰋑󰛞󰋕󰋕
+Energy: 󰋑󰋑󰛞󰋕󰋕
+Health: 󰋑󰋕󰋕󰋕󰋕
+Toilet: 󰋑󰛞󰋕󰋕󰋕
+Age:    0 seconds
+"
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > ill-poo 1`] = `
+"
+▄█▀█▀█▄
+▄▀▀▀▀▀▀▀▄██▄█▄██
+█ ▄█ █▄ █▄▄▄▄▄▄▀██▄██▀
+█   ▄   █     ██ ▀ ▀ ▀
+█▄▄▄▄▄▄▄█     █▄▀     ▄
+ █            █ ▀ █▄ ▀▄
+ █  █▀█  █▀▀█ █  ██▄▀▄
+ █▄▄█ █▄▄█  █▄█▄██████▄
+
+SICK
+Happy:  󰋑󰋑󰛞󰋕󰋕
+Hunger: 󰋑󰋑󰛞󰋕󰋕
+Energy: 󰋑󰋑󰛞󰋕󰋕
+Health: 󰋑󰋕󰋕󰋕󰋕
+Toilet: 󰋑󰛞󰋕󰋕󰋕
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > playing 1`] = `
-"       █▀█▄▄▄█▀█
+"
+       █▀█▄▄▄█▀█
        █       █
  ▄▄▄▄▄▄█ ▀   ▀ █
 ██     █ ▀▄▄   █
@@ -111,11 +185,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > poo 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █       █
 █ █   █ █▄▄▄▄▄▄
 █   ▄   █     ██
@@ -130,11 +206,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > refusing 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █ ▄   ▄ █
 █ ▀▀ ▀▀ █▄▄▄▄▄▄
 █ ▄▀▀▀▄ █     ██
@@ -149,11 +227,13 @@ Hunger: 󰋑󰋑󰋑󰋑󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    1 hour"
+Age:    1 hour
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > sad 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █       █
 █ █▀ █▀ █▄▄▄▄▄▄
 █ ▀ ▄▀  █     ██
@@ -168,11 +248,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > sick 1`] = `
 "
+
 ▄▀▀▀▀▀▀▀▄
 █ ▄█ █▄ █▄▄▄▄▄▄
 █   ▄   █     ██
@@ -187,11 +269,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰋑󰛞󰋕󰋕
 Health: 󰋑󰛞󰋕󰋕󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > sleeping 1`] = `
-"████████████████
+"
+████████████████
 ██████████▄▄▄ ██
 ███████████▀▄███
 ██████████ ▀▀▀██
@@ -206,11 +290,13 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰛞󰋕󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    8 hours"
+Age:    8 hours
+"
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > tired 1`] = `
-"█▀█▄▄▄█▀█
+"
+█▀█▄▄▄█▀█
 █       █
 █ ▀▀ ▀▀ █▄▄▄▄▄▄
 █   █   █     ██
@@ -225,5 +311,6 @@ Hunger: 󰋑󰋑󰛞󰋕󰋕
 Energy: 󰋑󰛞󰋕󰋕󰋕
 Health: 󰋑󰋑󰋑󰋑󰋕
 Toilet: 󰋑󰛞󰋕󰋕󰋕
-Age:    0 seconds"
+Age:    0 seconds
+"
 `;
