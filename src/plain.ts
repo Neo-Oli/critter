@@ -23,12 +23,19 @@ type SpriteName =
     | CritterRenderState['bottom']
     | CritterRenderState['sprite']
     | CritterRenderState['top']
-const loadSprite = (
-    name: SpriteName,
-    width = spriteWidth,
+export const loadSprite = ({
     height = spriteHeight,
+    name,
+    padding = 0,
     reverse = false,
-) => {
+    width = spriteWidth,
+}: {
+    height?: number
+    name: SpriteName
+    padding?: number
+    reverse?: boolean
+    width?: number
+}) => {
     const sprites: Record<SpriteName, string> = {
         dead,
         food,
@@ -50,9 +57,12 @@ const loadSprite = (
         .split(/\r?\n/)
         .concat(Array(height).fill(''))
         .slice(0, height)
-        .map((line: string) =>
-            reverse ? line.padEnd(width).split('').reverse().join('') : line,
-        )
+        .map((line: string) => {
+            const oriented = reverse
+                ? line.padEnd(width).split('').reverse().join('')
+                : line
+            return `${oriented}${' '.repeat(padding)}`
+        })
 }
 
 export interface Plain {
@@ -80,9 +90,23 @@ export const plain = ({
     toilet,
 }: Plain) => {
     const { bottom, main, reverse, sprite, top } = state
-    const topSprite = loadSprite(top, iconWidth, iconHeight)
-    const bottomSprite = loadSprite(bottom, iconWidth, iconHeight)
-    const output = loadSprite(sprite, spriteWidth, spriteHeight, reverse)
+    const topSprite = loadSprite({
+        height: iconHeight,
+        name: top,
+        width: iconWidth,
+    })
+    const bottomSprite = loadSprite({
+        height: iconHeight,
+        name: bottom,
+        width: iconWidth,
+    })
+    const output = loadSprite({
+        height: spriteHeight,
+        name: sprite,
+        padding: 1,
+        reverse,
+        width: spriteWidth,
+    })
 
     for (let i = 0; i < iconHeight; i++) {
         output[i] += topSprite[i]
@@ -125,5 +149,5 @@ export const plain = ({
     o(stat('Health', health))
     o(stat('Toilet', toilet))
     o(label('Age') + duration(age))
-    return output.join('\n')
+    return output.map((line) => line.trimEnd()).join('\n')
 }

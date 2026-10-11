@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { high, low, max } from '../config.ts'
 import { Critter } from '../critter.ts'
-import { plain } from '../plain.ts'
+import { loadSprite, plain } from '../plain.ts'
 import { hour } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ time: 1000000 }))
@@ -45,6 +45,21 @@ beforeEach(() => {
 })
 
 describe('plain rendering', () => {
+    it('adds fixed padding after optional width padding and reversal', () => {
+        expect(
+            loadSprite({
+                height: 1,
+                name: 'ill',
+                padding: 2,
+                reverse: true,
+                width: 10,
+            }),
+        ).toEqual(['   ▄█▀█▀█▄  '])
+        expect(loadSprite({ height: 1, name: 'ill', padding: 2 })).toEqual([
+            '▄█▀█▀█▄  ',
+        ])
+    })
+
     it('matches snapshots across key life stages', () => {
         const stages: Record<string, () => Critter> = {
             dead: () => makeCritter({ alive: false, mood: ['dead'] }),
@@ -138,6 +153,9 @@ describe('plain rendering', () => {
         expect(output).toContain('Toilet:')
         expect(output).toContain('Age:')
         expect(output).not.toContain('undefined')
+        expect(
+            output.split('\n').every((line) => line === line.trimEnd()),
+        ).toBe(true)
     })
 
     it('renders zero, half-segment, and full bars with five positions', () => {
