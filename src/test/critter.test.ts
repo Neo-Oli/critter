@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal, penalty, schedules } from '../config.ts'
+import {
+    high,
+    low,
+    max,
+    normal,
+    penalty,
+    schedules,
+    stagingSchedule,
+} from '../config.ts'
 import { Critter } from '../critter.ts'
 import { minute } from '../utils.ts'
 
@@ -26,6 +34,7 @@ const healthy = () => {
     pet.happiness = max
     pet.health = max
     pet.satiety = high
+    pet.age = stagingSchedule.stage0
     return pet
 }
 

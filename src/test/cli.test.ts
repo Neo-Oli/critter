@@ -1,6 +1,12 @@
 import { buildSync } from 'esbuild'
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import {
+    existsSync,
+    mkdtempSync,
+    readFileSync,
+    rmSync,
+    writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,6 +20,8 @@ import {
     it,
 } from 'vitest'
 
+import { stagingSchedule } from '../config.ts'
+
 let bundleDirectory: string
 let entry: string
 let home: string
@@ -25,6 +33,11 @@ const run = (...args: string[]) =>
         timeout: 10000,
     })
 const statePath = () => join(home, '.local', 'share', 'critter', 'state.json')
+const advancePetToStageOne = () => {
+    const state = JSON.parse(readFileSync(statePath(), 'utf8'))
+    state.age = stagingSchedule.stage0
+    writeFileSync(statePath(), JSON.stringify(state))
+}
 
 beforeAll(() => {
     bundleDirectory = mkdtempSync(join(tmpdir(), 'critter-cli-bundle-'))
@@ -113,6 +126,7 @@ describe('CLI and entry point', () => {
         ['stop', 'idle'],
     ] as const)('runs and persists the %s command', (command, action) => {
         expect(run('new').status).toBe(0)
+        advancePetToStageOne()
         const result = run(command)
         expect(result.status).toBe(0)
         expect(result.stdout).toContain('Age:')
@@ -140,9 +154,21 @@ describe('CLI and entry point', () => {
         },
     )
 
-    it.each(['-d', '--debug'])('prints exact stat values with %s', (flag) => {
-        const result = run(flag, 'new')
-        expect(result.status).toBe(0)
-        expect(result.stdout).toContain('Happy:  󰋑󰋑󰛞󰋕󰋕 (500000)')
-    })
+    it.each(['-d', '--debug'])(
+        'accepts %s while the critter is an egg',
+        (flag) => {
+            const result = run(flag, 'new')
+            expect(result.status).toBe(0)
+            expect(result.stdout).toContain('Age:    0 seconds')
+            for (const stat of [
+                'Happy:',
+                'Hunger:',
+                'Energy:',
+                'Health:',
+                'Toilet:',
+            ]) {
+                expect(result.stdout).not.toContain(stat)
+            }
+        },
+    )
 })

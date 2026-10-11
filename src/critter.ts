@@ -1,4 +1,14 @@
-import { high, low, max, normal, penalty, schedules, speed } from './config.ts'
+import {
+    high,
+    low,
+    max,
+    normal,
+    penalty,
+    schedules,
+    speed,
+    type Stage,
+    stagingSchedule,
+} from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { type Plain, plain } from './plain.ts'
 import { minute, now } from './utils.ts'
@@ -11,6 +21,7 @@ export interface CritterRenderState {
     main: Action | Mood
     reverse: boolean
     sprite: Exclude<Action | Mood, 'eating' | 'healing' | 'playing'>
+    stage: Stage
     top: SpriteAsset
 }
 
@@ -64,6 +75,11 @@ export class Critter {
     time = this.birth
     toilet = low
 
+    get stage(): Stage {
+        if (this.age < stagingSchedule.stage0) return 0
+        if (this.age < stagingSchedule.stage0 + stagingSchedule.stage1) return 1
+        return 2
+    }
     constructor({ command }: CritterOptions) {
         let state
 
@@ -92,6 +108,10 @@ export class Critter {
                 return
             }
         }
+        if (this.stage === 0) {
+            this.action = 'idle'
+            this.actionTime = 0
+        }
         this.process()
         if (command === 'feed') {
             this.feed()
@@ -114,6 +134,7 @@ export class Critter {
         saveState(this.persistedState())
     }
     clean = () => {
+        if (this.stage === 0) return
         this.poo = false
     }
     die = () => {
@@ -123,6 +144,7 @@ export class Critter {
         this.mood = ['dead']
     }
     feed = () => {
+        if (this.stage === 0) return
         if (this.satiety > high) {
             this.refuse()
             return
@@ -136,12 +158,22 @@ export class Critter {
                 : minute
     }
     getCritterState = (): CritterRenderState => {
+        if (this.stage === 0)
+            return {
+                bottom: 'none',
+                main: 'idle',
+                reverse: false,
+                sprite: 'idle',
+                stage: 0,
+                top: 'none',
+            }
         if (!this.alive)
             return {
                 bottom: 'none',
                 main: 'dead',
                 reverse: false,
                 sprite: 'dead',
+                stage: this.stage,
                 top: 'none',
             }
         const moodPriority: Mood[] = [
@@ -171,6 +203,7 @@ export class Critter {
             sprite: ['eating', 'healing', 'playing'].includes(main as Action)
                 ? mood
                 : (main as CritterRenderState['sprite']),
+            stage: this.stage,
             top:
                 this.action === 'healing'
                     ? 'medicine'
@@ -180,6 +213,7 @@ export class Critter {
         }
     }
     medicine = () => {
+        if (this.stage === 0) return
         this.action = 'healing'
         this.actionTime = schedules.health.healingAction
     }
@@ -224,6 +258,7 @@ export class Critter {
             toilet: this.toilet,
         })
     play = () => {
+        if (this.stage === 0) return
         this.action = 'playing'
         this.actionTime = 2 * minute
     }
@@ -235,11 +270,18 @@ export class Critter {
         )
         this.time = currentTime
         if (this.health === 0) {
-            this.die()
-            return
+            if (this.stage !== 0) {
+                this.die()
+                return
+            }
         }
         for (let tick = 0; tick < elapsed; tick += 1) {
             this.age += 1
+            if (this.stage === 0) continue
+            if (this.health === 0) {
+                this.die()
+                return
+            }
             if (this.actionTime <= 0) this.action = 'idle'
             const healing = this.action === 'healing'
             if (this.action === 'eating') {
@@ -382,15 +424,17 @@ export class Critter {
                 this.happiness = applyPenalty(this.happiness)
             }
         }
-        this.updateMood()
+        if (this.stage !== 0) this.updateMood()
     }
     refuse = () => {
+        if (this.stage === 0) return
         this.action = 'refusing'
         this.actionTime = 30
         this.happiness = applyPenalty(this.happiness)
     }
 
     sleep = () => {
+        if (this.stage === 0) return
         if (this.energy >= normal) {
             this.refuse()
             return
@@ -399,6 +443,7 @@ export class Critter {
         this.actionTime = schedules.energy.sleeping
     }
     stop = () => {
+        if (this.stage === 0) return
         if (['eating', 'sleeping'].includes(this.action)) {
             this.happiness = applyPenalty(this.happiness)
         }

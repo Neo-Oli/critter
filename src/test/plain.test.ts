@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal } from '../config.ts'
+import { high, low, max, normal, stagingSchedule } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { loadSprite, plain } from '../plain.ts'
 
@@ -28,6 +28,7 @@ const render = (overrides: Partial<Parameters<typeof plain>[0]> = {}) =>
             main: 'idle',
             reverse: false,
             sprite: 'idle',
+            stage: 2,
             top: 'none',
         },
         toilet: max,
@@ -35,7 +36,11 @@ const render = (overrides: Partial<Parameters<typeof plain>[0]> = {}) =>
     })
 
 const makeCritter = (state: Partial<Critter> = {}) =>
-    Object.assign(new Critter({ command: 'new' }), state)
+    Object.assign(
+        new Critter({ command: 'new' }),
+        { age: stagingSchedule.stage0 + stagingSchedule.stage1 },
+        state,
+    )
 
 beforeEach(() => {
     runtime.time = 1000000
@@ -44,9 +49,33 @@ beforeEach(() => {
 })
 
 describe('plain rendering', () => {
+    it('shows only the egg sprite and age during the egg stage', () => {
+        const egg = new Critter({ command: 'new' })
+        const output = egg.plain({ noNerdFonts: true })
+
+        expect(output).not.toContain('IDLE')
+        expect(output).toContain('Age:')
+        for (const stat of [
+            'Happy:',
+            'Hunger:',
+            'Energy:',
+            'Health:',
+            'Toilet:',
+        ]) {
+            expect(output).not.toContain(stat)
+        }
+    })
+
     it('snapshots every reachable body, top, and bottom sprite combination', () => {
         const pet = makeCritter()
         const combinations = new Map<string, string>()
+        const stageAges = [
+            { age: stagingSchedule.stage0, stage: 1 },
+            {
+                age: stagingSchedule.stage0 + stagingSchedule.stage1,
+                stage: 2,
+            },
+        ] as const
         const actions = [
             'idle',
             'eating',
@@ -56,34 +85,46 @@ describe('plain rendering', () => {
             'sleeping',
         ] as const
 
-        for (const action of actions) {
-            for (const health of [low - 1, low, normal, max]) {
-                for (const energy of [low - 1, low]) {
-                    for (const satiety of [low - 1, low, high, high + 1]) {
-                        if (action === 'eating' && satiety > high) continue
-                        for (const happiness of [0, low, high + 1]) {
-                            for (const poo of [false, true]) {
-                                pet.action = action
-                                pet.actionTime = action === 'idle' ? 0 : 30
-                                pet.health = health
-                                pet.energy = energy
-                                pet.satiety = satiety
-                                pet.happiness = happiness
-                                pet.poo = poo
-                                pet.updateMood()
+        const egg = new Critter({ command: 'new' })
+        const eggState = egg.getCritterState()
+        expect(eggState.stage).toBe(0)
+        combinations.set(
+            'stage-0-idle-none-none',
+            `\n${egg.plain({ noNerdFonts: true })}\n`,
+        )
 
-                                const state = pet.getCritterState()
-                                const layers = [
-                                    state.sprite,
-                                    state.top,
-                                    state.bottom,
-                                ]
-                                const key = layers.join('-')
-                                if (!combinations.has(key)) {
-                                    combinations.set(
-                                        key,
-                                        `\n${pet.plain({ noNerdFonts: true })}\n`,
-                                    )
+        for (const { age, stage } of stageAges) {
+            pet.age = age
+            for (const action of actions) {
+                for (const health of [low - 1, low, normal, max]) {
+                    for (const energy of [low - 1, low]) {
+                        for (const satiety of [low - 1, low, high, high + 1]) {
+                            if (action === 'eating' && satiety > high) continue
+                            for (const happiness of [0, low, high + 1]) {
+                                for (const poo of [false, true]) {
+                                    pet.action = action
+                                    pet.actionTime = action === 'idle' ? 0 : 30
+                                    pet.health = health
+                                    pet.energy = energy
+                                    pet.satiety = satiety
+                                    pet.happiness = happiness
+                                    pet.poo = poo
+                                    pet.updateMood()
+
+                                    const state = pet.getCritterState()
+                                    const layers = [
+                                        `stage-${stage}`,
+                                        state.sprite,
+                                        state.top,
+                                        state.bottom,
+                                    ]
+                                    const key = layers.join('-')
+                                    if (!combinations.has(key)) {
+                                        combinations.set(
+                                            key,
+                                            `\n${pet.plain({ noNerdFonts: true })}\n`,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -94,7 +135,12 @@ describe('plain rendering', () => {
 
         pet.die()
         const deadState = pet.getCritterState()
-        const deadLayers = [deadState.sprite, deadState.top, deadState.bottom]
+        const deadLayers = [
+            `stage-${deadState.stage}`,
+            deadState.sprite,
+            deadState.top,
+            deadState.bottom,
+        ]
         combinations.set(
             deadLayers.join('-'),
             `\n${pet.plain({ noNerdFonts: true })}\n`,
@@ -171,6 +217,7 @@ describe('plain rendering', () => {
                 main: 'eating',
                 reverse: true,
                 sprite: 'happy',
+                stage: 2,
                 top: 'none',
             },
         })
@@ -223,6 +270,7 @@ describe('plain rendering', () => {
                 main: 'sleeping',
                 reverse: false,
                 sprite: 'sleeping',
+                stage: 2,
                 top: 'none',
             },
         })

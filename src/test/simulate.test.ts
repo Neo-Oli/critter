@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal, penalty, schedules } from '../config.ts'
+import {
+    high,
+    low,
+    max,
+    normal,
+    penalty,
+    schedules,
+    stagingSchedule,
+} from '../config.ts'
 import { Critter } from '../critter.ts'
 import { day, hour, minute } from '../utils.ts'
 
@@ -41,6 +49,7 @@ const healthy = () => {
     pet.happiness = max
     pet.health = max
     pet.satiety = high
+    pet.age = stagingSchedule.stage0
     return pet
 }
 
@@ -84,6 +93,59 @@ beforeEach(() => {
 })
 
 describe('stat schedule simulations', () => {
+    it('keeps the egg idle and stats unchanged until its stage duration ends', () => {
+        const pet = new Critter({ command: 'new' })
+        pet.energy = max
+        pet.happiness = max
+        pet.health = max
+        pet.satiety = max
+        pet.toilet = max
+        pet.poo = true
+        const startingStats = [
+            pet.energy,
+            pet.happiness,
+            pet.health,
+            pet.satiety,
+            pet.toilet,
+        ]
+
+        pet.feed()
+        pet.clean()
+        pet.medicine()
+        pet.play()
+        pet.sleep()
+        pet.stop()
+
+        expect(pet.stage).toBe(0)
+        expect(pet.action).toBe('idle')
+        expect(pet.actionTime).toBe(0)
+        expect(pet.poo).toBe(true)
+        advance(pet, stagingSchedule.stage0 - 1)
+        expect(pet.age).toBe(stagingSchedule.stage0 - 1)
+        expect(pet.stage).toBe(0)
+        expect(pet.action).toBe('idle')
+        expect([
+            pet.energy,
+            pet.happiness,
+            pet.health,
+            pet.satiety,
+            pet.toilet,
+        ]).toEqual(startingStats)
+
+        advance(pet, 1)
+        expect(pet.stage).toBe(1)
+        expect(pet.age).toBe(stagingSchedule.stage0)
+    })
+
+    it('advances from stage one to stage two at the configured age', () => {
+        const pet = healthy()
+        advance(pet, stagingSchedule.stage1 - 1)
+        expect(pet.stage).toBe(1)
+
+        advance(pet, 1)
+        expect(pet.stage).toBe(2)
+    })
+
     it('keeps all stat values integral after a fractional schedule tick', () => {
         const pet = maxed()
         advance(pet, 1)
@@ -418,7 +480,7 @@ describe('daily care balance', () => {
             pet.alive,
             `still alive after ${pet.age / hour} hours with health=${pet.health}`,
         ).toBe(false)
-        expect(pet.age).toBeLessThanOrEqual(duration)
+        expect(pet.age).toBeLessThanOrEqual(stagingSchedule.stage0 + duration)
     })
 
     it('dies within the configured zero-happiness health schedule', () => {
@@ -429,7 +491,7 @@ describe('daily care balance', () => {
             pet.alive,
             `still alive after ${pet.age / hour} hours with health=${pet.health}`,
         ).toBe(false)
-        expect(pet.age).toBeLessThanOrEqual(duration)
+        expect(pet.age).toBeLessThanOrEqual(stagingSchedule.stage0 + duration)
     })
 
     it.each([-60, -30, 30, 60])(
@@ -466,7 +528,7 @@ describe('daily care balance', () => {
                 pet.alive,
                 `died after ${pet.age / hour} hours with a ${shiftMinutes}-minute meal shift`,
             ).toBe(true)
-            expect(pet.age).toBe(7 * day)
+            expect(pet.age).toBe(stagingSchedule.stage0 + 7 * day)
         },
     )
 
@@ -499,7 +561,7 @@ describe('daily care balance', () => {
                 pet.alive,
                 `still alive after seven days with a ${shiftMinutes}-minute meal shift`,
             ).toBe(false)
-            expect(pet.age).toBeLessThan(7 * day)
+            expect(pet.age).toBeLessThan(stagingSchedule.stage0 + 7 * day)
         },
     )
 
@@ -527,7 +589,7 @@ describe('daily care balance', () => {
 
         expect(automaticSleeps).toBeGreaterThan(0)
         expect(pet.alive).toBe(false)
-        expect(pet.age).toBeLessThan(5 * day)
+        expect(pet.age).toBeLessThan(stagingSchedule.stage0 + 5 * day)
     })
 
     it('loses more health when poo cleaning is delayed', () => {
@@ -649,7 +711,7 @@ describe('daily care balance', () => {
             minimumSatiety,
             `minimum satiety was ${minimumSatiety}`,
         ).toBeGreaterThan(0)
-        expect(pet.age).toBe(10 * day)
+        expect(pet.age).toBe(stagingSchedule.stage0 + 10 * day)
     })
 
     it('keeps the critter alive for ten days with regular care', () => {
@@ -680,6 +742,6 @@ describe('daily care balance', () => {
             pet.alive,
             `died after ${pet.age / hour} hours with health=${pet.health}, energy=${pet.energy}, satiety=${pet.satiety}, happiness=${pet.happiness}, toilet=${pet.toilet}, poo=${pet.poo}`,
         ).toBe(true)
-        expect(pet.age).toBe(10 * day)
+        expect(pet.age).toBe(stagingSchedule.stage0 + 10 * day)
     })
 })
