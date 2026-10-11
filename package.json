@@ -11,7 +11,7 @@
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
         "check": "tsc --noEmit",
         "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
-        "start": "node dist/index.js"
+        "start": "vite-node --config vitest.config.ts src/index.ts"
     },
     "bin": {
         "critter": "./dist/index.js"
@@ -42,6 +42,7 @@
         "prettier": "latest",
         "typescript": "^6.0.3",
         "typescript-eslint": "latest",
+        "vite-node": "^6.0.0",
         "vitest": "latest"
     }
 }
