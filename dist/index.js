@@ -24,7 +24,7 @@ var high = Math.round(max / 4 * 3);
 var normal = Math.round(max / 2);
 var low = Math.round(max / 4);
 var binName = "critter";
-var happinessPenalty = 1e4;
+var penalty = 0.1;
 var speed = 1;
 var schedules = {
   energy: {
@@ -39,6 +39,8 @@ var schedules = {
     playingTired: 4 * minute
   },
   health: {
+    happinessLow: 6 * day,
+    happinessZero: 3 * day,
     healing: 20,
     healingAction: 10,
     hungry: 4 * day,
@@ -85,9 +87,6 @@ var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\
 // src/sprites/happy.txt
 var happy_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580   \u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584\u2584\u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
-// src/sprites/healing.txt
-var healing_default = "            \u2580\u2584\n        \u2580\u2584  \u2584\u2580\u2580\u2584\n       \u2584\u2580 \u2580\u2588\n     \u2584\u2580    \u2584\u2580\u2584\n   \u2584\u2588\u2588\u2588\u2584 \u2584\u2580\n   \u2588\u2588\u2588\u2588\u2588\u2580\n  \u2584\u2580\u2580\u2580\u2580\n\u2584\u2580\n";
-
 // src/sprites/hungry.txt
 var hungry_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588  \u2584 \u2584  \u2588\n\u2588  \u2584\u2584\u2584  \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588  \u2580\u2580\u2588  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
@@ -96,6 +95,9 @@ var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u25
 
 // src/sprites/ill.txt
 var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
+
+// src/sprites/medicine.txt
+var medicine_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\n\u2588 \u2580\u2588\u2580 \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
@@ -134,10 +136,10 @@ var loadSprite = ({
     dead: dead_default,
     food: food_default,
     happy: happy_default,
-    healing: healing_default,
     hungry: hungry_default,
     idle: idle_default,
     ill: ill_default,
+    medicine: medicine_default,
     none: "",
     poo: poo_default,
     refusing: refusing_default,
@@ -232,6 +234,7 @@ var set = (value, smin = 0, smax = max) => {
   return Math.round(Math.min(smax, Math.max(smin, value)));
 };
 var changeBySchedule = (value, secondsPerCycle, direction) => set(value + Math.ceil(max / secondsPerCycle) * direction);
+var applyPenalty = (value) => set(value * (1 - penalty));
 var Critter = class {
   action = "idle";
   actionTime = 0;
@@ -337,8 +340,8 @@ var Critter = class {
       bottom: main === "playing" ? "toy" : main === "eating" ? "food" : this.poo ? "poo" : "none",
       main,
       reverse: ["eating", "playing"].includes(main),
-      sprite: main === "eating" || main === "playing" ? mood : main,
-      top: this.health < low ? "ill" : "none"
+      sprite: ["eating", "healing", "playing"].includes(main) ? mood : main,
+      top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
     };
   };
   medicine = () => {
@@ -465,6 +468,19 @@ var Critter = class {
             -1
           );
         }
+        if (this.happiness === 0) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.happinessZero,
+            -1
+          );
+        } else if (this.happiness < low) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.happinessLow,
+            -1
+          );
+        }
         if (this.satiety === 0) {
           this.health = changeBySchedule(
             this.health,
@@ -477,7 +493,7 @@ var Critter = class {
             schedules.health.hungry,
             -1
           );
-        } else if (!this.poo) {
+        } else if (!this.poo && this.happiness >= low) {
           if (this.health < low) {
             this.health = Math.min(
               low,
@@ -510,6 +526,8 @@ var Critter = class {
       }
       if (this.energy === 0 && this.action !== "sleeping") {
         this.sleep();
+        this.health = applyPenalty(this.health);
+        this.happiness = applyPenalty(this.happiness);
       }
     }
     this.updateMood();
@@ -517,7 +535,7 @@ var Critter = class {
   refuse = () => {
     this.action = "refusing";
     this.actionTime = 30;
-    this.happiness = set(this.happiness - happinessPenalty);
+    this.happiness = applyPenalty(this.happiness);
   };
   sleep = () => {
     if (this.energy >= normal) {
@@ -528,8 +546,8 @@ var Critter = class {
     this.actionTime = schedules.energy.sleeping;
   };
   stop = () => {
-    if (this.action === "eating" || this.action === "sleeping") {
-      this.happiness = set(this.happiness - happinessPenalty);
+    if (["eating", "sleeping"].includes(this.action)) {
+      this.happiness = applyPenalty(this.happiness);
     }
     this.action = "idle";
     this.actionTime = 0;
@@ -584,15 +602,17 @@ Examples:
     critter -d
 `;
 var parseArgs = (args) => {
-  if (args.includes("-h") || args.includes("--help")) {
+  if (args.some((arg) => ["--help", "-h"].includes(arg))) {
     process.stdout.write(`${help}
 `);
     process.exit(0);
   }
-  const noNerdFonts = args.includes("-n") || args.includes("--no-nerd-fonts");
-  const debug = args.includes("-d") || args.includes("--debug");
+  const noNerdFonts = args.some(
+    (arg) => ["--no-nerd-fonts", "-n"].includes(arg)
+  );
+  const debug = args.some((arg) => ["--debug", "-d"].includes(arg));
   const [command] = args.filter(
-    (arg) => arg !== "-n" && arg !== "--no-nerd-fonts" && arg !== "-d" && arg !== "--debug"
+    (arg) => !["--debug", "--no-nerd-fonts", "-d", "-n"].includes(arg)
   );
   if (!command) return { command: void 0, debug, noNerdFonts };
   switch (command) {

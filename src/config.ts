@@ -20,6 +20,8 @@ export const schedules = {
         playingTired: 4 * minute,
     },
     health: {
+        happinessLow: 6 * day,
+        happinessZero: 3 * day,
         healing: 20,
         healingAction: 10,
         hungry: 4 * day,

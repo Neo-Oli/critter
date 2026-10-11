@@ -313,6 +313,19 @@ export class Critter {
                         -1,
                     )
                 }
+                if (this.happiness === 0) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.happinessZero,
+                        -1,
+                    )
+                } else if (this.happiness < low) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.happinessLow,
+                        -1,
+                    )
+                }
                 if (this.satiety === 0) {
                     this.health = changeBySchedule(
                         this.health,
@@ -325,7 +338,7 @@ export class Critter {
                         schedules.health.hungry,
                         -1,
                     )
-                } else if (!this.poo) {
+                } else if (!this.poo && this.happiness >= low) {
                     if (this.health < low) {
                         this.health = Math.min(
                             low,

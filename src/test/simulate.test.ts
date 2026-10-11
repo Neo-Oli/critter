@@ -50,6 +50,32 @@ const maxed = () => {
     return pet
 }
 
+const simulateWithHeldHappiness = (
+    happiness: number,
+    durationSeconds: number,
+) => {
+    const pet = maxed()
+    runtime.speed = hour
+
+    for (
+        let elapsedSeconds = 0;
+        elapsedSeconds < durationSeconds;
+        elapsedSeconds += hour
+    ) {
+        pet.action = 'idle'
+        pet.actionTime = 0
+        pet.energy = max
+        pet.happiness = happiness
+        pet.satiety = max
+        pet.toilet = max
+        pet.poo = false
+        advance(pet, 1)
+        if (!pet.alive) break
+    }
+
+    return pet
+}
+
 beforeEach(() => {
     runtime.speed = 1
     runtime.time = 1000000
@@ -335,6 +361,7 @@ describe('stat schedule simulations', () => {
         pet.health = max - 1
         for (let hourIndex = 0; hourIndex < 6; hourIndex += 1) {
             pet.satiety = max
+            pet.happiness = max
             advance(pet, hour)
         }
         expect(pet.health).toBe(max)
@@ -383,6 +410,28 @@ describe('stat schedule simulations', () => {
 })
 
 describe('daily care balance', () => {
+    it('dies within the configured low-happiness health schedule', () => {
+        const duration = schedules.health.happinessLow
+        const pet = simulateWithHeldHappiness(low - 1, duration)
+
+        expect(
+            pet.alive,
+            `still alive after ${pet.age / hour} hours with health=${pet.health}`,
+        ).toBe(false)
+        expect(pet.age).toBeLessThanOrEqual(duration)
+    })
+
+    it('dies within the configured zero-happiness health schedule', () => {
+        const duration = schedules.health.happinessZero
+        const pet = simulateWithHeldHappiness(0, duration)
+
+        expect(
+            pet.alive,
+            `still alive after ${pet.age / hour} hours with health=${pet.health}`,
+        ).toBe(false)
+        expect(pet.age).toBeLessThanOrEqual(duration)
+    })
+
     it.each([-60, -30, 30, 60])(
         'survives one week with regular care and a %i-minute meal shift',
         (shiftMinutes) => {
@@ -398,6 +447,7 @@ describe('daily care balance', () => {
                 elapsedMinutes < (7 * day) / minute;
                 elapsedMinutes += 1
             ) {
+                pet.happiness = max
                 const minuteOfDay = elapsedMinutes % (24 * 60)
                 const hourOfDay = Math.floor(minuteOfDay / 60)
                 if (mealTimes.includes(minuteOfDay)) pet.feed()
@@ -420,7 +470,40 @@ describe('daily care balance', () => {
         },
     )
 
-    it('automatically sleeps and survives five days without commanded sleep', () => {
+    it.each([-60, -30, 30, 60])(
+        'dies within a week with only six-hour meals shifted by %i minutes',
+        (shiftMinutes) => {
+            const pet = maxed()
+            runtime.speed = minute
+            const mealTimes = [0, 6 * 60, 12 * 60, 18 * 60].map(
+                (minuteOfDay) =>
+                    (minuteOfDay + shiftMinutes + 24 * 60) % (24 * 60),
+            )
+
+            for (
+                let elapsedMinutes = 0;
+                elapsedMinutes < (7 * day) / minute;
+                elapsedMinutes += 1
+            ) {
+                const minuteOfDay = elapsedMinutes % (24 * 60)
+                if (mealTimes.includes(minuteOfDay)) pet.feed()
+                advance(pet, 1)
+                if (pet.poo) pet.clean()
+                if (!pet.alive) {
+                    reportDeath(elapsedMinutes * minute)
+                    break
+                }
+            }
+
+            expect(
+                pet.alive,
+                `still alive after seven days with a ${shiftMinutes}-minute meal shift`,
+            ).toBe(false)
+            expect(pet.age).toBeLessThan(7 * day)
+        },
+    )
+
+    it('dies within five days without commanded sleep despite feeding and cleaning', () => {
         const pet = maxed()
         pet.satiety = high
         pet.feed()
@@ -443,36 +526,9 @@ describe('daily care balance', () => {
         }
 
         expect(automaticSleeps).toBeGreaterThan(0)
-        expect(pet.alive).toBe(true)
-        expect(pet.age).toBe(5 * day)
+        expect(pet.alive).toBe(false)
+        expect(pet.age).toBeLessThan(5 * day)
     })
-
-    it.each([-60, -30, 30, 60])(
-        'survives a week when six-hour meal times shift by %i minutes',
-        (shiftMinutes) => {
-            const pet = maxed()
-            runtime.speed = minute
-            const mealTimes = [0, 6 * 60, 12 * 60, 18 * 60].map(
-                (minuteOfDay) =>
-                    (minuteOfDay + shiftMinutes + 24 * 60) % (24 * 60),
-            )
-
-            for (
-                let elapsedMinutes = 0;
-                elapsedMinutes < (7 * day) / minute;
-                elapsedMinutes += 1
-            ) {
-                const minuteOfDay = elapsedMinutes % (24 * 60)
-                if (mealTimes.includes(minuteOfDay)) pet.feed()
-                advance(pet, 1)
-                if (pet.poo) pet.clean()
-                if (!pet.alive) break
-            }
-
-            expect(pet.alive).toBe(true)
-            expect(pet.age).toBe(7 * day)
-        },
-    )
 
     it('loses more health when poo cleaning is delayed', () => {
         const minimumHealthWithCleaningInterval = (cleaningHours: number) => {
@@ -560,10 +616,10 @@ describe('daily care balance', () => {
         ).toBe(false)
     })
 
-    it('survives two days without care when all stats start maxed', () => {
+    it('is dead by two days without care when all stats start maxed', () => {
         const pet = maxed()
         advance(pet, 2 * day)
-        expect(pet.alive).toBe(true)
+        expect(pet.alive).toBe(false)
     })
 
     it('is dead after three days without care when all stats start maxed', () => {
@@ -581,6 +637,7 @@ describe('daily care balance', () => {
             elapsedSeconds < 10 * day;
             elapsedSeconds += 1
         ) {
+            pet.happiness = max
             if (elapsedSeconds % (5 * hour) === 0) pet.feed()
             advance(pet, 1)
             if (pet.poo) pet.clean()
