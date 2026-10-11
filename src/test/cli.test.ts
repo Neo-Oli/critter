@@ -65,6 +65,48 @@ afterAll(() => {
 })
 
 describe('CLI and entry point', () => {
+    it.each(['-j', '--json'])(
+        'prints the state object as JSON with %s',
+        (flag) => {
+            const result = run('new', flag, '-n')
+            expect(result.error).toBeUndefined()
+            expect(result.status).toBe(0)
+            expect(result.stderr).toBe('')
+
+            const output = JSON.parse(result.stdout)
+            expect(Object.keys(output)).toHaveLength(15)
+            expect(Object.keys(output)).toEqual(
+                expect.arrayContaining([
+                    'alert',
+                    'short',
+                    'plain',
+                    'plainStats',
+                    'plainSprites',
+                    'emoticon',
+                    'Bars',
+                    'Happy',
+                    'Hunger',
+                    'Energy',
+                    'Health',
+                    'Toilet',
+                    'poo',
+                    'action',
+                    'actionTime',
+                ]),
+            )
+            const saved = JSON.parse(readFileSync(statePath(), 'utf8'))
+            expect(output.alert).toBe(saved.alert)
+            expect(output.Happy).toBe(saved.happiness)
+            expect(output.Hunger).toBe(saved.satiety)
+            expect(output.Energy).toBe(saved.energy)
+            expect(output.Health).toBe(saved.health)
+            expect(output.Toilet).toBe(saved.toilet)
+            expect(output.poo).toBe(saved.poo)
+            expect(output.action).toBe(saved.action)
+            expect(output.actionTime).toBe(saved.actionTime)
+        },
+    )
+
     it.each(['-q', '--quiet'])(
         'suppresses all output with %s while still running commands',
         (flag) => {
@@ -185,6 +227,7 @@ describe('CLI and entry point', () => {
             )
             expect(result.stdout).toContain('With no command, show')
             expect(result.stdout).toContain('-q, --quiet')
+            expect(result.stdout).toContain('-j, --json')
             expect(result.stdout).toContain('replacing your current pet')
             for (const command of [
                 'new',

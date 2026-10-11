@@ -10,6 +10,7 @@ import {
     stagingSchedule,
 } from './config.ts'
 import { loadState, saveState } from './io.ts'
+import { type Json, json as renderJson } from './json.ts'
 import { type Plain, plain } from './plain.ts'
 import { type Short, short } from './short.ts'
 import { minute, now } from './utils.ts'
@@ -243,6 +244,22 @@ export class Critter {
                       : 'none',
         }
     }
+    json = ({ debug, noNerdFonts }: Pick<Plain, 'debug' | 'noNerdFonts'>) =>
+        renderJson({
+            action: this.action,
+            actionTime: this.actionTime,
+            age: this.age,
+            alert: this.alert,
+            debug,
+            energy: this.energy,
+            happiness: this.happiness,
+            health: this.health,
+            noNerdFonts,
+            poo: this.poo,
+            satiety: this.satiety,
+            state: this.getCritterState(),
+            toilet: this.toilet,
+        } satisfies Json)
     medicine = () => {
         if (this.stage === 0) return
         this.action = 'healing'

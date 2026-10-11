@@ -1,7 +1,11 @@
 import { max } from './config.ts'
 import { type CritterRenderState } from './critter.ts'
 
-export const emoticon = (state: CritterRenderState) => {
+interface EmoticonProps {
+    state: CritterRenderState
+    noNerdFonts?: boolean
+}
+export const emoticon = ({state, noNerdFonts = true,}: EmoticonProps) => {
     const baseSet = {
         dead: '[RIP]',
         happy: 'ʕ＾ᴥ＾ʔ',
@@ -22,7 +26,7 @@ export const emoticon = (state: CritterRenderState) => {
         1: baseSet,
         2: baseSet,
     }
-    return state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite]
+    return `${state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite]}${conditions({ noNerdFonts, state })}`
 }
 
 const bar = (value: number, icon: string) => {
@@ -93,5 +97,5 @@ export const short = ({
     state,
     toilet,
 }: Short) => {
-    return `${emoticon(state)}${conditions({ noNerdFonts, state })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`
+    return `${emoticon({ state, noNerdFonts })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`
 }

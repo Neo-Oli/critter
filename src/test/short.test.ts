@@ -29,8 +29,8 @@ describe('short emoticons', () => {
     it.each(['eating', 'healing', 'playing'] as const)(
         'selects the body sprite rather than the %s action',
         (main) => {
-            expect(emoticon(state({ main, sprite: 'sick' }))).toBe(
-                emoticon(state({ sprite: 'sick' })),
+            expect(emoticon({ state: state({ main, sprite: 'sick' }) })).toBe(
+                emoticon({ state: state({ sprite: 'sick' }) }),
             )
         },
     )
@@ -176,7 +176,7 @@ describe('short output', () => {
             const output = short(input)
 
             expect(output).toBe(
-                `${emoticon(renderState)}${conditions({ noNerdFonts, state: renderState })} ${bars(input)}`,
+                `${emoticon({ noNerdFonts, state: renderState })} ${bars(input)}`,
             )
             expect(output).not.toContain('\n')
             expect(output).not.toContain(String(input.actionTime))
@@ -188,6 +188,8 @@ describe('short output', () => {
         const renderState = state()
         const output = short({ ...stats, actionTime: 30, state: renderState })
 
-        expect(output).toBe(`${emoticon(renderState)} ${bars(stats)}`)
+        expect(output).toBe(
+            `${emoticon({ state: renderState })} ${bars(stats)}`,
+        )
     })
 })

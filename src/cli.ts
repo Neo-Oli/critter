@@ -22,6 +22,7 @@ Options:
     -d, --debug           Show exact stat values
     -s, --short           Show only the current state
     -q, --quiet           Suppress all output
+    -j, --json            Output state as JSON
 
 Daily care: about four meals, two sleeps, and three plays; clean whenever poo appears.
 
@@ -43,15 +44,18 @@ const parseArgs = (args: string[]) => {
         ['--no-nerd-fonts', '-n'].includes(arg),
     )
     const debug = args.some((arg) => ['--debug', '-d'].includes(arg))
+    const jsonOutput = args.some((arg) => ['--json', '-j'].includes(arg))
     const shortOutput = args.some((arg) => ['--short', '-s'].includes(arg))
     const [command] = args.filter(
         (arg) =>
             ![
                 '--debug',
+                '--json',
                 '--no-nerd-fonts',
                 '--quiet',
                 '--short',
                 '-d',
+                '-j',
                 '-n',
                 '-q',
                 '-s',
@@ -59,7 +63,14 @@ const parseArgs = (args: string[]) => {
     )
 
     if (!command)
-        return { command: undefined, debug, noNerdFonts, quiet, shortOutput }
+        return {
+            command: undefined,
+            debug,
+            jsonOutput,
+            noNerdFonts,
+            quiet,
+            shortOutput,
+        }
 
     switch (command) {
         case 'clean':
@@ -70,7 +81,14 @@ const parseArgs = (args: string[]) => {
         case 'play':
         case 'sleep':
         case 'stop':
-            return { command, debug, noNerdFonts, quiet, shortOutput }
+            return {
+                command,
+                debug,
+                jsonOutput,
+                noNerdFonts,
+                quiet,
+                shortOutput,
+            }
 
         default:
             throw new Error(`Unknown command: ${command}`)
@@ -93,6 +111,7 @@ export const cli = async () => {
     const {
         command,
         debug,
+        jsonOutput,
         noNerdFonts,
         quiet: quietOutput,
         shortOutput,
@@ -103,7 +122,9 @@ export const cli = async () => {
         process.exit(1)
     }
     if (quietOutput) return
-    if (shortOutput) {
+    if (jsonOutput) {
+        console.log(critter.json({ debug, noNerdFonts }))
+    } else if (shortOutput) {
         console.log(`${critter.short({ noNerdFonts })}\n`)
     } else {
         console.log(`${critter.plain({ debug, noNerdFonts })}\n`)
