@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { max } from '../config.ts'
 import { type CritterRenderState } from '../critter.ts'
 import { bars, conditions, emoticon, short } from '../short.ts'
+import { statIcon } from '../utils.ts'
 
 const state = (
     overrides: Partial<CritterRenderState> = {},
@@ -80,6 +81,18 @@ describe('short bars', () => {
         ] as const) {
             expect(bars({ ...stats, [stat]: 0 })).not.toBe(baseline)
         }
+    })
+
+    it.each([
+        ['age', 'A', '󰥔'],
+        ['happiness', 'H', '󰱱'],
+        ['satiety', 'S', '󰉛'],
+        ['energy', 'E', '󱊣'],
+        ['health', '+', ''],
+        ['toilet', 'T', '󰦫'],
+    ] as const)('provides reusable %s icons', (name, fallback, nerdFont) => {
+        expect(statIcon(name, true)).toBe(fallback)
+        expect(statIcon(name, false)).toBe(nerdFont)
     })
 })
 

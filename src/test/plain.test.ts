@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { high, low, max, normal, stagingSchedule } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { loadSprite, plain, plainSprites, plainStats } from '../plain.ts'
+import { statIcon } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
@@ -73,8 +74,8 @@ describe('plain rendering', () => {
 
         expect(sprites.split('\n')).toHaveLength(8)
         expect(stats).toContain('IDLE')
-        expect(stats).toContain('Happy:')
-        expect(stats).toContain('Age:')
+        expect(stats).toContain(statIcon('happiness', true))
+        expect(stats).toContain(statIcon('age', true))
         expect(plain(options)).toBe(`${sprites}\n\n${stats}`)
     })
 
@@ -83,7 +84,7 @@ describe('plain rendering', () => {
         const output = egg.plain({ noNerdFonts: true })
 
         expect(output).not.toContain('IDLE')
-        expect(output).toContain('Age:')
+        expect(output).toContain(statIcon('age', true))
         for (const stat of [
             'Happy:',
             'Hunger:',
@@ -253,12 +254,16 @@ describe('plain rendering', () => {
             },
         })
         expect(output).toContain('EATING')
-        expect(output).toContain('Happy:')
-        expect(output).toContain('Hunger:')
-        expect(output).toContain('Energy:')
-        expect(output).toContain('Health:')
-        expect(output).toContain('Toilet:')
-        expect(output).toContain('Age:')
+        for (const name of [
+            'happiness',
+            'satiety',
+            'energy',
+            'health',
+            'toilet',
+        ] as const) {
+            expect(output).toContain(statIcon(name, true))
+        }
+        expect(output).toContain(statIcon('age', true))
         expect(output).not.toContain('undefined')
         expect(
             output.split('\n').every((line) => line === line.trimEnd()),
@@ -270,14 +275,14 @@ describe('plain rendering', () => {
         const half = String.fromCodePoint(0x25d0)
         const empty = String.fromCodePoint(0x25cb)
         const output = render({ energy: max / 10, happiness: 0 })
-        expect(output).toContain(`Happy:  ${empty.repeat(5)}`)
-        expect(output).toContain(`Energy: ${half}${empty.repeat(4)}`)
-        expect(output).toContain(`Health: ${full.repeat(5)}`)
+        expect(output).toContain(`H ${empty.repeat(5)}`)
+        expect(output).toContain(`E ${half}${empty.repeat(4)}`)
+        expect(output).toContain(`+ ${full.repeat(5)}`)
     })
 
     it('caps an over-range stat bar without an overflow marker', () => {
         const output = render({ satiety: max + 1 })
-        expect(output).toContain('Hunger:')
+        expect(output).toContain('S')
         expect(output).not.toContain('!')
     })
 
@@ -306,7 +311,7 @@ describe('plain rendering', () => {
             },
         })
         expect(output).toContain('SLEEPING (2 hours)')
-        expect(output).toContain('Age:    2 days')
+        expect(output).toContain('A 2 days')
         expect(render()).toContain('IDLE\n')
     })
 })

@@ -10,7 +10,7 @@ import {
     stagingSchedule,
 } from '../config.ts'
 import { Critter } from '../critter.ts'
-import { minute } from '../utils.ts'
+import { minute, statIcon } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ speed: 1, time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
@@ -236,7 +236,7 @@ describe('rendering', () => {
         pet.mood = ['happy']
         const output = pet.plain({ noNerdFonts: true })
         expect(output).toContain('PLAYING')
-        expect(output).toContain('Toilet:')
+        expect(output).toContain(`${statIcon('toilet', true)} `)
         expect(output).not.toContain('undefined')
     })
 

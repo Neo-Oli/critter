@@ -16,3 +16,22 @@ export const duration = (seconds: number) => {
 
     return `${count} ${unit}${count === 1 ? '' : 's'}`
 }
+
+export type StatName =
+    | 'age'
+    | 'energy'
+    | 'happiness'
+    | 'health'
+    | 'satiety'
+    | 'toilet'
+
+const statIcons: Record<StatName, [string, string]> = {
+    age: ['A', '󰥔'],
+    energy: ['E', '󱊣'],
+    happiness: ['H', '󰱱'],
+    health: ['+', ''],
+    satiety: ['S', '󰉛'],
+    toilet: ['T', '󰦫'],
+}
+export const statIcon = (name: StatName, noNerdFonts: boolean) =>
+    statIcons[name][noNerdFonts ? 0 : 1]

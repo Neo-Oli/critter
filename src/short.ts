@@ -1,5 +1,6 @@
 import { max } from './config.ts'
 import { type CritterRenderState } from './critter.ts'
+import { statIcon } from './utils.ts'
 
 interface EmoticonProps {
     noNerdFonts?: boolean
@@ -55,11 +56,11 @@ export const bars = ({
     toilet,
 }: Bars) => {
     return [
-        bar(happiness, noNerdFonts ? 'H' : '󰱱'),
-        bar(satiety, noNerdFonts ? 'S' : '󰉛'),
-        bar(energy, noNerdFonts ? 'E' : '󱊣'),
-        bar(health, noNerdFonts ? '+' : ''),
-        bar(toilet, noNerdFonts ? 'T' : '󰦫'),
+        bar(happiness, statIcon('happiness', noNerdFonts)),
+        bar(satiety, statIcon('satiety', noNerdFonts)),
+        bar(energy, statIcon('energy', noNerdFonts)),
+        bar(health, statIcon('health', noNerdFonts)),
+        bar(toilet, statIcon('toilet', noNerdFonts)),
     ].join(' ')
 }
 

@@ -24,7 +24,7 @@ import sick2 from './sprites/stage-2/sick.txt' with { type: 'text' }
 import sleeping2 from './sprites/stage-2/sleeping.txt' with { type: 'text' }
 import tired2 from './sprites/stage-2/tired.txt' with { type: 'text' }
 import toy from './sprites/toy.txt' with { type: 'text' }
-import { duration } from './utils.ts'
+import { duration, statIcon, type StatName } from './utils.ts'
 const spriteWidth = 16
 const spriteHeight = 8
 const iconWidth = 8
@@ -150,7 +150,7 @@ export const plainStats = ({
     state,
     toilet,
 }: Plain) => {
-    const stat = (name: string, value: number) => {
+    const stat = (name: StatName, value: number) => {
         const barValue = Math.round((value / max) * 10)
         let empty, full, half
         if (noNerdFonts) {
@@ -170,25 +170,24 @@ export const plainStats = ({
         bar += empty.repeat(
             Math.max(0, 5 - Math.floor(barValue / 2 + (maxBarValue % 2))),
         )
-        return `${label(name)}${bar}${debug ? ` (${value})` : ''}`
-    }
-    const label = (str: string) => {
-        return `${str}: `.padEnd(8)
+        return `${statIcon(name, noNerdFonts)} ${bar}${debug ? ` (${value})` : ''}`
     }
 
     const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : ''
     const output: string[] = []
     const padding = '  '
-    const ageFormatted = label('Age') + duration(age)
+    const ageFormatted = `${statIcon('age', noNerdFonts)} ${duration(age)}`
     if (state.stage !== 0) {
         output.push(state.main.toUpperCase() + remaining)
         output.push(
-            [stat('Happy', happiness), stat('Hunger', satiety)].join(padding),
+            [stat('happiness', happiness), stat('satiety', satiety)].join(
+                padding,
+            ),
         )
         output.push(
-            [stat('Energy', energy), stat('Health', health)].join(padding),
+            [stat('energy', energy), stat('health', health)].join(padding),
         )
-        output.push([stat('Toilet', toilet), ageFormatted].join(padding))
+        output.push([stat('toilet', toilet), ageFormatted].join(padding))
     } else {
         output.push(ageFormatted)
     }

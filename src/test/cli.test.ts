@@ -21,6 +21,7 @@ import {
 } from 'vitest'
 
 import { low, max, stagingSchedule } from '../config.ts'
+import { statIcon } from '../utils.ts'
 
 let bundleDirectory: string
 let entry: string
@@ -268,7 +269,8 @@ describe('CLI and entry point', () => {
         const result = run()
         expect(result.status).toBe(0)
         expect(result.stderr).toBe('')
-        expect(result.stdout).toContain('Age:')
+        expect(result.stdout).toContain('0 seconds')
+        expect(result.stdout).not.toContain('Age:')
     })
 
     it.each([
@@ -289,7 +291,7 @@ describe('CLI and entry point', () => {
         advancePetToStageOne()
         const result = run(command)
         expect(result.status).toBe(0)
-        expect(result.stdout).toContain('Age:')
+        expect(result.stdout).toContain(`${statIcon('age', false)} `)
         expect(result.stderr).toBe('')
         const savedAction = JSON.parse(readFileSync(statePath(), 'utf8')).action
         if (Array.isArray(action)) {
@@ -324,7 +326,9 @@ describe('CLI and entry point', () => {
         (flag) => {
             const result = run(flag, 'new')
             expect(result.status).toBe(0)
-            expect(result.stdout).toContain('Age:    0 seconds')
+            expect(result.stdout).toContain(
+                `${statIcon('age', false)} 0 seconds`,
+            )
             for (const stat of [
                 'Happy:',
                 'Hunger:',
