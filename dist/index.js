@@ -94,11 +94,11 @@ var saveState = (state) => {
 // src/sprites/food.txt
 var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588  \u2580\u2588 \u2588\n\u2580\u2584\u2584\u2584\u2584\u2584\u2580\n";
 
-// src/sprites/ill.txt
-var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
-
 // src/sprites/heal.txt
 var heal_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\n\u2588 \u2580\u2588\u2580 \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+
+// src/sprites/ill.txt
+var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
 
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
@@ -170,8 +170,8 @@ var iconWidth = 8;
 var iconHeight = 4;
 var sharedSprites = {
   food: food_default,
-  ill: ill_default,
   heal: heal_default,
+  ill: ill_default,
   none: "",
   poo: poo_default,
   toy: toy_default
@@ -352,8 +352,8 @@ var conditions = ({
 }) => {
   const icons = {
     food: ["\u2668", "\u{F025B}"],
-    ill: ["!", "\u{F068C}"],
     heal: ["\u271A", "\uE221"],
+    ill: ["!", "\u{F068C}"],
     none: ["", ""],
     poo: ["\u224B", "\uEEAF "],
     toy: ["\u25CB", "\u{F0A26}"]
@@ -588,6 +588,11 @@ var Critter = class {
       top: this.action === "healing" ? "heal" : this.health < low ? "ill" : "none"
     };
   };
+  heal = () => {
+    if (this.stage === 0) return;
+    this.action = "healing";
+    this.actionTime = schedules.health.healingAction;
+  };
   json = ({ debug }) => json({
     action: this.action,
     actionTime: this.actionTime,
@@ -602,11 +607,6 @@ var Critter = class {
     state: this.getCritterState(),
     toilet: this.toilet
   });
-  heal = () => {
-    if (this.stage === 0) return;
-    this.action = "healing";
-    this.actionTime = schedules.health.healingAction;
-  };
   persistedState = () => {
     const {
       action,
