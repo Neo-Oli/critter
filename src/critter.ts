@@ -4,30 +4,23 @@ import { plain } from './plain.ts'
 import { hour, minute, now } from './utils.ts'
 
 export type Action =
-    | 'cleaning'
-    | 'eating'
-    | 'healing'
-    | 'idle'
-    | 'playing'
-    | 'refusing'
-    | 'sleeping'
+    'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping'
 
-export type Mood =
-    CleanlinessMood | EnergyMood | FoodMood | HappinessMood | HealthMood
+export type Mood = EnergyMood | FoodMood | HappinessMood | HealthMood
 
 export interface PersistedCritterState {
     action: Action
     actionTime: number
     age: number
     birth: number
-    cleanliness: number
     energy: number
     happiness: number
     health: number
+    poo: boolean
     satiety: number
     time: number
+    toilet: number
 }
-type CleanlinessMood = 'cleaning' | 'dirty'
 type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
@@ -50,14 +43,15 @@ export class Critter {
     age = 0
     alive = true
     birth = 0
-    cleanliness = low
     energy = normal
     error: string | undefined = undefined
     happiness = max
     health = high
     mood: Mood[] = []
+    poo = false
     satiety = normal
     time = this.birth
+    toilet = low
 
     constructor({ command }: CritterOptions) {
         let state
@@ -76,8 +70,9 @@ export class Critter {
             this.satiety = state?.satiety ?? this.satiety
             this.happiness = state?.happiness ?? this.happiness
             this.energy = state?.energy ?? this.energy
-            this.cleanliness = state?.cleanliness ?? this.cleanliness
+            this.toilet = state?.toilet ?? this.toilet
             this.health = state?.health ?? this.health
+            this.poo = state?.poo ?? this.poo
             this.actionTime = state?.actionTime ?? this.actionTime
             this.action = state?.action ?? this.action
             this.time = state?.time ?? this.time
@@ -108,8 +103,7 @@ export class Critter {
         saveState(this.persistedState())
     }
     clean = () => {
-        this.action = 'cleaning'
-        this.actionTime = 60
+        this.poo = false
     }
     die = () => {
         this.action = 'idle'
@@ -135,16 +129,23 @@ export class Critter {
             'sick',
             'tired',
             'hungry',
-            'dirty',
             'sad',
             'happy',
         ]
-        if (this.action !== 'idle') return this.action
 
         const mood = moodPriority.find((priority) =>
             this.mood.includes(priority),
         )
-        return mood ?? 'idle'
+        const main=this.action !== 'idle' ? this.action : mood ?? 'idle'
+        return { 
+            main: main,
+
+            sprite: main!=='eating' ? main :mood??'idle',
+            bottom: main === 'eating' ? 'food' :
+            this.poo? 'poo':'none',
+            top:'none'
+            ,reverse: main==="eating"
+        }
     }
     medicine = () => {
         this.action = 'healing'
@@ -156,37 +157,40 @@ export class Critter {
             actionTime,
             age,
             birth,
-            cleanliness,
             energy,
             happiness,
             health,
+            poo,
             satiety,
+            toilet,
         } = this
         return {
             action,
             actionTime,
             age,
             birth,
-            cleanliness,
             energy,
             happiness,
             health,
+            poo,
             satiety,
             time: now(),
+            toilet,
         }
     }
     plain = ({ debug, noNerdFonts }: Plain) =>
         plain({
             actionTime: this.actionTime,
             age: this.age,
-            cleanliness: this.cleanliness,
             debug,
             energy: this.energy,
             happiness: this.happiness,
             health: this.health,
             noNerdFonts,
+            poo: this.poo,
             satiety: this.satiety,
             state: this.getCritterState(),
+            toilet: this.toilet,
         })
     play = () => {
         this.action = 'playing'
@@ -221,15 +225,10 @@ export class Critter {
             } else {
                 this.energy = set(this.energy - 21)
             }
-            if (this.action === 'cleaning') {
-                this.cleanliness = set(this.cleanliness + 16667)
-            } else {
-                this.cleanliness = set(this.cleanliness - 9)
-            }
 
             if (this.action === 'healing') {
                 this.health = set(this.health + 100000)
-            } else if (this.satiety > 0 && this.cleanliness >= low) {
+            } else if (this.satiety > 0 && !this.poo) {
                 this.health = set(this.health + 30)
             }
             if (this.action === 'playing') {
@@ -243,7 +242,7 @@ export class Critter {
             if (this.actionTime === 0) this.action = 'idle'
             if (this.satiety === 0) {
                 this.health = set(this.health - (this.health > low ? 14 : 3))
-            } else if (this.cleanliness < low) {
+            } else if (this.poo) {
                 this.health = set(this.health - 2)
             }
             if (this.health === 0) {
@@ -252,6 +251,10 @@ export class Critter {
             }
             if (this.energy === 0 && this.action !== 'sleeping') {
                 this.sleep()
+            }
+            if (this.toilet === 0) {
+                this.poo = true
+                this.toilet = set(max)
             }
         }
         this.updateMood()
@@ -292,9 +295,6 @@ export class Critter {
             this.mood.push('happy')
         } else if (this.happiness < low) {
             this.mood.push('sad')
-        }
-        if (this.cleanliness < low) {
-            this.mood.push('dirty')
         }
     }
 }

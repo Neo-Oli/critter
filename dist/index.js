@@ -27,17 +27,11 @@ var saveState = (state) => {
   writeFileSync(path, JSON.stringify(state, null, 4));
 };
 
-// src/sprites/cleaning.txt
-var cleaning_default = "\u2588\u2580\u2580\u2580\u2588\n\u2588  \u2580\u2580\u2580\n\u2588  \u2580 \u2580\n\u2588\u2584 \u2580 \u2580 \u2584 \u2584 \u2584 \u2584\n\u2588\u2584\u2588\u2584\u2588\u2584\u2588\u2584\u2588\u2584\u2588\u2584\u2588\u2584\u2588\u2584\n\u2588              \u2588\n\u2588              \u2588\n \u2580\u2588\u2588\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2588\u2588\u2580\n";
-
 // src/sprites/dead.txt
 var dead_default = "  \u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u2584\u2580        \u2584\u2584\u2584 \u2580\u2584\n\u2588 \u2580\u2580\u2580\u2580   \u2588\u2580\u2588\u2580\u2588 \u2588\n\u2588 \u2580\u2580\u2580\u2580   \u2580\u2588\u2588\u2588\u2580 \u2588\n\u2588 \u2580\u2580\u2580\u2580    \u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588 \u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584  \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
-// src/sprites/dirty.txt
-var dirty_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588   \u2588 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588 \u2584 \u2584 \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588   \u2580 \u2588\n \u2588 \u2584 \u2584  \u2584 \u2580 \u2580 \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
-
-// src/sprites/eating.txt
-var eating_default = "\n\n    \u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n  \u2584\u2580  \u2580     \u2580\u2584\n  \u2588 \u2584\u2584   \u2584   \u2588\n \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n  \u2588    \u2580  \u2580\u2580 \u2588\n\u2580\u2584\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2584\u2584\u2580\n";
+// src/sprites/food.txt
+var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588  \u2580\u2588 \u2588\n\u2580\u2584\u2584\u2584\u2584\u2584\u2580\n";
 
 // src/sprites/happy.txt
 var happy_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580   \u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584\u2584\u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
@@ -69,6 +63,9 @@ var sleeping_default = "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u
 // src/sprites/tired.txt
 var tired_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2588   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
+// src/sprites/poo.txt
+var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
+
 // src/utils.ts
 var now = () => Math.round(Date.now() / 1e3);
 var minute = 60;
@@ -88,12 +85,14 @@ var duration = (seconds) => {
 
 // src/plain.ts
 var spriteWidth = 16;
-var loadSprite = (name) => {
+var spriteHeight = 8;
+var iconWidth = 8;
+var iconHeight = 4;
+var loadSprite = (name, width = spriteWidth, height = spriteHeight, reverse = false) => {
   const sprites = {
-    cleaning: cleaning_default,
+    poo: poo_default,
     dead: dead_default,
-    dirty: dirty_default,
-    eating: eating_default,
+    food: food_default,
     happy: happy_default,
     healing: healing_default,
     hungry: hungry_default,
@@ -103,14 +102,15 @@ var loadSprite = (name) => {
     sad: sad_default,
     sick: sick_default,
     sleeping: sleeping_default,
-    tired: tired_default
+    tired: tired_default,
+    none: ""
   };
-  return sprites[name].split(/\r?\n/);
+  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map((line) => reverse ? line.padEnd(width).split("").reverse().join("") : line);
 };
 var plain = ({
   actionTime,
   age,
-  cleanliness,
+  toilet,
   debug = false,
   energy,
   happiness,
@@ -119,7 +119,14 @@ var plain = ({
   satiety,
   state
 }) => {
-  const output = loadSprite(state).map((line) => line.padEnd(spriteWidth + 2));
+  const { main, top, bottom, sprite, reverse } = state;
+  const topSprite = loadSprite(top, iconWidth, iconHeight);
+  const bottomSprite = loadSprite(bottom, iconWidth, iconHeight);
+  const output = loadSprite(sprite, spriteWidth, spriteHeight, reverse);
+  for (let i = 0; i < iconHeight; i++) {
+    output[i] += topSprite[i];
+    output[i + iconHeight] += bottomSprite[i];
+  }
   const stat = (name, value) => {
     const barValue = Math.round(value / max * 10);
     let empty, full, half;
@@ -145,15 +152,18 @@ var plain = ({
   const label = (str) => {
     return `${str}: `.padEnd(8);
   };
-  let i = 0;
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
-  output[i++] += `${state.toUpperCase()}${remaining}`;
-  output[i++] += stat("Happy", happiness);
-  output[i++] += stat("Hunger", satiety);
-  output[i++] += stat("Energy", energy);
-  output[i++] += stat("Health", health);
-  output[i++] += stat("Clean", cleanliness);
-  output[i++] += label("Age") + duration(age);
+  const o = (line = "") => {
+    output.push(`${line}`);
+  };
+  o();
+  o(`${main.toUpperCase()}${remaining}`);
+  o(stat("Happy", happiness));
+  o(stat("Hunger", satiety));
+  o(stat("Energy", energy));
+  o(stat("Health", health));
+  o(stat("Toilet", toilet));
+  o(label("Age") + duration(age));
   return output.join("\n");
 };
 
@@ -167,14 +177,15 @@ var Critter = class {
   age = 0;
   alive = true;
   birth = 0;
-  cleanliness = low;
   energy = normal;
   error = void 0;
   happiness = max;
   health = high;
   mood = [];
+  poo = false;
   satiety = normal;
   time = this.birth;
+  toilet = low;
   constructor({ command }) {
     let state;
     try {
@@ -191,8 +202,9 @@ var Critter = class {
       this.satiety = state?.satiety ?? this.satiety;
       this.happiness = state?.happiness ?? this.happiness;
       this.energy = state?.energy ?? this.energy;
-      this.cleanliness = state?.cleanliness ?? this.cleanliness;
+      this.toilet = state?.toilet ?? this.toilet;
       this.health = state?.health ?? this.health;
+      this.poo = state?.poo ?? this.poo;
       this.actionTime = state?.actionTime ?? this.actionTime;
       this.action = state?.action ?? this.action;
       this.time = state?.time ?? this.time;
@@ -223,8 +235,7 @@ var Critter = class {
     saveState(this.persistedState());
   }
   clean = () => {
-    this.action = "cleaning";
-    this.actionTime = 60;
+    this.poo = false;
   };
   die = () => {
     this.action = "idle";
@@ -247,15 +258,20 @@ var Critter = class {
       "sick",
       "tired",
       "hungry",
-      "dirty",
       "sad",
       "happy"
     ];
-    if (this.action !== "idle") return this.action;
     const mood = moodPriority.find(
       (priority) => this.mood.includes(priority)
     );
-    return mood ?? "idle";
+    const main = this.action !== "idle" ? this.action : mood ?? "idle";
+    return {
+      main,
+      sprite: main !== "eating" ? main : mood ?? "idle",
+      bottom: main === "eating" ? "food" : this.poo ? "poo" : "none",
+      top: "none",
+      reverse: main === "eating"
+    };
   };
   medicine = () => {
     this.action = "healing";
@@ -267,36 +283,39 @@ var Critter = class {
       actionTime,
       age,
       birth,
-      cleanliness,
       energy,
       happiness,
       health,
-      satiety
+      poo,
+      satiety,
+      toilet
     } = this;
     return {
       action,
       actionTime,
       age,
       birth,
-      cleanliness,
       energy,
       happiness,
       health,
+      poo,
       satiety,
-      time: now()
+      time: now(),
+      toilet
     };
   };
   plain = ({ debug, noNerdFonts }) => plain({
     actionTime: this.actionTime,
     age: this.age,
-    cleanliness: this.cleanliness,
     debug,
     energy: this.energy,
     happiness: this.happiness,
     health: this.health,
     noNerdFonts,
+    poo: this.poo,
     satiety: this.satiety,
-    state: this.getCritterState()
+    state: this.getCritterState(),
+    toilet: this.toilet
   });
   play = () => {
     this.action = "playing";
@@ -331,14 +350,9 @@ var Critter = class {
       } else {
         this.energy = set(this.energy - 21);
       }
-      if (this.action === "cleaning") {
-        this.cleanliness = set(this.cleanliness + 16667);
-      } else {
-        this.cleanliness = set(this.cleanliness - 9);
-      }
       if (this.action === "healing") {
         this.health = set(this.health + 1e5);
-      } else if (this.satiety > 0 && this.cleanliness >= low) {
+      } else if (this.satiety > 0 && !this.poo) {
         this.health = set(this.health + 30);
       }
       if (this.action === "playing") {
@@ -352,7 +366,7 @@ var Critter = class {
       if (this.actionTime === 0) this.action = "idle";
       if (this.satiety === 0) {
         this.health = set(this.health - (this.health > low ? 14 : 3));
-      } else if (this.cleanliness < low) {
+      } else if (this.poo) {
         this.health = set(this.health - 2);
       }
       if (this.health === 0) {
@@ -361,6 +375,10 @@ var Critter = class {
       }
       if (this.energy === 0 && this.action !== "sleeping") {
         this.sleep();
+      }
+      if (this.toilet === 0) {
+        this.poo = true;
+        this.toilet = set(max);
       }
     }
     this.updateMood();
@@ -400,9 +418,6 @@ var Critter = class {
       this.mood.push("happy");
     } else if (this.happiness < low) {
       this.mood.push("sad");
-    }
-    if (this.cleanliness < low) {
-      this.mood.push("dirty");
     }
   };
 };

@@ -1,9 +1,7 @@
 import { max } from './config.ts'
 import { type Action, type Mood } from './critter.ts'
-import cleaning from './sprites/cleaning.txt' with { type: 'text' }
 import dead from './sprites/dead.txt' with { type: 'text' }
-import dirty from './sprites/dirty.txt' with { type: 'text' }
-import eating from './sprites/eating.txt' with { type: 'text' }
+import food from './sprites/food.txt' with { type: 'text' }
 import happy from './sprites/happy.txt' with { type: 'text' }
 import healing from './sprites/healing.txt' with { type: 'text' }
 import hungry from './sprites/hungry.txt' with { type: 'text' }
@@ -14,14 +12,18 @@ import sad from './sprites/sad.txt' with { type: 'text' }
 import sick from './sprites/sick.txt' with { type: 'text' }
 import sleeping from './sprites/sleeping.txt' with { type: 'text' }
 import tired from './sprites/tired.txt' with { type: 'text' }
+import poo from './sprites/poo.txt' with { type: 'text' }
 import { duration } from './utils.ts'
 const spriteWidth = 16
-const loadSprite = (name: Action | Mood) => {
+const spriteHeight = 8
+const iconWidth = 8
+const iconHeight = 4
+type AdditionalSprites = 'poo' |'none' |'food'
+const loadSprite = (name: Omit<Action,'eating'> | Mood|AdditionalSprites, width=spriteWidth, height=spriteHeight, reverse=false) => {
     const sprites = {
-        cleaning: cleaning,
+        poo:poo,
         dead: dead,
-        dirty: dirty,
-        eating: eating,
+        food: food,
         happy: happy,
         healing: healing,
         hungry: hungry,
@@ -32,14 +34,18 @@ const loadSprite = (name: Action | Mood) => {
         sick: sick,
         sleeping: sleeping,
         tired: tired,
+        none:''
     }
     return sprites[name].split(/\r?\n/)
+    .concat(Array(height).fill('')).slice(0, height)
+    .map((line) => (reverse?line.padEnd(width).split('').reverse().join(''):line))
+
 }
 
 interface Plain {
     actionTime: number
     age: number
-    cleanliness: number
+    toilet: number
     debug?: boolean
     energy: number
     happiness: number
@@ -51,7 +57,7 @@ interface Plain {
 export const plain = ({
     actionTime,
     age,
-    cleanliness,
+    toilet,
     debug = false,
     energy,
     happiness,
@@ -60,7 +66,15 @@ export const plain = ({
     satiety,
     state,
 }: Plain) => {
-    const output = loadSprite(state).map((line) => line.padEnd(spriteWidth + 2))
+    const {main, top, bottom, sprite, reverse }=state
+    const topSprite=loadSprite(top,iconWidth, iconHeight)
+    const bottomSprite = loadSprite(bottom,iconWidth,iconHeight)
+    const output = loadSprite(sprite, spriteWidth, spriteHeight, reverse)
+
+    for (let i = 0; i < iconHeight; i++) {
+        output[i] += topSprite[i]
+        output[i + iconHeight] += bottomSprite[i]
+    }
     const stat = (name: string, value: number) => {
         const barValue = Math.round((value / max) * 10)
         let empty, full, half
@@ -86,15 +100,17 @@ export const plain = ({
     const label = (str: string) => {
         return `${str}: `.padEnd(8)
     }
-    let i = 0
     const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : ''
-    output[i++] += `${state.toUpperCase()}${remaining}`
-    output[i++] += stat('Happy', happiness)
-    output[i++] += stat('Hunger', satiety)
-    output[i++] += stat('Energy', energy)
-    output[i++] += stat('Health', health)
-    output[i++] += stat('Clean', cleanliness)
-    output[i++] += label('Age') + duration(age)
-
+    const o=(line:string="")=>{
+        output.push(`${line}`)
+    }
+    o()
+o( `${main.toUpperCase()}${remaining}`      )
+o( stat('Happy', happiness)                   )
+o( stat('Hunger', satiety)      )
+o( stat('Energy', energy)  )
+o( stat('Health', health))
+o( stat('Toilet', toilet))
+o( label('Age') + duration(age)             )
     return output.join('\n')
 }
