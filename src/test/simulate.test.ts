@@ -383,6 +383,43 @@ describe('stat schedule simulations', () => {
 })
 
 describe('daily care balance', () => {
+    it.each([-60, -30, 30, 60])(
+        'survives one week with regular care and a %i-minute meal shift',
+        (shiftMinutes) => {
+            const pet = maxed()
+            runtime.speed = minute
+            const mealTimes = [0, 6 * 60, 12 * 60, 18 * 60].map(
+                (minuteOfDay) =>
+                    (minuteOfDay + shiftMinutes + 24 * 60) % (24 * 60),
+            )
+
+            for (
+                let elapsedMinutes = 0;
+                elapsedMinutes < (7 * day) / minute;
+                elapsedMinutes += 1
+            ) {
+                const minuteOfDay = elapsedMinutes % (24 * 60)
+                const hourOfDay = Math.floor(minuteOfDay / 60)
+                if (mealTimes.includes(minuteOfDay)) pet.feed()
+                if ([2, 10, 16].includes(hourOfDay) && minuteOfDay % 60 === 0) {
+                    pet.play()
+                }
+                if ([8, 20].includes(hourOfDay) && minuteOfDay % 60 === 0) {
+                    pet.sleep()
+                }
+                advance(pet, 1)
+                if (pet.poo) pet.clean()
+                if (!pet.alive) break
+            }
+
+            expect(
+                pet.alive,
+                `died after ${pet.age / hour} hours with a ${shiftMinutes}-minute meal shift`,
+            ).toBe(true)
+            expect(pet.age).toBe(7 * day)
+        },
+    )
+
     it('automatically sleeps and survives five days without commanded sleep', () => {
         const pet = maxed()
         pet.satiety = high
