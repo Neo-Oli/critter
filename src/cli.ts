@@ -10,7 +10,7 @@ Commands:
     new       Create a new critter, replacing your current pet
     feed      Give it a meal
     clean     Wash it and stop health loss from dirtiness
-    medicine  Restore health; it still needs food and cleaning
+    heal      Restore health; it still needs food and cleaning
     play      Cheer it up; playing while tired is less effective
     sleep     Let it rest for two hours
     stop      Stop the current action
@@ -76,7 +76,7 @@ const parseArgs = (args: string[]) => {
         case 'clean':
         case 'dismiss':
         case 'feed':
-        case 'medicine':
+        case 'heal':
         case 'new':
         case 'play':
         case 'sleep':

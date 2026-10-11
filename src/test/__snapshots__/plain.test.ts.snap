@@ -15,7 +15,7 @@ A 0 seconds
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-happy-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-happy-heal-none 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -33,7 +33,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-happy-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-happy-heal-poo 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -123,7 +123,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-hungry-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-hungry-heal-none 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -141,7 +141,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-hungry-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-hungry-heal-poo 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -231,7 +231,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-idle-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-idle-heal-none 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -249,7 +249,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-idle-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-idle-heal-poo 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -411,7 +411,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sad-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sad-heal-none 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -429,7 +429,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sad-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sad-heal-poo 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -519,6 +519,42 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sick-heal-none 1`] = `
+"
+                  █▀▀▀█
+                 █  ▄  █
+                 █ ▀█▀ █
+                 █▄▄▄▄▄█
+     ▄▀▀▀▀▀▄
+     █ ▄ ▄ █
+     █▀▀ ▀▀█
+     █▄▄█▄▄█
+
+HEALING (30 seconds)
+H ○○○○○  S ●○○○○
+E ●○○○○  + ●○○○○
+T ●◐○○○  A 5 minutes
+"
+`;
+
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sick-heal-poo 1`] = `
+"
+                  █▀▀▀█
+                 █  ▄  █
+                 █ ▀█▀ █
+                 █▄▄▄▄▄█
+     ▄▀▀▀▀▀▄     ▄▀     ▄
+     █ ▄ ▄ █      ▀ █▄ ▀▄
+     █▀▀ ▀▀█       ██▄▀▄
+     █▄▄█▄▄█     ▄██████▄
+
+HEALING (30 seconds)
+H ○○○○○  S ●○○○○
+E ●○○○○  + ●○○○○
+T ●◐○○○  A 5 minutes
+"
+`;
+
 exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sick-ill-food 1`] = `
 "
                  ▄█▀█▀█▄
@@ -585,42 +621,6 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-H ○○○○○  S ●○○○○
-E ●○○○○  + ●○○○○
-T ●◐○○○  A 5 minutes
-"
-`;
-
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sick-medicine-none 1`] = `
-"
-                  █▀▀▀█
-                 █  ▄  █
-                 █ ▀█▀ █
-                 █▄▄▄▄▄█
-     ▄▀▀▀▀▀▄
-     █ ▄ ▄ █
-     █▀▀ ▀▀█
-     █▄▄█▄▄█
-
-HEALING (30 seconds)
-H ○○○○○  S ●○○○○
-E ●○○○○  + ●○○○○
-T ●◐○○○  A 5 minutes
-"
-`;
-
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-sick-medicine-poo 1`] = `
-"
-                  █▀▀▀█
-                 █  ▄  █
-                 █ ▀█▀ █
-                 █▄▄▄▄▄█
-     ▄▀▀▀▀▀▄     ▄▀     ▄
-     █ ▄ ▄ █      ▀ █▄ ▀▄
-     █▀▀ ▀▀█       ██▄▀▄
-     █▄▄█▄▄█     ▄██████▄
-
-HEALING (30 seconds)
 H ○○○○○  S ●○○○○
 E ●○○○○  + ●○○○○
 T ●◐○○○  A 5 minutes
@@ -771,7 +771,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-tired-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-tired-heal-none 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -789,7 +789,7 @@ T ●◐○○○  A 5 minutes
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-tired-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-1-tired-heal-poo 1`] = `
 "
                   █▀▀▀█
                  █  ▄  █
@@ -897,7 +897,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-happy-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-happy-heal-none 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -915,7 +915,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-happy-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-happy-heal-poo 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1005,7 +1005,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-hungry-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-hungry-heal-none 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █  ▄ ▄  █        █  ▄  █
@@ -1023,7 +1023,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-hungry-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-hungry-heal-poo 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █  ▄ ▄  █        █  ▄  █
@@ -1113,7 +1113,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-idle-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-idle-heal-none 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1131,7 +1131,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-idle-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-idle-heal-poo 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1293,7 +1293,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sad-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sad-heal-none 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1311,7 +1311,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sad-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sad-heal-poo 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1401,6 +1401,42 @@ T ●◐○○○  A 6 hours
 "
 `;
 
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sick-heal-none 1`] = `
+"
+                  █▀▀▀█
+▄▀▀▀▀▀▀▀▄        █  ▄  █
+█ ▄█ █▄ █▄▄▄▄▄▄  █ ▀█▀ █
+█   ▄   █     ██ █▄▄▄▄▄█
+█▄▄▄▄▄▄▄█     █
+ █            █
+ █  █▀█  █▀▀█ █
+ █▄▄█ █▄▄█  █▄█
+
+HEALING (30 seconds)
+H ○○○○○  S ●○○○○
+E ●○○○○  + ●○○○○
+T ●◐○○○  A 6 hours
+"
+`;
+
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sick-heal-poo 1`] = `
+"
+                  █▀▀▀█
+▄▀▀▀▀▀▀▀▄        █  ▄  █
+█ ▄█ █▄ █▄▄▄▄▄▄  █ ▀█▀ █
+█   ▄   █     ██ █▄▄▄▄▄█
+█▄▄▄▄▄▄▄█     █  ▄▀     ▄
+ █            █   ▀ █▄ ▀▄
+ █  █▀█  █▀▀█ █    ██▄▀▄
+ █▄▄█ █▄▄█  █▄█  ▄██████▄
+
+HEALING (30 seconds)
+H ○○○○○  S ●○○○○
+E ●○○○○  + ●○○○○
+T ●◐○○○  A 6 hours
+"
+`;
+
 exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sick-ill-food 1`] = `
 "
                  ▄█▀█▀█▄
@@ -1467,42 +1503,6 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-H ○○○○○  S ●○○○○
-E ●○○○○  + ●○○○○
-T ●◐○○○  A 6 hours
-"
-`;
-
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sick-medicine-none 1`] = `
-"
-                  █▀▀▀█
-▄▀▀▀▀▀▀▀▄        █  ▄  █
-█ ▄█ █▄ █▄▄▄▄▄▄  █ ▀█▀ █
-█   ▄   █     ██ █▄▄▄▄▄█
-█▄▄▄▄▄▄▄█     █
- █            █
- █  █▀█  █▀▀█ █
- █▄▄█ █▄▄█  █▄█
-
-HEALING (30 seconds)
-H ○○○○○  S ●○○○○
-E ●○○○○  + ●○○○○
-T ●◐○○○  A 6 hours
-"
-`;
-
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-sick-medicine-poo 1`] = `
-"
-                  █▀▀▀█
-▄▀▀▀▀▀▀▀▄        █  ▄  █
-█ ▄█ █▄ █▄▄▄▄▄▄  █ ▀█▀ █
-█   ▄   █     ██ █▄▄▄▄▄█
-█▄▄▄▄▄▄▄█     █  ▄▀     ▄
- █            █   ▀ █▄ ▀▄
- █  █▀█  █▀▀█ █    ██▄▀▄
- █▄▄█ █▄▄█  █▄█  ▄██████▄
-
-HEALING (30 seconds)
 H ○○○○○  S ●○○○○
 E ●○○○○  + ●○○○○
 T ●◐○○○  A 6 hours
@@ -1653,7 +1653,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-tired-medicine-none 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-tired-heal-none 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █
@@ -1671,7 +1671,7 @@ T ●◐○○○  A 6 hours
 "
 `;
 
-exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-tired-medicine-poo 1`] = `
+exports[`plain rendering > snapshots every reachable body, top, and bottom sprite combination > sprite layers stage-2-tired-heal-poo 1`] = `
 "
 █▀█▄▄▄█▀█         █▀▀▀█
 █       █        █  ▄  █

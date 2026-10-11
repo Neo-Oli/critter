@@ -111,7 +111,7 @@ describe('stat schedule simulations', () => {
 
         pet.feed()
         pet.clean()
-        pet.medicine()
+        pet.heal()
         pet.play()
         pet.sleep()
         pet.stop()
@@ -340,10 +340,10 @@ describe('stat schedule simulations', () => {
         const pet = healthy()
         pet.health = 1
         pet.satiety = 0
-        pet.medicine()
+        pet.heal()
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBe(max / 2 + 1)
-        pet.medicine()
+        pet.heal()
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBe(max)
     })
@@ -353,7 +353,7 @@ describe('stat schedule simulations', () => {
         pet.health = low
         pet.satiety = 0
         pet.poo = true
-        pet.medicine()
+        pet.heal()
 
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBe(
@@ -429,7 +429,7 @@ describe('stat schedule simulations', () => {
         expect(pet.health).toBe(max)
     })
 
-    it('caps natural recovery from illness at low until medicine is given', () => {
+    it('caps natural recovery from illness at low until healing is given', () => {
         const pet = healthy()
         pet.health = low - 10
         advance(pet, 1)
@@ -438,12 +438,12 @@ describe('stat schedule simulations', () => {
         advance(pet, hour)
         expect(pet.health).toBe(low)
 
-        pet.medicine()
+        pet.heal()
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBeGreaterThan(normal)
     })
 
-    it('keeps naturally recovered health at low for thirty days without medicine', () => {
+    it('keeps naturally recovered health at low for thirty days without healing', () => {
         const pet = maxed()
         pet.health = 1
         runtime.speed = minute
@@ -465,7 +465,7 @@ describe('stat schedule simulations', () => {
         expect(pet.health).toBe(low)
 
         runtime.speed = 1
-        pet.medicine()
+        pet.heal()
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBeGreaterThan(normal)
     })

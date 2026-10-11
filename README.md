@@ -17,7 +17,7 @@ critter
 ## Commands
 
 ```text
-critter [new|feed|clean|medicine|play|sleep|stop]
+critter [new|feed|clean|heal|play|sleep|stop]
 ```
 
 Run `critter` to check on your pet, `critter -h` for help, or `critter -n`

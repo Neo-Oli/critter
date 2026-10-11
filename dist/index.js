@@ -97,8 +97,8 @@ var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\
 // src/sprites/ill.txt
 var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
 
-// src/sprites/medicine.txt
-var medicine_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\n\u2588 \u2580\u2588\u2580 \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
+// src/sprites/heal.txt
+var heal_default = " \u2588\u2580\u2580\u2580\u2588\n\u2588  \u2584  \u2588\n\u2588 \u2580\u2588\u2580 \u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2588\n";
 
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
@@ -171,7 +171,7 @@ var iconHeight = 4;
 var sharedSprites = {
   food: food_default,
   ill: ill_default,
-  medicine: medicine_default,
+  heal: heal_default,
   none: "",
   poo: poo_default,
   toy: toy_default
@@ -353,7 +353,7 @@ var conditions = ({
   const icons = {
     food: ["\u2668", "\u{F025B}"],
     ill: ["!", "\u{F068C}"],
-    medicine: ["\u271A", "\uE221"],
+    heal: ["\u271A", "\uE221"],
     none: ["", ""],
     poo: ["\u224B", "\uEEAF "],
     toy: ["\u25CB", "\u{F0A26}"]
@@ -507,8 +507,8 @@ var Critter = class {
     if (command === "clean") {
       this.clean();
     }
-    if (command === "medicine") {
-      this.medicine();
+    if (command === "heal") {
+      this.heal();
     }
     if (command === "play") {
       this.play();
@@ -585,7 +585,7 @@ var Critter = class {
       reverse: ["eating", "playing"].includes(main),
       sprite: ["eating", "healing", "playing"].includes(main) ? mood : main,
       stage: this.stage,
-      top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
+      top: this.action === "healing" ? "heal" : this.health < low ? "ill" : "none"
     };
   };
   json = ({ debug }) => json({
@@ -602,7 +602,7 @@ var Critter = class {
     state: this.getCritterState(),
     toilet: this.toilet
   });
-  medicine = () => {
+  heal = () => {
     if (this.stage === 0) return;
     this.action = "healing";
     this.actionTime = schedules.health.healingAction;
@@ -875,7 +875,7 @@ Commands:
     new       Create a new critter, replacing your current pet
     feed      Give it a meal
     clean     Wash it and stop health loss from dirtiness
-    medicine  Restore health; it still needs food and cleaning
+    heal      Restore health; it still needs food and cleaning
     play      Cheer it up; playing while tired is less effective
     sleep     Let it rest for two hours
     stop      Stop the current action
@@ -937,7 +937,7 @@ var parseArgs = (args) => {
     case "clean":
     case "dismiss":
     case "feed":
-    case "medicine":
+    case "heal":
     case "new":
     case "play":
     case "sleep":

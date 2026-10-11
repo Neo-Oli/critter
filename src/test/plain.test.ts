@@ -191,7 +191,7 @@ describe('plain rendering', () => {
             'hungry',
             'idle',
             'ill',
-            'medicine',
+            'heal',
             'none',
             'poo',
             'refusing',

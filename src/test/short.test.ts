@@ -162,7 +162,7 @@ describe('short output', () => {
                                     : 'none'
                         const top =
                             main === 'healing'
-                                ? 'medicine'
+                                ? 'heal'
                                 : sprite === 'sick'
                                   ? 'ill'
                                   : 'none'

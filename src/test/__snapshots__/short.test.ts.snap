@@ -42,25 +42,25 @@ exports[`short output > snapshots complete stage, mood, and action output > stag
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-none-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-none-heal 1`] = `
 "
 ʕ•ᴥ•ʔ✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-poo-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-poo-heal 1`] = `
 "
 ʕ•ᴥ•ʔ≋✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-none-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-none-heal 1`] = `
 "
 ʕ×ᴥ×ʔ✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-poo-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-poo-heal 1`] = `
 "
 ʕ×ᴥ×ʔ≋✚ H▂ S▇ E  +▃ T█
 "
@@ -168,25 +168,25 @@ exports[`short output > snapshots complete stage, mood, and action output > stag
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-none-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-none-heal 1`] = `
 "
 ʕ•ᴥ•ʔ✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-poo-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-poo-heal 1`] = `
 "
 ʕ•ᴥ•ʔ≋✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-none-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-none-heal 1`] = `
 "
 ʕ×ᴥ×ʔ✚ H▂ S▇ E  +▃ T█
 "
 `;
 
-exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-poo-medicine 1`] = `
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-poo-heal 1`] = `
 "
 ʕ×ᴥ×ʔ≋✚ H▂ S▇ E  +▃ T█
 "

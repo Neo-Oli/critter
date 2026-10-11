@@ -17,7 +17,7 @@ Use this skill for age-based stages and terminal sprite rendering.
 ## Sprite Assets and Rendering
 
 - Source PNGs live in `sprite_source/`; generated text sprites live in `src/sprites/` with the same stage subdirectories.
-- Stage body assets belong under `stage-0`, `stage-1`, or `stage-2`. Stage 0 currently needs only `idle`; shared overlays such as food, ill, medicine, poo, and toy stay at the sprite root.
+- Stage body assets belong under `stage-0`, `stage-1`, or `stage-2`. Stage 0 currently needs only `idle`; shared overlays such as food, heal, ill, poo, and toy stay at the sprite root.
 - `loadSprite` takes an options object. It truncates/pads rows to `width`, reverses after width normalization, then appends optional fixed `padding` spaces.
 - `plain()` trims trailing whitespace at the final output boundary. Preserve intentional leading/internal sprite spacing.
 - Render state carries the stage so the renderer selects the correct body sprite set.

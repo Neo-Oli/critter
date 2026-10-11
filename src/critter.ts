@@ -44,12 +44,12 @@ export interface PersistedCritterState {
     toilet: number
 }
 
-export type SpriteAsset = 'food' | 'ill' | 'medicine' | 'none' | 'poo' | 'toy'
+export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy'
 type Command =
     | 'clean'
     | 'dismiss'
     | 'feed'
-    | 'medicine'
+    | 'heal'
     | 'new'
     | 'play'
     | 'sleep'
@@ -143,8 +143,8 @@ export class Critter {
         if (command === 'clean') {
             this.clean()
         }
-        if (command === 'medicine') {
-            this.medicine()
+        if (command === 'heal') {
+            this.heal()
         }
         if (command === 'play') {
             this.play()
@@ -238,7 +238,7 @@ export class Critter {
             stage: this.stage,
             top:
                 this.action === 'healing'
-                    ? 'medicine'
+                    ? 'heal'
                     : this.health < low
                       ? 'ill'
                       : 'none',
@@ -259,7 +259,7 @@ export class Critter {
             state: this.getCritterState(),
             toilet: this.toilet,
         } satisfies Json)
-    medicine = () => {
+    heal = () => {
         if (this.stage === 0) return
         this.action = 'healing'
         this.actionTime = schedules.health.healingAction

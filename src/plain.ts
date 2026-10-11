@@ -2,7 +2,7 @@ import { max, type Stage } from './config.ts'
 import { type CritterRenderState } from './critter.ts'
 import food from './sprites/food.txt' with { type: 'text' }
 import ill from './sprites/ill.txt' with { type: 'text' }
-import medicine from './sprites/medicine.txt' with { type: 'text' }
+import heal from './sprites/heal.txt' with { type: 'text' }
 import poo from './sprites/poo.txt' with { type: 'text' }
 import idle0 from './sprites/stage-0/idle.txt' with { type: 'text' }
 import dead1 from './sprites/stage-1/dead.txt' with { type: 'text' }
@@ -36,7 +36,7 @@ type SpriteName =
 const sharedSprites: Partial<Record<SpriteName, string>> = {
     food,
     ill,
-    medicine,
+    heal,
     none: '',
     poo,
     toy,
