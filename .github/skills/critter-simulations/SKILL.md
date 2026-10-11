@@ -1,6 +1,6 @@
 ---
 name: critter-simulations
-description: "Use when adding or changing Critter simulation tests, schedule balance scenarios, care routines, lifespan outcomes, or stat interactions in this project."
+description: 'Use when adding or changing Critter simulation tests, schedule balance scenarios, care routines, lifespan outcomes, or stat interactions in this project.'
 ---
 
 # Critter Simulations

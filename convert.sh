@@ -6,7 +6,7 @@ while IFS= read -r -d '' source; do
     relative=${source#sprite_source/}
     target="$path/${relative%.*}.txt"
     mkdir -p "$(dirname "$target")"
-    if [[ ! -s "$source" ]]; then
+    if [[ ! -s $source ]]; then
         : > "$target"
         continue
     fi
