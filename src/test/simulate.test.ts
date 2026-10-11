@@ -73,6 +73,74 @@ describe('stat schedule simulations', () => {
         }
     })
 
+    it('respects strict stat mood thresholds at their boundaries', () => {
+        const pet = healthy()
+        pet.energy = normal
+        pet.happiness = normal
+        pet.health = normal
+        pet.satiety = normal
+
+        pet.health = normal - 1
+        pet.process()
+        expect(pet.mood).toContain('sick')
+        pet.health = normal
+        pet.process()
+        expect(pet.mood).not.toContain('sick')
+
+        pet.energy = low - 1
+        pet.process()
+        expect(pet.mood).toContain('tired')
+        pet.energy = low
+        pet.process()
+        expect(pet.mood).not.toContain('tired')
+
+        pet.satiety = low - 1
+        pet.process()
+        expect(pet.mood).toContain('hungry')
+        pet.satiety = low
+        pet.process()
+        expect(pet.mood).not.toContain('hungry')
+
+        pet.happiness = low - 1
+        pet.process()
+        expect(pet.mood).toContain('sad')
+        pet.happiness = low
+        pet.process()
+        expect(pet.mood).not.toContain('sad')
+        pet.happiness = high
+        pet.process()
+        expect(pet.mood).not.toContain('happy')
+        pet.happiness = high + 1
+        pet.process()
+        expect(pet.mood).toContain('happy')
+    })
+
+    it('selects toilet drain rates strictly above low, normal, and high', () => {
+        const toiletDrainAt = (postTickSatiety: number) => {
+            const pet = healthy()
+            pet.action = 'refusing'
+            pet.actionTime = minute
+            pet.satiety =
+                postTickSatiety + Math.ceil(max / schedules.satiety.idle)
+            advance(pet, 1)
+            return max - pet.toilet
+        }
+
+        expect(toiletDrainAt(high + 1)).toBe(
+            Math.ceil(max / schedules.toilet.high),
+        )
+        expect(toiletDrainAt(high)).toBe(
+            Math.ceil(max / schedules.toilet.normal),
+        )
+        expect(toiletDrainAt(normal)).toBe(
+            Math.ceil(max / schedules.toilet.low),
+        )
+        expect(toiletDrainAt(low + 1)).toBe(
+            Math.ceil(max / schedules.toilet.low),
+        )
+        expect(toiletDrainAt(low)).toBe(0)
+    })
+
     it('fills half a satiety bar during a one-minute feed action', () => {
         const pet = healthy()
         pet.satiety = normal
@@ -192,6 +260,31 @@ describe('stat schedule simulations', () => {
         expect(pet.health).toBe(max)
     })
 
+    it('healing suppresses poo and hunger health loss while other needs continue', () => {
+        const pet = healthy()
+        pet.health = low
+        pet.satiety = 0
+        pet.poo = true
+        pet.medicine()
+
+        advance(pet, schedules.health.healingAction)
+        expect(pet.health).toBe(
+            low +
+                Math.ceil(max / schedules.health.healing) *
+                    schedules.health.healingAction,
+        )
+        expect(pet.satiety).toBe(0)
+        expect(pet.poo).toBe(true)
+
+        advance(pet, 1)
+        expect(pet.health).toBe(
+            low +
+                Math.ceil(max / schedules.health.healing) *
+                    schedules.health.healingAction -
+                2 * Math.ceil(max / schedules.health.starving),
+        )
+    })
+
     it('stacks poo with hunger and starving health loss', () => {
         const hungry = healthy()
         hungry.satiety = low - 1
@@ -290,6 +383,95 @@ describe('stat schedule simulations', () => {
 })
 
 describe('daily care balance', () => {
+    it('automatically sleeps and survives five days without commanded sleep', () => {
+        const pet = maxed()
+        pet.satiety = high
+        pet.feed()
+        runtime.speed = minute
+        let automaticSleeps = 0
+
+        for (
+            let elapsedMinutes = 1;
+            elapsedMinutes <= (5 * day) / minute;
+            elapsedMinutes += 1
+        ) {
+            if (elapsedMinutes % ((5 * hour) / minute) === 0) pet.feed()
+            const previousAction = pet.action
+            advance(pet, 1)
+            if (pet.poo) pet.clean()
+            if (previousAction !== 'sleeping' && pet.action === 'sleeping') {
+                automaticSleeps += 1
+            }
+            if (!pet.alive) break
+        }
+
+        expect(automaticSleeps).toBeGreaterThan(0)
+        expect(pet.alive).toBe(true)
+        expect(pet.age).toBe(5 * day)
+    })
+
+    it.each([-60, -30, 30, 60])(
+        'survives a week when six-hour meal times shift by %i minutes',
+        (shiftMinutes) => {
+            const pet = maxed()
+            runtime.speed = minute
+            const mealTimes = [0, 6 * 60, 12 * 60, 18 * 60].map(
+                (minuteOfDay) =>
+                    (minuteOfDay + shiftMinutes + 24 * 60) % (24 * 60),
+            )
+
+            for (
+                let elapsedMinutes = 0;
+                elapsedMinutes < (7 * day) / minute;
+                elapsedMinutes += 1
+            ) {
+                const minuteOfDay = elapsedMinutes % (24 * 60)
+                if (mealTimes.includes(minuteOfDay)) pet.feed()
+                advance(pet, 1)
+                if (pet.poo) pet.clean()
+                if (!pet.alive) break
+            }
+
+            expect(pet.alive).toBe(true)
+            expect(pet.age).toBe(7 * day)
+        },
+    )
+
+    it('loses more health when poo cleaning is delayed', () => {
+        const minimumHealthWithCleaningInterval = (cleaningHours: number) => {
+            const pet = maxed()
+            pet.satiety = high
+            pet.feed()
+            runtime.speed = minute
+
+            for (
+                let elapsedMinutes = 1;
+                elapsedMinutes <= (7 * day) / minute;
+                elapsedMinutes += 1
+            ) {
+                advance(pet, 1)
+                if (elapsedMinutes % (5 * 60) === 0) pet.feed()
+                if (pet.poo && elapsedMinutes % (cleaningHours * 60) === 0) {
+                    pet.clean()
+                }
+                if (!pet.alive) break
+            }
+
+            return pet.age / minute
+        }
+
+        const survivalWith12HourCleaning = minimumHealthWithCleaningInterval(12)
+        const survivalWith24HourCleaning = minimumHealthWithCleaningInterval(24)
+        const survivalWith48HourCleaning = minimumHealthWithCleaningInterval(48)
+
+        expect(survivalWith12HourCleaning).toBeGreaterThan(
+            survivalWith24HourCleaning,
+        )
+        expect(survivalWith24HourCleaning).toBeGreaterThan(
+            survivalWith48HourCleaning,
+        )
+    })
+
     it('is dead by thirty days when only fed daily and poo is cleaned', () => {
         const pet = maxed()
         pet.satiety = high
