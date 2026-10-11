@@ -107,19 +107,8 @@ export interface Plain {
     state: CritterRenderState
     toilet: number
 }
-export const plain = ({
-    actionTime,
-    age,
-    debug = false,
-    energy,
-    happiness,
-    health,
-    noNerdFonts,
-    satiety,
-    state,
-    toilet,
-}: Plain) => {
-    const { bottom, main, reverse, sprite, top } = state
+export const plainSprites = ({ state }: Pick<Plain, 'state'>) => {
+    const { bottom, reverse, sprite, top } = state
     const topSprite = loadSprite({
         height: iconHeight,
         name: top,
@@ -145,6 +134,22 @@ export const plain = ({
         output[i] += topSprite[i]
         output[i + iconHeight] += bottomSprite[i]
     }
+
+    return output.map((line) => line.trimEnd()).join('\n')
+}
+
+export const plainStats = ({
+    actionTime,
+    age,
+    debug = false,
+    energy,
+    happiness,
+    health,
+    noNerdFonts,
+    satiety,
+    state,
+    toilet,
+}: Plain) => {
     const stat = (name: string, value: number) => {
         const barValue = Math.round((value / max) * 10)
         let empty, full, half
@@ -172,18 +177,18 @@ export const plain = ({
     }
 
     const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : ''
-    const o = (line: string = '') => {
-        output.push(`${line}`)
-    }
-    o()
+    const output: string[] = []
     if (state.stage !== 0) {
-        o(`${main.toUpperCase()}${remaining}`)
-        o(stat('Happy', happiness))
-        o(stat('Hunger', satiety))
-        o(stat('Energy', energy))
-        o(stat('Health', health))
-        o(stat('Toilet', toilet))
+        output.push(state.main.toUpperCase() + remaining)
+        output.push(stat('Happy', happiness))
+        output.push(stat('Hunger', satiety))
+        output.push(stat('Energy', energy))
+        output.push(stat('Health', health))
+        output.push(stat('Toilet', toilet))
     }
-    o(label('Age') + duration(age))
+    output.push(label('Age') + duration(age))
     return output.map((line) => line.trimEnd()).join('\n')
 }
+
+export const plain = (options: Plain) =>
+    `${plainSprites(options)}\n\n${plainStats(options)}`

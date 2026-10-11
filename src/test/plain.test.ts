@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { high, low, max, normal, stagingSchedule } from '../config.ts'
 import { Critter } from '../critter.ts'
-import { loadSprite, plain } from '../plain.ts'
+import { loadSprite, plain, plainSprites, plainStats } from '../plain.ts'
 
 const runtime = vi.hoisted(() => ({ time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
@@ -49,6 +49,35 @@ beforeEach(() => {
 })
 
 describe('plain rendering', () => {
+    it('combines sprite and stat output with a blank line', () => {
+        const options = {
+            actionTime: 30,
+            age: 60,
+            energy: max,
+            happiness: max,
+            health: max,
+            noNerdFonts: true,
+            satiety: max,
+            state: {
+                bottom: 'none',
+                main: 'idle',
+                reverse: false,
+                sprite: 'idle',
+                stage: 2,
+                top: 'none',
+            } as const,
+            toilet: max,
+        }
+        const sprites = plainSprites({ state: options.state })
+        const stats = plainStats(options)
+
+        expect(sprites.split('\n')).toHaveLength(8)
+        expect(stats).toContain('IDLE')
+        expect(stats).toContain('Happy:')
+        expect(stats).toContain('Age:')
+        expect(plain(options)).toBe(`${sprites}\n\n${stats}`)
+    })
+
     it('shows only the egg sprite and age during the egg stage', () => {
         const egg = new Critter({ command: 'new' })
         const output = egg.plain({ noNerdFonts: true })
