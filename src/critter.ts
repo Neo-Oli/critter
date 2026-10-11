@@ -326,11 +326,22 @@ export class Critter {
                         -1,
                     )
                 } else if (!this.poo) {
-                    this.health = changeBySchedule(
-                        this.health,
-                        schedules.health.recovery,
-                        1,
-                    )
+                    if (this.health < low) {
+                        this.health = Math.min(
+                            low,
+                            changeBySchedule(
+                                this.health,
+                                schedules.health.recovery,
+                                1,
+                            ),
+                        )
+                    } else if (this.health > low) {
+                        this.health = changeBySchedule(
+                            this.health,
+                            schedules.health.recovery,
+                            1,
+                        )
+                    }
                 }
             }
             const toiletSchedule =

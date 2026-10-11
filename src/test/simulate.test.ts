@@ -228,6 +228,20 @@ describe('stat schedule simulations', () => {
         }
         expect(pet.health).toBe(max)
     })
+
+    it('caps natural recovery from illness at low until medicine is given', () => {
+        const pet = healthy()
+        pet.health = low - 10
+        advance(pet, 1)
+        expect(pet.health).toBe(low)
+
+        advance(pet, hour)
+        expect(pet.health).toBe(low)
+
+        pet.medicine()
+        advance(pet, schedules.health.healingAction)
+        expect(pet.health).toBeGreaterThan(normal)
+    })
 })
 
 describe('daily care balance', () => {
