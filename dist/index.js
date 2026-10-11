@@ -30,7 +30,8 @@ var schedules = {
   energy: {
     awake: day,
     playing: 10 * 2 * minute,
-    sleeping: 2 * hour
+    sleeping: 2 * hour,
+    sleepingSick: 4 * hour
   },
   happiness: {
     idle: 6 * hour,
@@ -93,6 +94,9 @@ var hungry_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u
 // src/sprites/idle.txt
 var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588   \u2588 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2584   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
+// src/sprites/ill.txt
+var ill_default = "\u2584\u2588\u2580\u2588\u2580\u2588\u2584\n\u2588\u2588\u2584\u2588\u2584\u2588\u2588\n\u2580\u2588\u2588\u2584\u2588\u2588\u2580\n \u2580 \u2580 \u2580\n";
+
 // src/sprites/poo.txt
 var poo_default = "\u2584\u2580     \u2584\n \u2580 \u2588\u2584 \u2580\u2584\n  \u2588\u2588\u2584\u2580\u2584\n\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2584\n";
 
@@ -127,6 +131,7 @@ var loadSprite = (name, width = spriteWidth, height = spriteHeight, reverse = fa
     healing: healing_default,
     hungry: hungry_default,
     idle: idle_default,
+    ill: ill_default,
     none: "",
     poo: poo_default,
     refusing: refusing_default,
@@ -311,7 +316,7 @@ var Critter = class {
       main,
       reverse: ["eating", "playing"].includes(main),
       sprite: main === "eating" || main === "playing" ? mood : main,
-      top: "none"
+      top: this.health < low ? "ill" : "none"
     };
   };
   medicine = () => {
@@ -393,7 +398,7 @@ var Critter = class {
       if (this.action === "sleeping") {
         this.energy = changeBySchedule(
           this.energy,
-          schedules.energy.sleeping,
+          this.health < low ? schedules.energy.sleepingSick : schedules.energy.sleeping,
           1
         );
         if (this.energy >= max) {
@@ -451,11 +456,22 @@ var Critter = class {
             -1
           );
         } else if (!this.poo) {
-          this.health = changeBySchedule(
-            this.health,
-            schedules.health.recovery,
-            1
-          );
+          if (this.health < low) {
+            this.health = Math.min(
+              low,
+              changeBySchedule(
+                this.health,
+                schedules.health.recovery,
+                1
+              )
+            );
+          } else if (this.health > low) {
+            this.health = changeBySchedule(
+              this.health,
+              schedules.health.recovery,
+              1
+            );
+          }
         }
       }
       const toiletSchedule = this.satiety > high ? schedules.toilet.high : this.satiety > normal ? schedules.toilet.normal : this.satiety > low ? schedules.toilet.low : void 0;
@@ -501,7 +517,7 @@ var Critter = class {
     if (this.satiety < low) {
       this.mood.push("hungry");
     }
-    if (this.health < low) {
+    if (this.health < normal) {
       this.mood.push("sick");
     }
     if (this.energy < low) {
