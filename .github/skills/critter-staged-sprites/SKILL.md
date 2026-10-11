@@ -1,6 +1,6 @@
 ---
 name: critter-staged-sprites
-description: "Use when changing Critter stages, sprite assets, render layers, sprite conversion, or render snapshots in this project."
+description: 'Use when changing Critter stages, sprite assets, render layers, sprite conversion, or render snapshots in this project.'
 ---
 
 # Critter Stages and Sprites

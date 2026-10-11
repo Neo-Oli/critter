@@ -684,7 +684,7 @@ Options:
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
     -d, --debug           Show exact stat values
 
-Daily care: about four meals, two sleeps, three plays, and one cleaning.
+Daily care: about four meals, two sleeps, and three plays; clean whenever poo appears.
 
 Examples:
     critter new
