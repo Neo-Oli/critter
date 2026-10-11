@@ -9,6 +9,7 @@
         "test:snap": "vitest run -u",
         "test:watch": "vitest",
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
+        "convert": "./convert.sh",
         "check": "tsc --noEmit",
         "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
         "start": "vite-node --config vitest.config.ts src/index.ts"
