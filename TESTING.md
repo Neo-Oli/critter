@@ -29,14 +29,15 @@ All action durations and stat changes still run through the real process loop.
 
 Starvation ranges start with full health and satiety at `high`, representing
 a healthy pet after feeding while hungry. New pets have different initial
-stats, and injured or overfed pets have different survival times.
+stats, and injured pets have different survival times.
 
 Whole-second hungry meals finish at or just below `high`, never above it.
-Normal meals can cause stuffing; a newborn's first meal must not.
+Feeding at full satiety starts a 30-second refusal, causes only a small
+happiness loss, and does not damage health.
 Integer rounding makes cleaning due at about 23.15 hours rather than exactly
 24, so the full-care test allows a small cleanliness deficit just before the
-next daily cleaning. It requires health within one percent of full, sufficient energy and
-happiness, and no stuffing throughout the simulation.
+next daily cleaning. It requires health within one percent of full, sufficient
+energy, and happiness throughout the simulation.
 
 ## Need Interactions
 
@@ -44,9 +45,9 @@ happiness, and no stuffing throughout the simulation.
   and prevents natural recovery. Cleaning stops this damage and enables recovery;
   there is no dirtiness timer or grace period.
 - Starvation takes precedence over dirtiness damage, preserving the food-neglect
-  deadlines. Stuffing damage also does not stack with dirtiness damage.
-- One extra meal from the stuffed threshold costs five to ten percent health
-  before satiety falls back into range. Repeated overfeeding accumulates damage.
+  deadlines. Feeding at full satiety does not cause health damage.
+- A full critter refuses food for thirty seconds and loses a small amount of
+  happiness.
 - Playing while tired restores approximately half as much happiness.
 - Sleeping still restores energy while starving, but starvation continues.
   Interrupting sleep retains recovered energy and has a small happiness penalty.

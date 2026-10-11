@@ -8,7 +8,7 @@ With no command, show your critter's current state.
 
 Commands:
     new       Create a new critter, replacing your current pet
-    feed      Give it a meal; feeding when full can make it stuffed
+    feed      Give it a meal
     clean     Wash it and stop health loss from dirtiness
     medicine  Restore health; it still needs food and cleaning
     play      Cheer it up; playing while tired is less effective

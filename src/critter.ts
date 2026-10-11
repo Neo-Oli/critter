@@ -1,10 +1,16 @@
-import { high, low, max, normal, speed, too_high } from './config.ts'
+import { high, low, max, normal, speed } from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { plain } from './plain.ts'
 import { hour, minute, now } from './utils.ts'
 
 export type Action =
-    'cleaning' | 'eating' | 'healing' | 'idle' | 'playing' | 'sleeping'
+    | 'cleaning'
+    | 'eating'
+    | 'healing'
+    | 'idle'
+    | 'playing'
+    | 'refusing'
+    | 'sleeping'
 
 export type Mood =
     CleanlinessMood | EnergyMood | FoodMood | HappinessMood | HealthMood
@@ -27,7 +33,7 @@ interface CritterOptions {
     command?: Command
 }
 type EnergyMood = 'sleeping' | 'tired'
-type FoodMood = 'eating' | 'hungry' | 'stuffed'
+type FoodMood = 'eating' | 'hungry'
 type HappinessMood = 'happy' | 'sad'
 type HealthMood = 'dead' | 'healing' | 'sick'
 interface Plain {
@@ -111,11 +117,20 @@ export class Critter {
         this.mood = ['dead']
     }
     feed = () => {
+        if (this.satiety > high) {
+            this.refuse()
+            return
+        }
         this.action = 'eating'
         this.actionTime =
             this.satiety < low
                 ? Math.floor((high - this.satiety) / 6250)
                 : minute
+    }
+    refuse = () => {
+        this.action = 'refusing'
+        this.actionTime = 30
+        this.happiness = set(this.happiness - 10000)
     }
     getCritterState = (): Action | Mood => {
         if (!this.alive) return 'dead'
@@ -123,11 +138,9 @@ export class Critter {
             'dead',
             'sick',
             'tired',
-            'stuffed',
             'hungry',
             'dirty',
             'sad',
-            'stuffed',
             'happy',
         ]
         if (this.action !== 'idle') return this.action
@@ -200,6 +213,7 @@ export class Critter {
             if (this.actionTime <= 0) this.action = 'idle'
             if (this.action === 'eating') {
                 this.satiety = set(this.satiety + 6250)
+                if (this.satiety >= max) this.refuse()
             } else {
                 this.satiety = set(this.satiety - 23)
             }
@@ -216,11 +230,7 @@ export class Critter {
 
             if (this.action === 'healing') {
                 this.health = set(this.health + 100000)
-            } else if (
-                this.satiety > 0 &&
-                this.satiety <= too_high &&
-                this.cleanliness >= low
-            ) {
+            } else if (this.satiety > 0 && this.cleanliness >= low) {
                 this.health = set(this.health + 30)
             }
             if (this.action === 'playing') {
@@ -234,9 +244,6 @@ export class Critter {
             if (this.actionTime === 0) this.action = 'idle'
             if (this.satiety === 0) {
                 this.health = set(this.health - (this.health > low ? 14 : 3))
-            } else if (this.satiety > too_high) {
-                this.health = set(this.health - 14)
-                this.mood.push('stuffed')
             } else if (this.cleanliness < low) {
                 this.health = set(this.health - 2)
             }

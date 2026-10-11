@@ -6,7 +6,6 @@ var high = Math.round(max / 4 * 3);
 var normal = Math.round(max / 2);
 var low = Math.round(max / 4);
 var binName = "critter";
-var too_high = Math.round(max / 4 * 3.5);
 var speed = 1;
 
 // src/io.ts
@@ -54,6 +53,9 @@ var idle_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u25
 // src/sprites/playing.txt
 var playing_default = "\n\n\n\n        \u2584\u2588\u2584\n \u2584\u2580\u2580\u2584  \u2588  \u2588\u2584\u2584\u2584\u2584\u2584\n\u2588    \u2588 \u2580\u2580\u2580\u2588   \u2588\n \u2580\u2584\u2584\u2580     \u2588\u2580\u2580\u2580\u2588\n";
 
+// src/sprites/refusing.txt
+var refusing_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588 \u2584   \u2584 \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2584\u2580\u2580\u2580\u2584 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
+
 // src/sprites/sad.txt
 var sad_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2588\u2580 \u2588\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2580 \u2584\u2580  \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
@@ -62,9 +64,6 @@ var sick_default = "\n\u2584\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2584\n\u
 
 // src/sprites/sleeping.txt
 var sleeping_default = "\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2584\u2584\u2584 \u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 \u2580\u2580\u2580\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2580\u2580\u2580\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2580\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n\u2588\u2588\u2588\u2588\u2584\u2584\u2584\u2584\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\n";
-
-// src/sprites/stuffed.txt
-var stuffed_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588 \u2584\u2584 \u2584\u2584 \u2588\n\u2588  \u2584\u2584\u2584  \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588 \u2580 \u2588 \u2580 \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
 
 // src/sprites/tired.txt
 var tired_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2588       \u2588\n\u2588 \u2580\u2580 \u2580\u2580 \u2588\u2584\u2584\u2584\u2584\u2584\u2584\n\u2588   \u2588   \u2588     \u2588\u2588\n\u2588\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2588     \u2588\n \u2588            \u2588\n \u2588  \u2588\u2580\u2588  \u2588\u2580\u2580\u2588 \u2588\n \u2588\u2584\u2584\u2588 \u2588\u2584\u2584\u2588  \u2588\u2584\u2588\n";
@@ -99,10 +98,10 @@ var loadSprite = (name) => {
     hungry: hungry_default,
     idle: idle_default,
     playing: playing_default,
+    refusing: refusing_default,
     sad: sad_default,
     sick: sick_default,
     sleeping: sleeping_default,
-    stuffed: stuffed_default,
     tired: tired_default
   };
   return sprites[name].split(/\r?\n/);
@@ -151,7 +150,7 @@ var plain = ({
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
   output[i++] += `${state.toUpperCase()}${remaining}`;
   output[i++] += stat("Happy", happiness, max);
-  output[i++] += stat("Hunger", satiety, too_high);
+  output[i++] += stat("Hunger", satiety, max);
   output[i++] += stat("Energy", energy, max);
   output[i++] += stat("Health", health, max);
   output[i++] += stat("Clean", cleanliness, max);
@@ -235,8 +234,17 @@ var Critter = class {
     this.mood = ["dead"];
   };
   feed = () => {
+    if (this.satiety >= max) {
+      this.refuse();
+      return;
+    }
     this.action = "eating";
     this.actionTime = this.satiety < low ? Math.floor((high - this.satiety) / 6250) : minute;
+  };
+  refuse = () => {
+    this.action = "refusing";
+    this.actionTime = 30;
+    this.happiness = set(this.happiness - 1e3);
   };
   getCritterState = () => {
     if (!this.alive) return "dead";
@@ -244,11 +252,9 @@ var Critter = class {
       "dead",
       "sick",
       "tired",
-      "stuffed",
       "hungry",
       "dirty",
       "sad",
-      "stuffed",
       "happy"
     ];
     if (this.action !== "idle") return this.action;
@@ -318,6 +324,7 @@ var Critter = class {
       if (this.actionTime <= 0) this.action = "idle";
       if (this.action === "eating") {
         this.satiety = set(this.satiety + 6250);
+        if (this.satiety === max) this.refuse();
       } else {
         this.satiety = set(this.satiety - 23);
       }
@@ -333,7 +340,7 @@ var Critter = class {
       }
       if (this.action === "healing") {
         this.health = set(this.health + 1e5);
-      } else if (this.satiety > 0 && this.satiety <= too_high && this.cleanliness >= low) {
+      } else if (this.satiety > 0 && this.cleanliness >= low) {
         this.health = set(this.health + 30);
       }
       if (this.action === "playing") {
@@ -347,9 +354,6 @@ var Critter = class {
       if (this.actionTime === 0) this.action = "idle";
       if (this.satiety === 0) {
         this.health = set(this.health - (this.health > low ? 14 : 3));
-      } else if (this.satiety > too_high) {
-        this.health = set(this.health - 14);
-        this.mood.push("stuffed");
       } else if (this.cleanliness < low) {
         this.health = set(this.health - 2);
       }
@@ -402,7 +406,7 @@ With no command, show your critter's current state.
 
 Commands:
     new       Create a new critter, replacing your current pet
-    feed      Give it a meal; feeding when full can make it stuffed
+    feed      Give it a meal; a full critter refuses for 30 seconds
     clean     Wash it and stop health loss from dirtiness
     medicine  Restore health; it still needs food and cleaning
     play      Cheer it up; playing while tired is less effective

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal, too_high } from './config.ts'
+import { high, low, max, normal } from './config.ts'
 import { Critter } from './critter.ts'
 import { hour, minute } from './utils.ts'
 
@@ -74,7 +74,7 @@ describe('construction and persistence', () => {
         const restored = new Critter({ command: 'play' })
         expect(restored.birth).toBe(state.birth)
         expect(restored.age).toBe(state.age + 10)
-        expect(restored.satiety).toBe(Math.min(max, state.satiety + 62500))
+        expect(restored.satiety).toBe(high + 6250 - 9 * 23)
         expect(restored.action).toBe('playing')
         expect(restored.actionTime).toBe(2 * minute)
         expect(storage.saveState).toHaveBeenLastCalledWith(
@@ -149,25 +149,38 @@ describe('actions', () => {
             advance(pet, pet.actionTime)
             expect(pet.satiety).toBeLessThanOrEqual(high)
             expect(high - pet.satiety).toBeLessThan(6250)
-            expect(pet.mood).not.toContain('stuffed')
+            expect(pet.action).not.toBe('refusing')
             expect(pet.action).toBe('idle')
         },
     )
 
-    it('allows a newborn meal but punishes repeated overfeeding', () => {
+    it('allows a meal at high satiety and refuses after it exceeds high', () => {
         const pet = new Critter({ command: 'new' })
         advance(pet, 1)
         expect(pet.mood).not.toContain('hungry')
+        pet.satiety = high
         pet.feed()
+        expect(pet.action).toBe('eating')
         advance(pet, minute)
-        expect(pet.satiety).toBeLessThanOrEqual(too_high)
-        expect(pet.mood).not.toContain('stuffed')
-        const healthBeforeExtraMeal = pet.health
+        expect(pet.satiety).toBeGreaterThan(high)
+        expect(pet.action).toBe('idle')
         pet.feed()
-        advance(pet, minute)
-        expect(pet.satiety).toBe(max)
-        expect(pet.mood).toContain('stuffed')
-        expect(pet.health).toBeLessThan(healthBeforeExtraMeal)
+        expect(pet.action).toBe('refusing')
+        expect(pet.actionTime).toBe(30)
+    })
+
+    it('refuses above high for 30 seconds with a small happiness loss', () => {
+        const pet = healthy()
+        pet.satiety = high + 1
+        const happinessBeforeRefusal = pet.happiness
+        pet.feed()
+        expect(pet.action).toBe('refusing')
+        expect(pet.actionTime).toBe(30)
+        expect(happinessBeforeRefusal - pet.happiness).toBe(1000)
+        advance(pet, 30)
+        expect(pet.action).toBe('idle')
+        expect(pet.actionTime).toBe(0)
+        expect(happinessBeforeRefusal - pet.happiness).toBeLessThan(max * 0.01)
     })
 
     it.each([
@@ -251,15 +264,7 @@ describe('processing and presentation', () => {
     it('prioritizes actions, then moods, but never actions over death', () => {
         const pet = healthy()
         expect(pet.getCritterState()).toBe('idle')
-        pet.mood = [
-            'happy',
-            'sad',
-            'dirty',
-            'hungry',
-            'stuffed',
-            'tired',
-            'sick',
-        ]
+        pet.mood = ['happy', 'sad', 'dirty', 'hungry', 'tired', 'sick']
         expect(pet.getCritterState()).toBe('sick')
         pet.play()
         expect(pet.getCritterState()).toBe('playing')
@@ -378,7 +383,7 @@ describe('accelerated balance', () => {
                 pet.sleep()
             }
             advance(pet, 1)
-            if (!pet.alive || pet.mood.includes('stuffed')) {
+            if (!pet.alive) {
                 throw new Error(
                     `Care schedule failed at simulated minute ${elapsed}`,
                 )
@@ -411,7 +416,7 @@ describe('need interactions', () => {
                 }
                 if (elapsed % (24 * 60) === 10) pet.clean()
                 advance(pet, 1)
-                if (!pet.alive || pet.mood.includes('stuffed')) {
+                if (!pet.alive) {
                     throw new Error(
                         `Irregular feeding failed at minute ${elapsed}`,
                     )
@@ -493,29 +498,14 @@ describe('need interactions', () => {
         expect(pet.mood).not.toContain('dirty')
     })
 
-    it('one accidental extra meal costs only five to ten percent health', () => {
-        const pet = healthy()
-        pet.satiety = too_high
-        pet.feed()
-        advance(pet, minute)
-        expect(pet.mood).toContain('stuffed')
-        advance(pet, Math.ceil((max - too_high) / 23))
-        expect(pet.mood).not.toContain('stuffed')
-        expect(pet.alive).toBe(true)
-        expect(max - pet.health).toBeGreaterThanOrEqual(max * 0.05)
-        expect(max - pet.health).toBeLessThanOrEqual(max * 0.1)
-    })
-
-    it('repeated overfeeding accumulates damage instead of healing it away', () => {
+    it('a full meal refusal does not damage health', () => {
         const pet = healthy()
         pet.satiety = max
+        const healthBeforeRefusal = pet.health
         pet.feed()
-        advance(pet, minute)
-        const previousHealth = pet.health
-        pet.feed()
-        advance(pet, minute)
-        expect(pet.health).toBeLessThan(previousHealth)
-        expect(pet.mood).toContain('stuffed')
+        advance(pet, 30)
+        expect(pet.alive).toBe(true)
+        expect(pet.health).toBe(healthBeforeRefusal)
     })
 
     it('playing while tired restores about half as much happiness', () => {

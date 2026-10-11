@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { max, too_high } from './config.ts'
+import { max } from './config.ts'
 import { plain } from './plain.ts'
 
 const full = String.fromCodePoint(0x25cf)
@@ -15,7 +15,7 @@ const render = (overrides: Partial<Parameters<typeof plain>[0]> = {}) =>
         happiness: max,
         health: max,
         noNerdFonts: true,
-        satiety: too_high,
+        satiety: max,
         state: 'idle',
         ...overrides,
     })
@@ -31,10 +31,10 @@ describe('plain rendering', () => {
         'hungry',
         'idle',
         'playing',
+        'refusing',
         'sad',
         'sick',
         'sleeping',
-        'stuffed',
         'tired',
     ] as const)('loads the %s sprite and displays every stat', (state) => {
         const output = render({ state })
@@ -61,9 +61,10 @@ describe('plain rendering', () => {
         expect(output).toContain(`Health: ${full.repeat(5)}`)
     })
 
-    it('marks overflow but does not grow the stat bar', () => {
-        expect(render({ satiety: max })).toContain(`Hunger: ${full.repeat(5)}!`)
-        expect(render({ satiety: too_high })).not.toContain('!')
+    it('caps an over-range stat bar without an overflow marker', () => {
+        const output = render({ satiety: max + 1 })
+        expect(output).toContain(`Hunger: ${full.repeat(5)}`)
+        expect(output).not.toContain('!')
     })
 
     it('uses private-use Nerd Font glyphs only when enabled', () => {
