@@ -37,6 +37,7 @@ type FoodMood = 'eating' | 'hungry'
 type HappinessMood = 'happy' | 'sad'
 type HealthMood = 'dead' | 'healing' | 'sick'
 interface Plain {
+    debug?: boolean
     noNerdFonts: boolean
 }
 
@@ -174,11 +175,12 @@ export class Critter {
             time: now(),
         }
     }
-    plain = ({ noNerdFonts }: Plain) =>
+    plain = ({ debug, noNerdFonts }: Plain) =>
         plain({
             actionTime: this.actionTime,
             age: this.age,
             cleanliness: this.cleanliness,
+            debug,
             energy: this.energy,
             happiness: this.happiness,
             health: this.health,

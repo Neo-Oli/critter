@@ -1,5 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`plain rendering > matches snapshots across key life stages > debug 1`] = `
+"█▀█▄▄▄█▀█         IDLE
+█       █         Happy:  󰛞󰋕󰋕󰋕󰋕 (123456)
+█ █   █ █▄▄▄▄▄▄   Hunger: 󰋑󰋕󰋕󰋕󰋕 (234567)
+█   ▄   █     ██  Energy: 󰋑󰛞󰋕󰋕󰋕 (345678)
+█▄▄▄▄▄▄▄█     █   Health: 󰋑󰋑󰛞󰋕󰋕 (456789)
+ █            █   Clean:  󰋑󰋑󰋑󰋕󰋕 (567890)
+ █  █▀█  █▀▀█ █   Age:    0 seconds
+ █▄▄█ █▄▄█  █▄█   
+                  "
+`;
+
 exports[`plain rendering > matches snapshots across key life stages > eating 1`] = `
 "                  EATING (45 seconds)
                   Happy:  󰋑󰋑󰋑󰋑󰋕

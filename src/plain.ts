@@ -40,6 +40,7 @@ interface Plain {
     actionTime: number
     age: number
     cleanliness: number
+    debug?: boolean
     energy: number
     happiness: number
     health: number
@@ -51,6 +52,7 @@ export const plain = ({
     actionTime,
     age,
     cleanliness,
+    debug = false,
     energy,
     happiness,
     health,
@@ -79,7 +81,7 @@ export const plain = ({
         bar += empty.repeat(
             Math.max(0, 5 - Math.floor(barValue / 2 + (maxBarValue % 2))),
         )
-        return `${label(name)}${bar}`
+        return `${label(name)}${bar}${debug ? ` (${value})` : ''}`
     }
     const label = (str: string) => {
         return `${str}: `.padEnd(8)

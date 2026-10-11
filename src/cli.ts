@@ -18,6 +18,7 @@ Commands:
 Options:
     -h, --help           Show this help and exit
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
+    -d, --debug           Show exact stat values
 
 Daily care: about four meals, two sleeps, three plays, and one cleaning.
 
@@ -25,6 +26,7 @@ Examples:
     critter new
     critter
     critter -n feed
+    critter -d
 `
 
 const parseArgs = (args: string[]) => {
@@ -34,11 +36,16 @@ const parseArgs = (args: string[]) => {
     }
 
     const noNerdFonts = args.includes('-n') || args.includes('--no-nerd-fonts')
+    const debug = args.includes('-d') || args.includes('--debug')
     const [command] = args.filter(
-        (arg) => arg !== '-n' && arg !== '--no-nerd-fonts',
+        (arg) =>
+            arg !== '-n' &&
+            arg !== '--no-nerd-fonts' &&
+            arg !== '-d' &&
+            arg !== '--debug',
     )
 
-    if (!command) return { command: undefined, noNerdFonts }
+    if (!command) return { command: undefined, debug, noNerdFonts }
 
     switch (command) {
         case 'clean':
@@ -48,7 +55,7 @@ const parseArgs = (args: string[]) => {
         case 'play':
         case 'sleep':
         case 'stop':
-            return { command, noNerdFonts }
+            return { command, debug, noNerdFonts }
 
         default:
             throw new Error(`Unknown command: ${command}`)
@@ -65,12 +72,12 @@ export const cli = async () => {
         )
         process.exit(7)
     }
-    const { command, noNerdFonts } = args
+    const { command, debug, noNerdFonts } = args
     const critter = new Critter({ command })
     if (critter.error) {
         process.stderr.write(`${critter.error}\n`)
         process.exit(1)
     } else {
-        console.log(`${critter.plain({ noNerdFonts })}\n`)
+        console.log(`${critter.plain({ debug, noNerdFonts })}\n`)
     }
 }

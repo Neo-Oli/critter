@@ -6,6 +6,7 @@ var high = Math.round(max / 4 * 3);
 var normal = Math.round(max / 2);
 var low = Math.round(max / 4);
 var binName = "critter";
+var happinessPenalty = 1e4;
 var speed = 1;
 
 // src/io.ts
@@ -110,6 +111,7 @@ var plain = ({
   actionTime,
   age,
   cleanliness,
+  debug = false,
   energy,
   happiness,
   health,
@@ -118,8 +120,8 @@ var plain = ({
   state
 }) => {
   const output = loadSprite(state).map((line) => line.padEnd(spriteWidth + 2));
-  const stat = (name, value, overflow) => {
-    const barValue = Math.round(value / overflow * 10);
+  const stat = (name, value) => {
+    const barValue = Math.round(value / max * 10);
     let empty, full, half;
     if (noNerdFonts) {
       empty = "\u25CB";
@@ -138,10 +140,7 @@ var plain = ({
     bar += empty.repeat(
       Math.max(0, 5 - Math.floor(barValue / 2 + maxBarValue % 2))
     );
-    if (value > overflow) {
-      bar += "!";
-    }
-    return `${label(name)}${bar}`;
+    return `${label(name)}${bar}${debug ? ` (${value})` : ""}`;
   };
   const label = (str) => {
     return `${str}: `.padEnd(8);
@@ -149,11 +148,11 @@ var plain = ({
   let i = 0;
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
   output[i++] += `${state.toUpperCase()}${remaining}`;
-  output[i++] += stat("Happy", happiness, max);
-  output[i++] += stat("Hunger", satiety, max);
-  output[i++] += stat("Energy", energy, max);
-  output[i++] += stat("Health", health, max);
-  output[i++] += stat("Clean", cleanliness, max);
+  output[i++] += stat("Happy", happiness);
+  output[i++] += stat("Hunger", satiety);
+  output[i++] += stat("Energy", energy);
+  output[i++] += stat("Health", health);
+  output[i++] += stat("Clean", cleanliness);
   output[i++] += label("Age") + duration(age);
   return output.join("\n");
 };
@@ -234,17 +233,12 @@ var Critter = class {
     this.mood = ["dead"];
   };
   feed = () => {
-    if (this.satiety >= max) {
+    if (this.satiety > high) {
       this.refuse();
       return;
     }
     this.action = "eating";
     this.actionTime = this.satiety < low ? Math.floor((high - this.satiety) / 6250) : minute;
-  };
-  refuse = () => {
-    this.action = "refusing";
-    this.actionTime = 30;
-    this.happiness = set(this.happiness - 1e3);
   };
   getCritterState = () => {
     if (!this.alive) return "dead";
@@ -292,10 +286,11 @@ var Critter = class {
       time: now()
     };
   };
-  plain = ({ noNerdFonts }) => plain({
+  plain = ({ debug, noNerdFonts }) => plain({
     actionTime: this.actionTime,
     age: this.age,
     cleanliness: this.cleanliness,
+    debug,
     energy: this.energy,
     happiness: this.happiness,
     health: this.health,
@@ -324,12 +319,16 @@ var Critter = class {
       if (this.actionTime <= 0) this.action = "idle";
       if (this.action === "eating") {
         this.satiety = set(this.satiety + 6250);
-        if (this.satiety === max) this.refuse();
+        if (this.satiety >= max) this.refuse();
       } else {
         this.satiety = set(this.satiety - 23);
       }
       if (this.action === "sleeping") {
         this.energy = set(this.energy + 139);
+        if (this.energy === max) {
+          this.action = "idle";
+          this.actionTime = 0;
+        }
       } else {
         this.energy = set(this.energy - 21);
       }
@@ -383,13 +382,22 @@ var Critter = class {
       }
     }
   };
+  refuse = () => {
+    this.action = "refusing";
+    this.actionTime = 30;
+    this.happiness = set(this.happiness - happinessPenalty);
+  };
   sleep = () => {
+    if (this.energy >= normal) {
+      this.refuse();
+      return;
+    }
     this.action = "sleeping";
     this.actionTime = 2 * hour;
   };
   stop = () => {
     if (this.action === "eating" || this.action === "sleeping") {
-      this.happiness = set(this.happiness - 1e3);
+      this.happiness = set(this.happiness - happinessPenalty);
     }
     this.action = "idle";
     this.actionTime = 0;
@@ -406,7 +414,7 @@ With no command, show your critter's current state.
 
 Commands:
     new       Create a new critter, replacing your current pet
-    feed      Give it a meal; a full critter refuses for 30 seconds
+    feed      Give it a meal
     clean     Wash it and stop health loss from dirtiness
     medicine  Restore health; it still needs food and cleaning
     play      Cheer it up; playing while tired is less effective
@@ -416,6 +424,7 @@ Commands:
 Options:
     -h, --help           Show this help and exit
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
+    -d, --debug           Show exact stat values
 
 Daily care: about four meals, two sleeps, three plays, and one cleaning.
 
@@ -423,6 +432,7 @@ Examples:
     critter new
     critter
     critter -n feed
+    critter -d
 `;
 var parseArgs = (args) => {
   if (args.includes("-h") || args.includes("--help")) {
@@ -431,10 +441,11 @@ var parseArgs = (args) => {
     process.exit(0);
   }
   const noNerdFonts = args.includes("-n") || args.includes("--no-nerd-fonts");
+  const debug = args.includes("-d") || args.includes("--debug");
   const [command] = args.filter(
-    (arg) => arg !== "-n" && arg !== "--no-nerd-fonts"
+    (arg) => arg !== "-n" && arg !== "--no-nerd-fonts" && arg !== "-d" && arg !== "--debug"
   );
-  if (!command) return { command: void 0, noNerdFonts };
+  if (!command) return { command: void 0, debug, noNerdFonts };
   switch (command) {
     case "clean":
     case "feed":
@@ -443,7 +454,7 @@ var parseArgs = (args) => {
     case "play":
     case "sleep":
     case "stop":
-      return { command, noNerdFonts };
+      return { command, debug, noNerdFonts };
     default:
       throw new Error(`Unknown command: ${command}`);
   }
@@ -459,14 +470,14 @@ var cli = async () => {
     );
     process.exit(7);
   }
-  const { command, noNerdFonts } = args;
+  const { command, debug, noNerdFonts } = args;
   const critter = new Critter({ command });
   if (critter.error) {
     process.stderr.write(`${critter.error}
 `);
     process.exit(1);
   } else {
-    console.log(`${critter.plain({ noNerdFonts })}
+    console.log(`${critter.plain({ debug, noNerdFonts })}
 `);
   }
 };

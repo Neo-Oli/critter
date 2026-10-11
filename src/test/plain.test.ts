@@ -42,6 +42,14 @@ beforeEach(() => {
 describe('plain rendering', () => {
     it('matches snapshots across key life stages', () => {
         const stages: Record<string, () => Critter> = {
+            debug: () =>
+                makeCritter({
+                    cleanliness: 567890,
+                    energy: 345678,
+                    happiness: 123456,
+                    health: 456789,
+                    satiety: 234567,
+                }),
             eating: () =>
                 makeCritter({
                     action: 'eating',
@@ -83,9 +91,12 @@ describe('plain rendering', () => {
         }
 
         for (const [stage, create] of Object.entries(stages)) {
-            expect(create().plain({ noNerdFonts: false })).toMatchSnapshot(
-                stage,
-            )
+            expect(
+                create().plain({
+                    debug: stage === 'debug',
+                    noNerdFonts: false,
+                }),
+            ).toMatchSnapshot(stage)
         }
     })
 
@@ -133,6 +144,12 @@ describe('plain rendering', () => {
         const output = render({ satiety: max + 1 })
         expect(output).toContain(`Hunger: ${full.repeat(5)}`)
         expect(output).not.toContain('!')
+    })
+
+    it('appends exact stat values after bars in debug mode', () => {
+        const output = render({ debug: true, happiness: 123456 })
+        expect(output).toContain('Happy:  ◐○○○○ (123456)')
+        expect(render({ happiness: 123456 })).not.toContain('123456')
     })
 
     it('uses private-use Nerd Font glyphs only when enabled', () => {
