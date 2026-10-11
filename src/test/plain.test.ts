@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { happinessPenalty, high, low, max, normal } from '../config.ts'
+import { happinessPenalty, high, low, max } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { plain } from '../plain.ts'
 import { hour } from '../utils.ts'
@@ -42,7 +42,6 @@ beforeEach(() => {
 describe('plain rendering', () => {
     it('matches snapshots across key life stages', () => {
         const stages: Record<string, () => Critter> = {
-            newborn: () => makeCritter(),
             eating: () =>
                 makeCritter({
                     action: 'eating',
@@ -54,6 +53,17 @@ describe('plain rendering', () => {
                     health: max,
                     satiety: high,
                 }),
+            neglected: () =>
+                makeCritter({
+                    age: 2 * 24 * hour,
+                    cleanliness: 0,
+                    energy: 0,
+                    happiness: low - 1,
+                    health: low - 1,
+                    mood: ['sick', 'sad', 'hungry', 'dirty', 'tired'],
+                    satiety: 0,
+                }),
+            newborn: () => makeCritter(),
             refusing: () =>
                 makeCritter({
                     action: 'refusing',
@@ -69,16 +79,6 @@ describe('plain rendering', () => {
                     age: 8 * hour,
                     energy: low,
                     happiness: high,
-                }),
-            neglected: () =>
-                makeCritter({
-                    age: 2 * 24 * hour,
-                    cleanliness: 0,
-                    energy: 0,
-                    happiness: low - 1,
-                    health: low - 1,
-                    mood: ['sick', 'sad', 'hungry', 'dirty', 'tired'],
-                    satiety: 0,
                 }),
         }
 

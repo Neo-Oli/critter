@@ -127,11 +127,6 @@ export class Critter {
                 ? Math.floor((high - this.satiety) / 6250)
                 : minute
     }
-    refuse = () => {
-        this.action = 'refusing'
-        this.actionTime = 30
-        this.happiness = set(this.happiness - happinessPenalty)
-    }
     getCritterState = (): Action | Mood => {
         if (!this.alive) return 'dead'
         const moodPriority: Mood[] = [
@@ -195,7 +190,6 @@ export class Critter {
         this.action = 'playing'
         this.actionTime = 2 * minute
     }
-
     process = () => {
         const currentTime = now()
         const elapsed = Math.max(
@@ -280,6 +274,12 @@ export class Critter {
                 this.mood.push('dirty')
             }
         }
+    }
+
+    refuse = () => {
+        this.action = 'refusing'
+        this.actionTime = 30
+        this.happiness = set(this.happiness - happinessPenalty)
     }
     sleep = () => {
         if (this.energy >= normal) {
