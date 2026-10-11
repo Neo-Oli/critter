@@ -1,7 +1,7 @@
 import { happinessPenalty, high, low, max, normal, speed } from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { type Plain, plain } from './plain.ts'
-import { hour, minute, now } from './utils.ts'
+import { day, hour, minute, now } from './utils.ts'
 
 export type Action =
     'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping'
@@ -276,10 +276,8 @@ export class Critter {
                       : this.satiety > low
                         ? 1
                         : 0
-            if (this.satiety <= 0) {
-                this.toilet = set(this.toilet, 0, max)
-            } else if (toiletSchedule > 0) {
-                const secondsPerCycle = (24 * hour) / toiletSchedule
+            if (toiletSchedule > 0) {
+                const secondsPerCycle = (day) / toiletSchedule
                 this.toilet = set(this.toilet - max / secondsPerCycle)
                 if (this.toilet <= 0) {
                     this.poo = true
