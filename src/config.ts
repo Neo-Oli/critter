@@ -23,7 +23,7 @@ export const schedules = {
         healingAction: 10,
         hungry: 4 * day,
         poo: 2 * day,
-        recovery: 6 * hour,
+        recovery: 12 * hour,
         starving: 2 * day,
     },
     satiety: {

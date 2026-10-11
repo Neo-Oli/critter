@@ -24,6 +24,16 @@ const advance = (pet: Critter, seconds: number) => {
     pet.process()
 }
 
+const reportDeath = (elapsedSeconds: number) => {
+    const days = Math.floor(elapsedSeconds / day)
+    const hours = Math.floor((elapsedSeconds % day) / hour)
+    const minutes = Math.floor((elapsedSeconds % hour) / minute)
+    const seconds = elapsedSeconds % minute
+    console.info(
+        `Critter died after ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds (${elapsedSeconds} seconds total).`,
+    )
+}
+
 const healthy = () => {
     const pet = new Critter({ command: 'new' })
     pet.toilet = max
@@ -184,13 +194,41 @@ describe('daily care balance', () => {
         ) {
             advance(pet, 1)
             if (pet.poo) pet.clean()
-            if (!pet.alive) break
+            if (!pet.alive) {
+                reportDeath(elapsedMinutes * minute)
+                break
+            }
             if (elapsedMinutes % (24 * 60) === 0) pet.feed()
         }
 
         expect(
             pet.alive,
-            `still alive after ${pet.age / hour} hours with health=${pet.health}, satiety=${pet.satiety}`,
+            `still alive after 30 days (health=${pet.health}, satiety=${pet.satiety})`,
+        ).toBe(false)
+    })
+
+    it('is dead by thirty days when fed every five hours and poo is left', () => {
+        const pet = maxed()
+        pet.satiety = high
+        pet.feed()
+        runtime.speed = minute
+
+        for (
+            let elapsedMinutes = 1;
+            elapsedMinutes <= 30 * 24 * 60;
+            elapsedMinutes += 1
+        ) {
+            advance(pet, 1)
+            if (!pet.alive) {
+                reportDeath(elapsedMinutes * minute)
+                break
+            }
+            if (elapsedMinutes % (5 * 60) === 0) pet.feed()
+        }
+
+        expect(
+            pet.alive,
+            `still alive after 30 days with health=${pet.health}, satiety=${pet.satiety}, poo=${pet.poo}`,
         ).toBe(false)
     })
 
