@@ -154,9 +154,9 @@ export const plainStats = ({
         const barValue = Math.round((value / max) * 10)
         let empty, full, half
         if (noNerdFonts) {
-            empty = '○'
-            half = '◐'
-            full = '●'
+            empty = ' '
+            half = '▌'
+            full = '█'
         } else {
             empty = '󰋕'
             half = '󰛞'
@@ -170,6 +170,9 @@ export const plainStats = ({
         bar += empty.repeat(
             Math.max(0, 5 - Math.floor(barValue / 2 + (maxBarValue % 2))),
         )
+        if (noNerdFonts) {
+            bar = `│${bar}│`
+        }
         return `${statIcon(name, noNerdFonts)} ${bar}${debug ? ` (${value})` : ''}`
     }
 

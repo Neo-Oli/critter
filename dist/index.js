@@ -260,9 +260,9 @@ var plainStats = ({
     const barValue = Math.round(value / max * 10);
     let empty, full, half;
     if (noNerdFonts) {
-      empty = "\u25CB";
-      half = "\u25D0";
-      full = "\u25CF";
+      empty = " ";
+      half = "\u258C";
+      full = "\u2588";
     } else {
       empty = "\u{F02D5}";
       half = "\u{F06DE}";
@@ -276,6 +276,9 @@ var plainStats = ({
     bar2 += empty.repeat(
       Math.max(0, 5 - Math.floor(barValue / 2 + maxBarValue % 2))
     );
+    if (noNerdFonts) {
+      bar2 = `\u2502${bar2}\u2502`;
+    }
     return `${statIcon(name, noNerdFonts)} ${bar2}${debug ? ` (${value})` : ""}`;
   };
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
