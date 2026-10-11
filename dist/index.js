@@ -274,15 +274,20 @@ var plainStats = ({
   };
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
   const output = [];
+  const padding = "  ";
+  const ageFormatted = label("Age") + duration(age);
   if (state.stage !== 0) {
     output.push(state.main.toUpperCase() + remaining);
-    output.push(stat("Happy", happiness));
-    output.push(stat("Hunger", satiety));
-    output.push(stat("Energy", energy));
-    output.push(stat("Health", health));
-    output.push(stat("Toilet", toilet));
+    output.push(
+      [stat("Happy", happiness), stat("Hunger", satiety)].join(padding)
+    );
+    output.push(
+      [stat("Energy", energy), stat("Health", health)].join(padding)
+    );
+    output.push([stat("Toilet", toilet), ageFormatted].join(padding));
+  } else {
+    output.push(ageFormatted);
   }
-  output.push(label("Age") + duration(age));
   return output.map((line) => line.trimEnd()).join("\n");
 };
 var plain = (options) => `${plainSprites(options)}
