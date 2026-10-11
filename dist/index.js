@@ -42,11 +42,11 @@ var schedules = {
     healingAction: 10,
     hungry: 4 * day,
     poo: 2 * day,
-    recovery: 6 * hour,
+    recovery: 12 * hour,
     starving: 2 * day
   },
   satiety: {
-    eating: 160,
+    eating: 2 * minute,
     idle: day / 3,
     playing: 5 * 2 * minute
   },
