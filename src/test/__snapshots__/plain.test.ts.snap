@@ -27,12 +27,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HEALING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -48,12 +45,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -69,12 +63,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -90,12 +81,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HAPPY
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -111,12 +99,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HAPPY
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -132,12 +117,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -153,12 +135,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -174,12 +153,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -195,12 +171,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -216,12 +189,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HUNGRY
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -237,12 +207,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HUNGRY
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -258,12 +225,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -279,12 +243,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HEALING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -300,12 +261,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -321,12 +279,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -342,12 +297,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 IDLE
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -363,12 +315,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 IDLE
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -384,12 +333,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -405,12 +351,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -426,12 +369,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -447,12 +387,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -468,12 +405,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -489,12 +423,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -510,12 +441,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -531,12 +459,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -552,12 +477,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█
 
 SAD
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -573,12 +495,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄▄▄▄█     ▄██████▄
 
 SAD
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -594,12 +513,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄▄▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -615,12 +531,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -636,12 +549,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -657,12 +567,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█     ▄██████▄
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -678,12 +585,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -699,12 +603,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -720,12 +621,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -741,12 +639,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -762,12 +657,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -783,12 +675,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█     ▄██████▄
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -804,12 +693,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -825,12 +711,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -846,12 +729,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████ ▄██████▄
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -867,12 +747,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -888,12 +765,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████ ▄██████▄
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -909,12 +783,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -930,12 +801,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█     ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -951,12 +819,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█      ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -972,12 +837,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█
 
 TIRED
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -993,12 +855,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
      █▄▄█▄▄█     ▄██████▄
 
 TIRED
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -1014,12 +873,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
     █▄▄█▄▄█       ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    5 minutes
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    5 minutes
 "
 `;
 
@@ -1035,12 +891,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 █▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
 
 DEAD
-Happy:  ●●●●○
-Hunger: ●●●●○
-Energy: ●◐○○○
-Health: ●●●●●
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●●●●○
+Energy: ●◐○○○  Health: ●●●●●
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1056,12 +909,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1077,12 +927,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1098,12 +945,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1119,12 +963,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HAPPY
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1140,12 +981,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HAPPY
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1161,12 +999,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ●●●●○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●●●●○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1182,12 +1017,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1203,12 +1035,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1224,12 +1053,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1245,12 +1071,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HUNGRY
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1266,12 +1089,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HUNGRY
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1287,12 +1107,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1308,12 +1125,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1329,12 +1143,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1350,12 +1161,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1371,12 +1179,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 IDLE
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1392,12 +1197,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 IDLE
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1413,12 +1215,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ●◐○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ●◐○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1434,12 +1233,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1455,12 +1251,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1476,12 +1269,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1497,12 +1287,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 REFUSING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1518,12 +1305,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1539,12 +1323,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1560,12 +1341,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1581,12 +1359,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 SAD
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1602,12 +1377,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 SAD
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1623,12 +1395,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●◐○○○
-Energy: ●◐○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●◐○○○
+Energy: ●◐○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1644,12 +1413,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1665,12 +1431,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1686,12 +1449,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1707,12 +1467,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1728,12 +1485,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1749,12 +1503,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1770,12 +1521,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1791,12 +1539,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1812,12 +1557,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 SICK
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1833,12 +1575,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1854,12 +1593,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1875,12 +1611,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████ ▄██████▄
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●○○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●○○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1896,12 +1629,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1917,12 +1647,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
 ████▄▄▄▄████████ ▄██████▄
 
 SLEEPING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●◐○○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●◐○○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1938,12 +1665,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1959,12 +1683,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 HEALING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -1980,12 +1701,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█  ▀▄▄▄▄▄▀
 
 EATING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -2001,12 +1719,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█
 
 TIRED
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -2022,12 +1737,9 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄▄█ █▄▄█  █▄█  ▄██████▄
 
 TIRED
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
 
@@ -2043,11 +1755,8 @@ exports[`plain rendering > snapshots every reachable body, top, and bottom sprit
  █▄█  █▄▄█ █▄▄█   ▀▄▄▄▄▀
 
 PLAYING (30 seconds)
-Happy:  ○○○○○
-Hunger: ●○○○○
-Energy: ●○○○○
-Health: ●●◐○○
-Toilet: ●◐○○○
-Age:    6 hours
+Happy:  ○○○○○  Hunger: ●○○○○
+Energy: ●○○○○  Health: ●●◐○○
+Toilet: ●◐○○○  Age:    6 hours
 "
 `;
