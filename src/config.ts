@@ -5,7 +5,7 @@ export const high = Math.round((max / 4) * 3)
 export const normal = Math.round(max / 2)
 export const low = Math.round(max / 4)
 export const binName = 'critter'
-export const happinessPenalty = 10000
+export const penalty = 0.1
 export const speed = 1
 export const schedules = {
     energy: {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal, schedules } from '../config.ts'
+import { high, low, max, normal, penalty, schedules } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { day, hour, minute } from '../utils.ts'
 
@@ -100,6 +100,24 @@ describe('stat schedule simulations', () => {
         expect(pet.energy).toBe(max)
         expect(pet.action).toBe('idle')
         expect(pet.actionTime).toBe(0)
+    })
+
+    it('loses ten percent of health and happiness when exhaustion forces sleep', () => {
+        const pet = maxed()
+        pet.energy = 1
+        pet.health = max
+        pet.happiness = max
+
+        advance(pet, 1)
+
+        expect(pet.action).toBe('sleeping')
+        expect(pet.health).toBe(Math.round(max * (1 - penalty)))
+        expect(pet.happiness).toBe(
+            Math.round(
+                (max - Math.ceil(max / schedules.happiness.idle)) *
+                    (1 - penalty),
+            ),
+        )
     })
 
     it('recovers energy more slowly from sleep while ill', () => {
