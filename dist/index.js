@@ -17,6 +17,15 @@ var duration = (seconds) => {
   const count = Math.floor(seconds / size);
   return `${count} ${unit}${count === 1 ? "" : "s"}`;
 };
+var statIcons = {
+  age: ["A", "\u{F0954}"],
+  energy: ["E", "\u{F12A3}"],
+  happiness: ["H", "\u{F0C71}"],
+  health: ["+", "\uE221"],
+  satiety: ["S", "\u{F025B}"],
+  toilet: ["T", "\u{F09AB}"]
+};
+var statIcon = (name, noNerdFonts) => statIcons[name][noNerdFonts ? 0 : 1];
 
 // src/config.ts
 var max = 1e6;
@@ -267,24 +276,23 @@ var plainStats = ({
     bar2 += empty.repeat(
       Math.max(0, 5 - Math.floor(barValue / 2 + maxBarValue % 2))
     );
-    return `${label(name)}${bar2}${debug ? ` (${value})` : ""}`;
-  };
-  const label = (str) => {
-    return `${str}: `.padEnd(8);
+    return `${statIcon(name, noNerdFonts)} ${bar2}${debug ? ` (${value})` : ""}`;
   };
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
   const output = [];
   const padding = "  ";
-  const ageFormatted = label("Age") + duration(age);
+  const ageFormatted = `${statIcon("age", noNerdFonts)} ${duration(age)}`;
   if (state.stage !== 0) {
     output.push(state.main.toUpperCase() + remaining);
     output.push(
-      [stat("Happy", happiness), stat("Hunger", satiety)].join(padding)
+      [stat("happiness", happiness), stat("satiety", satiety)].join(
+        padding
+      )
     );
     output.push(
-      [stat("Energy", energy), stat("Health", health)].join(padding)
+      [stat("energy", energy), stat("health", health)].join(padding)
     );
-    output.push([stat("Toilet", toilet), ageFormatted].join(padding));
+    output.push([stat("toilet", toilet), ageFormatted].join(padding));
   } else {
     output.push(ageFormatted);
   }
@@ -331,11 +339,11 @@ var bars = ({
   toilet
 }) => {
   return [
-    bar(happiness, noNerdFonts ? "H" : "\u{F0C71}"),
-    bar(satiety, noNerdFonts ? "S" : "\u{F025B}"),
-    bar(energy, noNerdFonts ? "E" : "\u{F12A3}"),
-    bar(health, noNerdFonts ? "+" : "\uE221"),
-    bar(toilet, noNerdFonts ? "T" : "\u{F09AB}")
+    bar(happiness, statIcon("happiness", noNerdFonts)),
+    bar(satiety, statIcon("satiety", noNerdFonts)),
+    bar(energy, statIcon("energy", noNerdFonts)),
+    bar(health, statIcon("health", noNerdFonts)),
+    bar(toilet, statIcon("toilet", noNerdFonts))
   ].join(" ");
 };
 var conditions = ({
