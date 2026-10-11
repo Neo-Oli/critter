@@ -102,6 +102,31 @@ describe('stat schedule simulations', () => {
         expect(pet.actionTime).toBe(0)
     })
 
+    it('recovers energy more slowly from sleep while ill', () => {
+        const healthySleeper = healthy()
+        healthySleeper.action = 'sleeping'
+        healthySleeper.actionTime = schedules.energy.sleeping
+        healthySleeper.energy = normal
+
+        const illSleeper = healthy()
+        illSleeper.action = 'sleeping'
+        illSleeper.actionTime = schedules.energy.sleeping
+        illSleeper.energy = normal
+        illSleeper.health = low - 1000
+
+        runtime.time += 1
+        healthySleeper.process()
+        illSleeper.process()
+
+        expect(healthySleeper.energy).toBe(
+            normal + Math.ceil(max / schedules.energy.sleeping),
+        )
+        expect(illSleeper.energy).toBe(
+            normal + Math.ceil(max / schedules.energy.sleepingSick),
+        )
+        expect(illSleeper.energy).toBeLessThan(healthySleeper.energy)
+    })
+
     it('drains energy once per day and fully over ten play sessions', () => {
         const daily = healthy()
         daily.satiety = max

@@ -261,7 +261,9 @@ export class Critter {
             if (this.action === 'sleeping') {
                 this.energy = changeBySchedule(
                     this.energy,
-                    schedules.energy.sleeping,
+                    this.health < low
+                        ? schedules.energy.sleepingSick
+                        : schedules.energy.sleeping,
                     1,
                 )
                 if (this.energy >= max) {

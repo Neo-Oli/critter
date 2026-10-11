@@ -12,6 +12,7 @@ export const schedules = {
         awake: day,
         playing: 10 * 2 * minute,
         sleeping: 2 * hour,
+        sleepingSick: 4 * hour,
     },
     happiness: {
         idle: 6 * hour,
