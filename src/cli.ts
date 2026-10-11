@@ -123,7 +123,7 @@ export const cli = async () => {
     }
     if (quietOutput) return
     if (jsonOutput) {
-        console.log(critter.json({ debug, noNerdFonts }))
+        console.log(critter.json({ debug }))
     } else if (shortOutput) {
         console.log(`${critter.short({ noNerdFonts })}\n`)
     } else {

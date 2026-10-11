@@ -25,7 +25,6 @@ describe('json output', () => {
             energy: max,
             happiness: max,
             health: max,
-            noNerdFonts: true,
             poo: true,
             satiety: max,
             state,
@@ -33,16 +32,21 @@ describe('json output', () => {
         }
         const result = JSON.parse(json(options))
 
-        expect(Object.keys(result)).toHaveLength(15)
+        expect(Object.keys(result)).toHaveLength(20)
         expect(Object.keys(result)).toEqual(
             expect.arrayContaining([
                 'alert',
                 'short',
+            'short-nonerd',
                 'plain',
+            'plain-nonerd',
                 'plainStats',
+            'plainStats-nonerd',
                 'plainSprites',
                 'emoticon',
+            'emoticon-nonerd',
                 'Bars',
+            'Bars-nonerd',
                 'Happy',
                 'Hunger',
                 'Energy',
@@ -57,17 +61,25 @@ describe('json output', () => {
             action: options.action,
             actionTime: options.actionTime,
             alert: options.alert,
-            Bars: bars(options),
-            emoticon: emoticon({ noNerdFonts: true, state }),
+            Bars: bars({ ...options, noNerdFonts: false }),
+            'Bars-nonerd': bars({ ...options, noNerdFonts: true }),
+            emoticon: emoticon({ noNerdFonts: false, state }),
+            'emoticon-nonerd': emoticon({ noNerdFonts: true, state }),
             Energy: options.energy,
             Happy: options.happiness,
             Health: options.health,
             Hunger: options.satiety,
-            plain: plain(options),
+            plain: plain({ ...options, noNerdFonts: false }),
+            'plain-nonerd': plain({ ...options, noNerdFonts: true }),
             plainSprites: plainSprites(options),
-            plainStats: plainStats(options),
+            plainStats: plainStats({ ...options, noNerdFonts: false }),
+            'plainStats-nonerd': plainStats({
+                ...options,
+                noNerdFonts: true,
+            }),
             poo: options.poo,
-            short: short(options),
+            short: short({ ...options, noNerdFonts: false }),
+            'short-nonerd': short({ ...options, noNerdFonts: true }),
             Toilet: options.toilet,
         })
     })

@@ -2,7 +2,7 @@ import { type Action } from './critter.ts'
 import { plain, type Plain, plainSprites, plainStats } from './plain.ts'
 import { bars, emoticon, short } from './short.ts'
 
-export interface Json extends Plain {
+export interface Json extends Omit<Plain, 'noNerdFonts'> {
     action: Action
     alert: boolean
     poo: boolean
@@ -16,12 +16,13 @@ export const json = (options: Json) => {
         energy,
         happiness,
         health,
-        noNerdFonts,
         poo,
         satiety,
         state,
         toilet,
     } = options
+    const nerdOptions = { ...options, noNerdFonts: false }
+    const noNerdOptions = { ...options, noNerdFonts: true }
 
     return JSON.stringify(
         {
@@ -32,20 +33,32 @@ export const json = (options: Json) => {
                 energy,
                 happiness,
                 health,
-                noNerdFonts,
+                noNerdFonts: false,
                 satiety,
                 toilet,
             }),
-            emoticon: emoticon({ noNerdFonts, state }),
+            'Bars-nonerd': bars({
+                energy,
+                happiness,
+                health,
+                noNerdFonts: true,
+                satiety,
+                toilet,
+            }),
+            emoticon: emoticon({ noNerdFonts: false, state }),
+            'emoticon-nonerd': emoticon({ noNerdFonts: true, state }),
             Energy: energy,
             Happy: happiness,
             Health: health,
             Hunger: satiety,
-            plain: plain(options),
+            plain: plain(nerdOptions),
+            'plain-nonerd': plain(noNerdOptions),
             plainSprites: plainSprites(options),
-            plainStats: plainStats(options),
+            plainStats: plainStats(nerdOptions),
+            'plainStats-nonerd': plainStats(noNerdOptions),
             poo,
-            short: short(options),
+            short: short(nerdOptions),
+            'short-nonerd': short(noNerdOptions),
             Toilet: toilet,
         },
         null,

@@ -244,7 +244,7 @@ export class Critter {
                       : 'none',
         }
     }
-    json = ({ debug, noNerdFonts }: Pick<Plain, 'debug' | 'noNerdFonts'>) =>
+    json = ({ debug }: Pick<Plain, 'debug'>) =>
         renderJson({
             action: this.action,
             actionTime: this.actionTime,
@@ -254,7 +254,6 @@ export class Critter {
             energy: this.energy,
             happiness: this.happiness,
             health: this.health,
-            noNerdFonts,
             poo: this.poo,
             satiety: this.satiety,
             state: this.getCritterState(),

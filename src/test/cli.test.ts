@@ -75,16 +75,21 @@ describe('CLI and entry point', () => {
             expect(result.stderr).toBe('')
 
             const output = JSON.parse(result.stdout)
-            expect(Object.keys(output)).toHaveLength(15)
+            expect(Object.keys(output)).toHaveLength(20)
             expect(Object.keys(output)).toEqual(
                 expect.arrayContaining([
                     'alert',
                     'short',
+                    'short-nonerd',
                     'plain',
+                    'plain-nonerd',
                     'plainStats',
+                    'plainStats-nonerd',
                     'plainSprites',
                     'emoticon',
+                    'emoticon-nonerd',
                     'Bars',
+                    'Bars-nonerd',
                     'Happy',
                     'Hunger',
                     'Energy',
@@ -269,7 +274,7 @@ describe('CLI and entry point', () => {
         const result = run()
         expect(result.status).toBe(0)
         expect(result.stderr).toBe('')
-        expect(result.stdout).toContain('0 seconds')
+        expect(result.stdout).toContain(statIcon('age', false))
         expect(result.stdout).not.toContain('Age:')
     })
 
