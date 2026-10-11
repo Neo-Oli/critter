@@ -219,6 +219,10 @@ export class Critter {
             }
             if (this.action === 'sleeping') {
                 this.energy = set(this.energy + 139)
+                if (this.energy === max) {
+                    this.action = 'idle'
+                    this.actionTime = 0
+                }
             } else {
                 this.energy = set(this.energy - 21)
             }
@@ -278,12 +282,16 @@ export class Critter {
         }
     }
     sleep = () => {
+        if (this.energy >= normal) {
+            this.refuse()
+            return
+        }
         this.action = 'sleeping'
         this.actionTime = 2 * hour
     }
     stop = () => {
         if (this.action === 'eating' || this.action === 'sleeping') {
-            this.happiness = set(this.happiness - 1000)
+            this.happiness = set(this.happiness - 10000)
         }
         this.action = 'idle'
         this.actionTime = 0

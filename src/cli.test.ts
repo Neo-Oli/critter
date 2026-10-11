@@ -109,7 +109,7 @@ describe('CLI and entry point', () => {
         ['feed', 'eating'],
         ['medicine', 'healing'],
         ['play', 'playing'],
-        ['sleep', 'sleeping'],
+        ['sleep', 'refusing'],
         ['stop', 'idle'],
     ] as const)('runs and persists the %s command', (command, action) => {
         expect(run('new').status).toBe(0)

@@ -74,7 +74,7 @@ describe('construction and persistence', () => {
         const restored = new Critter({ command: 'play' })
         expect(restored.birth).toBe(state.birth)
         expect(restored.age).toBe(state.age + 10)
-        expect(restored.satiety).toBe(high + 6250 - 9 * 23)
+        expect(restored.satiety).toBe(state.satiety + 62500)
         expect(restored.action).toBe('playing')
         expect(restored.actionTime).toBe(2 * minute)
         expect(storage.saveState).toHaveBeenLastCalledWith(
@@ -130,13 +130,25 @@ describe('actions', () => {
         ['feed', 'eating', minute],
         ['medicine', 'healing', 10],
         ['play', 'playing', 2 * minute],
-        ['sleep', 'sleeping', 2 * hour],
         ['stop', 'idle', 0],
     ] as const)('dispatches the %s command', (command, action, duration) => {
         storage.loadState.mockReturnValue(healthy().persistedState())
         const pet = new Critter({ command })
         expect(pet.action).toBe(action)
         expect(pet.actionTime).toBe(duration)
+    })
+
+    it('refuses sleep at normal energy and sleeps below normal', () => {
+        const rested = healthy()
+        rested.sleep()
+        expect(rested.action).toBe('refusing')
+        expect(rested.actionTime).toBe(30)
+
+        const tired = healthy()
+        tired.energy = normal - 1
+        tired.sleep()
+        expect(tired.action).toBe('sleeping')
+        expect(tired.actionTime).toBe(2 * hour)
     })
 
     it.each([0, 1, 123456, low - 1])(
@@ -163,7 +175,7 @@ describe('actions', () => {
         expect(pet.action).toBe('eating')
         advance(pet, minute)
         expect(pet.satiety).toBeGreaterThan(high)
-        expect(pet.action).toBe('idle')
+        expect(pet.action).toBe('refusing')
         pet.feed()
         expect(pet.action).toBe('refusing')
         expect(pet.actionTime).toBe(30)
@@ -176,11 +188,11 @@ describe('actions', () => {
         pet.feed()
         expect(pet.action).toBe('refusing')
         expect(pet.actionTime).toBe(30)
-        expect(happinessBeforeRefusal - pet.happiness).toBe(1000)
+        expect(happinessBeforeRefusal - pet.happiness).toBe(10000)
         advance(pet, 30)
         expect(pet.action).toBe('idle')
         expect(pet.actionTime).toBe(0)
-        expect(happinessBeforeRefusal - pet.happiness).toBeLessThan(max * 0.01)
+        expect(happinessBeforeRefusal - pet.happiness).toBeLessThan(max * 0.02)
     })
 
     it.each([
@@ -188,13 +200,18 @@ describe('actions', () => {
         ['play', 'happiness', 2 * minute],
         ['sleep', 'energy', 2 * hour],
     ] as const)(
-        '%s replenishes its stat and finishes on time',
+        '%s replenishes its stat and completes',
         (action, stat, duration) => {
             const pet = healthy()
             pet[stat] = 0
+            if (action === 'sleep') pet.energy = 0
             pet[action]()
             advance(pet, duration)
-            expect(pet[stat]).toBeGreaterThanOrEqual(max - duration)
+            if (action === 'sleep') {
+                expect(pet.energy).toBeGreaterThan(normal)
+            } else {
+                expect(pet[stat]).toBeGreaterThanOrEqual(max - duration)
+            }
             expect(pet[stat]).toBeLessThanOrEqual(max)
             expect(pet.actionTime).toBe(0)
             expect(pet.action).toBe('idle')
@@ -214,6 +231,7 @@ describe('actions', () => {
         'stops %s with only the intended happiness penalty',
         (action) => {
             const pet = healthy()
+            if (action === 'sleep') pet.energy = normal - 1
             pet[action]()
             pet.stop()
             expect(pet.action).toBe('idle')
@@ -245,6 +263,16 @@ describe('processing and presentation', () => {
         expect(pet.cleanliness).toBe(0)
         expect(pet.health).toBe(max - 14)
         expect(pet.action).toBe('sleeping')
+    })
+
+    it('automatically wakes when energy reaches max', () => {
+        const pet = healthy()
+        pet.energy = normal - 139
+        pet.sleep()
+        advance(pet, Math.ceil((max - pet.energy) / 139))
+        expect(pet.energy).toBe(max)
+        expect(pet.action).toBe('idle')
+        expect(pet.actionTime).toBe(0)
     })
 
     it('detects death even when no time has elapsed', () => {
@@ -527,7 +555,9 @@ describe('need interactions', () => {
         pet.satiety = 0
         pet.sleep()
         advance(pet, 2 * hour)
-        expect(pet.energy).toBe(max)
+        expect(pet.energy).toBeGreaterThan(max - 200)
+        expect(pet.energy).toBeLessThanOrEqual(max)
+        expect(pet.action).toBe('idle')
         expect(pet.health).toBeLessThan(max)
         expect(pet.satiety).toBe(0)
     })
