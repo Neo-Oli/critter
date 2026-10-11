@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max } from '../config.ts'
+import { high, low, max, normal } from '../config.ts'
 import { Critter } from '../critter.ts'
 import { loadSprite, plain } from '../plain.ts'
-import { hour } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
@@ -45,6 +44,67 @@ beforeEach(() => {
 })
 
 describe('plain rendering', () => {
+    it('snapshots every reachable body, top, and bottom sprite combination', () => {
+        const pet = makeCritter()
+        const combinations = new Map<string, string>()
+        const actions = [
+            'idle',
+            'eating',
+            'healing',
+            'playing',
+            'refusing',
+            'sleeping',
+        ] as const
+
+        for (const action of actions) {
+            for (const health of [low - 1, low, normal, max]) {
+                for (const energy of [low - 1, low]) {
+                    for (const satiety of [low - 1, low, high, high + 1]) {
+                        if (action === 'eating' && satiety > high) continue
+                        for (const happiness of [0, low, high + 1]) {
+                            for (const poo of [false, true]) {
+                                pet.action = action
+                                pet.actionTime = action === 'idle' ? 0 : 30
+                                pet.health = health
+                                pet.energy = energy
+                                pet.satiety = satiety
+                                pet.happiness = happiness
+                                pet.poo = poo
+                                pet.updateMood()
+
+                                const state = pet.getCritterState()
+                                const layers = [
+                                    state.sprite,
+                                    state.top,
+                                    state.bottom,
+                                ]
+                                const key = layers.join('-')
+                                if (!combinations.has(key)) {
+                                    combinations.set(
+                                        key,
+                                        `\n${pet.plain({ noNerdFonts: true })}\n`,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        pet.die()
+        const deadState = pet.getCritterState()
+        const deadLayers = [deadState.sprite, deadState.top, deadState.bottom]
+        combinations.set(
+            deadLayers.join('-'),
+            `\n${pet.plain({ noNerdFonts: true })}\n`,
+        )
+
+        for (const [layers, output] of combinations) {
+            expect(output).toMatchSnapshot(`sprite layers ${layers}`)
+        }
+    })
+
     it('makes every sprite row exactly the requested width', () => {
         const names = [
             'dead',
@@ -102,82 +162,6 @@ describe('plain rendering', () => {
             width: 10,
         })
         expect(padded).toEqual([`${normal[0]}  `])
-    })
-
-    it('matches snapshots across key life stages', () => {
-        const stages: Record<string, () => Critter> = {
-            dead: () => makeCritter({ alive: false, mood: ['dead'] }),
-            debug: () =>
-                makeCritter({
-                    energy: 345678,
-                    happiness: 123456,
-                    health: 456789,
-                    satiety: 234567,
-                    toilet: 567890,
-                }),
-            eating: () =>
-                makeCritter({
-                    action: 'eating',
-                    actionTime: 45,
-                    age: 30,
-                    energy: high,
-                    happiness: high,
-                    health: max,
-                    satiety: high,
-                }),
-            healing: () =>
-                makeCritter({
-                    action: 'healing',
-                    actionTime: 10,
-                    health: low,
-                    mood: ['sick'],
-                }),
-            hungry: () => makeCritter({ mood: ['hungry'], satiety: low }),
-            ill: () => makeCritter({ health: low - 1, mood: ['sick'] }),
-            'ill-playing': () =>
-                makeCritter({
-                    action: 'playing',
-                    actionTime: 2 * 60,
-                    health: low - 1,
-                    mood: ['sick'],
-                }),
-            'ill-poo': () =>
-                makeCritter({ health: low - 1, mood: ['sick'], poo: true }),
-            playing: () =>
-                makeCritter({
-                    action: 'playing',
-                    actionTime: 2 * 60,
-                    mood: ['happy'],
-                }),
-            poo: () => makeCritter({ poo: true }),
-            refusing: () =>
-                makeCritter({
-                    action: 'refusing',
-                    actionTime: 30,
-                    age: 3600,
-                    happiness: max,
-                    satiety: high + 1,
-                }),
-            sad: () => makeCritter({ happiness: low, mood: ['sad'] }),
-            sick: () => makeCritter({ health: low, mood: ['sick'] }),
-            sleeping: () =>
-                makeCritter({
-                    action: 'sleeping',
-                    actionTime: 1800,
-                    age: 8 * hour,
-                    energy: low,
-                    happiness: high,
-                }),
-            tired: () => makeCritter({ energy: low, mood: ['tired'] }),
-        }
-
-        for (const [stage, create] of Object.entries(stages)) {
-            const output = create().plain({
-                debug: stage === 'debug',
-                noNerdFonts: false,
-            })
-            expect(`\n${output}\n`).toMatchSnapshot(stage)
-        }
     })
 
     it('renders the sprite layer and stat details without undefined values', () => {
