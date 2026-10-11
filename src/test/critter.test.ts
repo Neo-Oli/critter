@@ -244,6 +244,19 @@ describe('actions', () => {
 })
 
 describe('processing and presentation', () => {
+    it('refreshes every stat mood when no time has elapsed', () => {
+        const pet = healthy()
+        pet.satiety = low - 1
+        pet.health = low - 1
+        pet.energy = low - 1
+        pet.happiness = low - 1
+        pet.cleanliness = low - 1
+
+        pet.process()
+
+        expect(pet.mood).toEqual(['hungry', 'sick', 'tired', 'sad', 'dirty'])
+    })
+
     it('does not process the same time twice', () => {
         const pet = healthy()
         advance(pet, minute)
@@ -293,7 +306,7 @@ describe('processing and presentation', () => {
 
     it('prioritizes actions, then moods, but never actions over death', () => {
         const pet = healthy()
-        expect(pet.getCritterState()).toBe('idle')
+        expect(pet.getCritterState()).toBe('happy')
         pet.mood = ['happy', 'sad', 'dirty', 'hungry', 'tired', 'sick']
         expect(pet.getCritterState()).toBe('sick')
         pet.play()

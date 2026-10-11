@@ -143,6 +143,6 @@ describe('CLI and entry point', () => {
     it.each(['-d', '--debug'])('prints exact stat values with %s', (flag) => {
         const result = run(flag, 'new')
         expect(result.status).toBe(0)
-        expect(result.stdout).toContain('Happy:  󰋑󰋑󰋑󰋑󰋑 1000000')
+        expect(result.stdout).toContain('Happy:  󰋑󰋑󰋑󰋑󰋑 (1000000)')
     })
 })

@@ -315,7 +315,6 @@ var Critter = class {
     }
     for (let tick = 0; tick < elapsed; tick += 1) {
       this.age += 1;
-      this.mood = [];
       if (this.actionTime <= 0) this.action = "idle";
       if (this.action === "eating") {
         this.satiety = set(this.satiety + 6250);
@@ -360,27 +359,11 @@ var Critter = class {
         this.die();
         return;
       }
-      if (this.satiety < low) {
-        this.mood.push("hungry");
-      }
-      if (this.health < low) {
-        this.mood.push("sick");
-      }
       if (this.energy === 0 && this.action !== "sleeping") {
         this.sleep();
       }
-      if (this.energy < low) {
-        this.mood.push("tired");
-      }
-      if (this.happiness > high) {
-        this.mood.push("happy");
-      } else if (this.happiness < low) {
-        this.mood.push("sad");
-      }
-      if (this.cleanliness < low) {
-        this.mood.push("dirty");
-      }
     }
+    this.updateMood();
   };
   refuse = () => {
     this.action = "refusing";
@@ -401,6 +384,26 @@ var Critter = class {
     }
     this.action = "idle";
     this.actionTime = 0;
+  };
+  updateMood = () => {
+    this.mood = [];
+    if (this.satiety < low) {
+      this.mood.push("hungry");
+    }
+    if (this.health < low) {
+      this.mood.push("sick");
+    }
+    if (this.energy < low) {
+      this.mood.push("tired");
+    }
+    if (this.happiness > high) {
+      this.mood.push("happy");
+    } else if (this.happiness < low) {
+      this.mood.push("sad");
+    }
+    if (this.cleanliness < low) {
+      this.mood.push("dirty");
+    }
   };
 };
 

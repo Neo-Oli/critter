@@ -1,10 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`plain rendering > matches snapshots across key life stages > debug 1`] = `
-"█▀█▄▄▄█▀█         IDLE
+"█▀█▄▄▄█▀█         HAPPY
 █       █         Happy:  󰛞󰋕󰋕󰋕󰋕 (123456)
-█ █   █ █▄▄▄▄▄▄   Hunger: 󰋑󰋕󰋕󰋕󰋕 (234567)
-█   ▄   █     ██  Energy: 󰋑󰛞󰋕󰋕󰋕 (345678)
+█ ▀   ▀ █▄▄▄▄▄▄   Hunger: 󰋑󰋕󰋕󰋕󰋕 (234567)
+█   ▄▄▀ █     ██  Energy: 󰋑󰛞󰋕󰋕󰋕 (345678)
 █▄▄▄▄▄▄▄█     █   Health: 󰋑󰋑󰛞󰋕󰋕 (456789)
  █            █   Clean:  󰋑󰋑󰋑󰋕󰋕 (567890)
  █  █▀█  █▀▀█ █   Age:    0 seconds
@@ -37,10 +37,10 @@ exports[`plain rendering > matches snapshots across key life stages > neglected 
 `;
 
 exports[`plain rendering > matches snapshots across key life stages > newborn 1`] = `
-"█▀█▄▄▄█▀█         IDLE
+"█▀█▄▄▄█▀█         HAPPY
 █       █         Happy:  󰋑󰋑󰋑󰋑󰋑
-█ █   █ █▄▄▄▄▄▄   Hunger: 󰋑󰋑󰛞󰋕󰋕
-█   ▄   █     ██  Energy: 󰋑󰋑󰛞󰋕󰋕
+█ ▀   ▀ █▄▄▄▄▄▄   Hunger: 󰋑󰋑󰛞󰋕󰋕
+█   ▄▄▀ █     ██  Energy: 󰋑󰋑󰛞󰋕󰋕
 █▄▄▄▄▄▄▄█     █   Health: 󰋑󰋑󰋑󰋑󰋕
  █            █   Clean:  󰋑󰛞󰋕󰋕󰋕
  █  █▀█  █▀▀█ █   Age:    0 seconds
