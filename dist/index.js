@@ -1,5 +1,23 @@
 #!/usr/bin/env node
 
+// src/utils.ts
+var now = () => Math.round(Date.now() / 1e3);
+var minute = 60;
+var hour = minute * 60;
+var day = hour * 24;
+var duration = (seconds) => {
+  const units = [
+    ["year", 31536e3],
+    ["day", 86400],
+    ["hour", 3600],
+    ["minute", 60],
+    ["second", 1]
+  ];
+  const [unit, size] = units.find(([, size2]) => seconds >= size2) ?? units[4];
+  const count = Math.floor(seconds / size);
+  return `${count} ${unit}${count === 1 ? "" : "s"}`;
+};
+
 // src/config.ts
 var max = 1e6;
 var high = Math.round(max / 4 * 3);
@@ -8,6 +26,36 @@ var low = Math.round(max / 4);
 var binName = "critter";
 var happinessPenalty = 1e4;
 var speed = 1;
+var schedules = {
+  energy: {
+    awake: day,
+    playing: 10 * 2 * minute,
+    sleeping: 2 * hour
+  },
+  happiness: {
+    idle: 6 * hour,
+    playing: 2 * minute,
+    playingTired: 4 * minute
+  },
+  health: {
+    healing: 20,
+    healingAction: 10,
+    hungry: 4 * day,
+    poo: 2 * day,
+    recovery: 6 * hour,
+    starving: 2 * day
+  },
+  satiety: {
+    eating: 160,
+    idle: day / 3,
+    playing: 5 * 2 * minute
+  },
+  toilet: {
+    high: day / 3,
+    low: day,
+    normal: day / 2
+  }
+};
 
 // src/io.ts
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -65,23 +113,6 @@ var tired_default = "\u2588\u2580\u2588\u2584\u2584\u2584\u2588\u2580\u2588\n\u2
 
 // src/sprites/toy.txt
 var toy_default = " \u2584\u2580\u2580\u2580\u2580\u2584\n\u2588   \u2580\u2584 \u2588\n\u2588      \u2588\n \u2580\u2584\u2584\u2584\u2584\u2580\n";
-
-// src/utils.ts
-var now = () => Math.round(Date.now() / 1e3);
-var minute = 60;
-var hour = minute * 60;
-var duration = (seconds) => {
-  const units = [
-    ["year", 31536e3],
-    ["day", 86400],
-    ["hour", 3600],
-    ["minute", 60],
-    ["second", 1]
-  ];
-  const [unit, size] = units.find(([, size2]) => seconds >= size2) ?? units[4];
-  const count = Math.floor(seconds / size);
-  return `${count} ${unit}${count === 1 ? "" : "s"}`;
-};
 
 // src/plain.ts
 var spriteWidth = 16;
@@ -173,6 +204,7 @@ var plain = ({
 var set = (value, smin = 0, smax = max) => {
   return Math.min(smax, Math.max(smin, value));
 };
+var changeBySchedule = (value, secondsPerCycle, direction) => set(value + max / secondsPerCycle * direction);
 var Critter = class {
   action = "idle";
   actionTime = 0;
@@ -181,7 +213,7 @@ var Critter = class {
   birth = 0;
   energy = normal;
   error = void 0;
-  happiness = max;
+  happiness = normal;
   health = high;
   mood = [];
   poo = false;
@@ -251,10 +283,19 @@ var Critter = class {
       return;
     }
     this.action = "eating";
-    this.actionTime = this.satiety < low ? Math.floor((high - this.satiety) / 6250) : minute;
+    this.actionTime = this.satiety < low ? Math.floor(
+      (high - this.satiety) / max * schedules.satiety.eating
+    ) : minute;
   };
   getCritterState = () => {
-    if (!this.alive) return "dead";
+    if (!this.alive)
+      return {
+        bottom: "none",
+        main: "dead",
+        reverse: false,
+        sprite: "dead",
+        top: "none"
+      };
     const moodPriority = [
       "dead",
       "sick",
@@ -269,13 +310,13 @@ var Critter = class {
       bottom: main === "playing" ? "toy" : main === "eating" ? "food" : this.poo ? "poo" : "none",
       main,
       reverse: ["eating", "playing"].includes(main),
-      sprite: ["eating", "playing"].includes(main) ? mood : main,
+      sprite: main === "eating" || main === "playing" ? mood : main,
       top: "none"
     };
   };
   medicine = () => {
     this.action = "healing";
-    this.actionTime = 10;
+    this.actionTime = schedules.health.healingAction;
   };
   persistedState = () => {
     const {
@@ -312,7 +353,6 @@ var Critter = class {
     happiness: this.happiness,
     health: this.health,
     noNerdFonts,
-    poo: this.poo,
     satiety: this.satiety,
     state: this.getCritterState(),
     toilet: this.toilet
@@ -335,39 +375,96 @@ var Critter = class {
     for (let tick = 0; tick < elapsed; tick += 1) {
       this.age += 1;
       if (this.actionTime <= 0) this.action = "idle";
+      const healing = this.action === "healing";
       if (this.action === "eating") {
-        this.satiety = set(this.satiety + 6250);
+        this.satiety = changeBySchedule(
+          this.satiety,
+          schedules.satiety.eating,
+          1
+        );
         if (this.satiety >= max) this.refuse();
       } else {
-        this.satiety = set(this.satiety - 23);
+        this.satiety = changeBySchedule(
+          this.satiety,
+          this.action === "playing" ? schedules.satiety.playing : schedules.satiety.idle,
+          -1
+        );
       }
       if (this.action === "sleeping") {
-        this.energy = set(this.energy + 139);
-        if (this.energy === max) {
+        this.energy = changeBySchedule(
+          this.energy,
+          schedules.energy.sleeping,
+          1
+        );
+        if (this.energy >= max) {
+          this.energy = max;
           this.action = "idle";
           this.actionTime = 0;
         }
       } else {
-        this.energy = set(this.energy - 21);
+        this.energy = changeBySchedule(
+          this.energy,
+          this.action === "playing" ? schedules.energy.playing : schedules.energy.awake,
+          -1
+        );
       }
-      if (this.action === "healing") {
-        this.health = set(this.health + 1e5);
-      } else if (this.satiety > 0 && !this.poo) {
-        this.health = set(this.health + 30);
+      if (healing) {
+        this.health = changeBySchedule(
+          this.health,
+          schedules.health.healing,
+          1
+        );
       }
       if (this.action === "playing") {
-        this.happiness = set(
-          this.happiness + (this.energy < low ? 4167 : 8333)
+        this.happiness = changeBySchedule(
+          this.happiness,
+          this.energy < low ? schedules.happiness.playingTired : schedules.happiness.playing,
+          1
         );
       } else {
-        this.happiness = set(this.happiness - 26);
+        this.happiness = changeBySchedule(
+          this.happiness,
+          schedules.happiness.idle,
+          -1
+        );
       }
       this.actionTime = set(this.actionTime - 1, 0, Infinity);
       if (this.actionTime === 0) this.action = "idle";
-      if (this.satiety === 0) {
-        this.health = set(this.health - (this.health > low ? 14 : 3));
-      } else if (this.poo) {
-        this.health = set(this.health - 2);
+      if (!healing) {
+        if (this.poo) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.poo,
+            -1
+          );
+        }
+        if (this.satiety === 0) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.starving,
+            -1
+          );
+        } else if (this.satiety < low) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.hungry,
+            -1
+          );
+        } else if (!this.poo) {
+          this.health = changeBySchedule(
+            this.health,
+            schedules.health.recovery,
+            1
+          );
+        }
+      }
+      const toiletSchedule = this.satiety > high ? schedules.toilet.high : this.satiety > normal ? schedules.toilet.normal : this.satiety > low ? schedules.toilet.low : void 0;
+      if (toiletSchedule !== void 0) {
+        this.toilet = changeBySchedule(this.toilet, toiletSchedule, -1);
+        if (this.toilet <= 0) {
+          this.poo = true;
+          this.toilet = max;
+        }
       }
       if (this.health === 0) {
         this.die();
@@ -375,10 +472,6 @@ var Critter = class {
       }
       if (this.energy === 0 && this.action !== "sleeping") {
         this.sleep();
-      }
-      if (this.toilet === 0) {
-        this.poo = true;
-        this.toilet = set(max);
       }
     }
     this.updateMood();
@@ -394,7 +487,7 @@ var Critter = class {
       return;
     }
     this.action = "sleeping";
-    this.actionTime = 2 * hour;
+    this.actionTime = schedules.energy.sleeping;
   };
   stop = () => {
     if (this.action === "eating" || this.action === "sleeping") {

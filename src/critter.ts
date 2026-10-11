@@ -1,7 +1,15 @@
-import { happinessPenalty, high, low, max, normal, speed } from './config.ts'
+import {
+    happinessPenalty,
+    high,
+    low,
+    max,
+    normal,
+    schedules,
+    speed,
+} from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { type Plain, plain } from './plain.ts'
-import { day, hour, minute, now } from './utils.ts'
+import { minute, now } from './utils.ts'
 
 export type Action =
     'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping'
@@ -42,6 +50,11 @@ type HealthMood = 'dead' | 'healing' | 'sick'
 const set = (value: number, smin = 0, smax = max) => {
     return Math.min(smax, Math.max(smin, value))
 }
+const changeBySchedule = (
+    value: number,
+    secondsPerCycle: number,
+    direction: -1 | 1,
+) => set(value + (max / secondsPerCycle) * direction)
 export class Critter {
     action: Action = 'idle'
     actionTime = 0
@@ -50,7 +63,7 @@ export class Critter {
     birth = 0
     energy = normal
     error: string | undefined = undefined
-    happiness = max
+    happiness = normal
     health = high
     mood: Mood[] = []
     poo = false
@@ -124,7 +137,9 @@ export class Critter {
         this.action = 'eating'
         this.actionTime =
             this.satiety < low
-                ? Math.floor((high - this.satiety) / 6250)
+                ? Math.floor(
+                      ((high - this.satiety) / max) * schedules.satiety.eating,
+                  )
                 : minute
     }
     getCritterState = (): CritterRenderState => {
@@ -160,13 +175,13 @@ export class Critter {
                         : 'none',
             main: main,
             reverse: ['eating', 'playing'].includes(main),
-            sprite: ['eating', 'playing'].includes(main) ? mood : main,
+            sprite: main === 'eating' || main === 'playing' ? mood : main,
             top: 'none',
         }
     }
     medicine = () => {
         this.action = 'healing'
-        this.actionTime = 10
+        this.actionTime = schedules.health.healingAction
     }
     persistedState = (): PersistedCritterState => {
         const {
@@ -226,40 +241,110 @@ export class Critter {
         for (let tick = 0; tick < elapsed; tick += 1) {
             this.age += 1
             if (this.actionTime <= 0) this.action = 'idle'
+            const healing = this.action === 'healing'
             if (this.action === 'eating') {
-                this.satiety = set(this.satiety + 6250)
+                this.satiety = changeBySchedule(
+                    this.satiety,
+                    schedules.satiety.eating,
+                    1,
+                )
                 if (this.satiety >= max) this.refuse()
             } else {
-                this.satiety = set(this.satiety - 23)
+                this.satiety = changeBySchedule(
+                    this.satiety,
+                    this.action === 'playing'
+                        ? schedules.satiety.playing
+                        : schedules.satiety.idle,
+                    -1,
+                )
             }
             if (this.action === 'sleeping') {
-                this.energy = set(this.energy + 139)
-                if (this.energy === max) {
+                this.energy = changeBySchedule(
+                    this.energy,
+                    schedules.energy.sleeping,
+                    1,
+                )
+                if (this.energy >= max) {
+                    this.energy = max
                     this.action = 'idle'
                     this.actionTime = 0
                 }
             } else {
-                this.energy = set(this.energy - 21)
+                this.energy = changeBySchedule(
+                    this.energy,
+                    this.action === 'playing'
+                        ? schedules.energy.playing
+                        : schedules.energy.awake,
+                    -1,
+                )
             }
 
-            if (this.action === 'healing') {
-                this.health = set(this.health + 100000)
-            } else if (this.satiety > 0 && !this.poo) {
-                this.health = set(this.health + 30)
+            if (healing) {
+                this.health = changeBySchedule(
+                    this.health,
+                    schedules.health.healing,
+                    1,
+                )
             }
             if (this.action === 'playing') {
-                this.happiness = set(
-                    this.happiness + (this.energy < low ? 4167 : 8333),
+                this.happiness = changeBySchedule(
+                    this.happiness,
+                    this.energy < low
+                        ? schedules.happiness.playingTired
+                        : schedules.happiness.playing,
+                    1,
                 )
             } else {
-                this.happiness = set(this.happiness - 26)
+                this.happiness = changeBySchedule(
+                    this.happiness,
+                    schedules.happiness.idle,
+                    -1,
+                )
             }
             this.actionTime = set(this.actionTime - 1, 0, Infinity)
             if (this.actionTime === 0) this.action = 'idle'
-            if (this.satiety === 0) {
-                this.health = set(this.health - (this.health > low ? 14 : 3))
-            } else if (this.poo) {
-                this.health = set(this.health - 2)
+            if (!healing) {
+                if (this.poo) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.poo,
+                        -1,
+                    )
+                }
+                if (this.satiety === 0) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.starving,
+                        -1,
+                    )
+                } else if (this.satiety < low) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.hungry,
+                        -1,
+                    )
+                } else if (!this.poo) {
+                    this.health = changeBySchedule(
+                        this.health,
+                        schedules.health.recovery,
+                        1,
+                    )
+                }
+            }
+            const toiletSchedule =
+                this.satiety > high
+                    ? schedules.toilet.high
+                    : this.satiety > normal
+                      ? schedules.toilet.normal
+                      : this.satiety > low
+                        ? schedules.toilet.low
+                        : undefined
+            if (toiletSchedule !== undefined) {
+                this.toilet = changeBySchedule(this.toilet, toiletSchedule, -1)
+                if (this.toilet <= 0) {
+                    this.poo = true
+                    this.toilet = max
+                }
             }
             if (this.health === 0) {
                 this.die()
@@ -267,22 +352,6 @@ export class Critter {
             }
             if (this.energy === 0 && this.action !== 'sleeping') {
                 this.sleep()
-            }
-            const toiletSchedule =
-                this.satiety > high
-                    ? 3
-                    : this.satiety > normal
-                      ? 2
-                      : this.satiety > low
-                        ? 1
-                        : 0
-            if (toiletSchedule > 0) {
-                const secondsPerCycle = (day) / toiletSchedule
-                this.toilet = set(this.toilet - max / secondsPerCycle)
-                if (this.toilet <= 0) {
-                    this.poo = true
-                    this.toilet = max
-                }
             }
         }
         this.updateMood()
@@ -299,7 +368,7 @@ export class Critter {
             return
         }
         this.action = 'sleeping'
-        this.actionTime = 2 * hour
+        this.actionTime = schedules.energy.sleeping
     }
     stop = () => {
         if (this.action === 'eating' || this.action === 'sleeping') {

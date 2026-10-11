@@ -1,6 +1,7 @@
 export const now = () => Math.round(Date.now() / 1000)
 export const minute = 60
 export const hour = minute * 60
+export const day = hour * 24
 export const duration = (seconds: number) => {
     const units = [
         ['year', 31536000],
