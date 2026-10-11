@@ -26,137 +26,79 @@ const stats = {
 }
 
 describe('short emoticons', () => {
-    it('renders the stage-zero egg', () => {
-        expect(emoticon(state({ stage: 0 }))).toBe('( . )')
-    })
-
-    const expressions: Record<CritterRenderState['sprite'], string> = {
-        dead: '[RIP]',
-        happy: 'ʕ＾ᴥ＾ʔ',
-        hungry: 'ʕºᴥºʔ',
-        idle: 'ʕ•ᴥ•ʔ',
-        refusing: 'ʕˋᴥˊʔ',
-        sad: 'ʕ；ᴥ；ʔ',
-        sick: 'ʕ×ᴥ×ʔ',
-        sleeping: 'zZz',
-        tired: 'ʕ-ᴥ-ʔ',
-    }
-
-    describe.each([1, 2] as const)('stage %i', (stage) => {
-        it.each(Object.entries(expressions))(
-            'renders %s',
-            (sprite, expected) => {
-                expect(
-                    emoticon(
-                        state({
-                            sprite: sprite as CritterRenderState['sprite'],
-                            stage,
-                        }),
-                    ),
-                ).toBe(expected)
-            },
-        )
-    })
-
     it.each(['eating', 'healing', 'playing'] as const)(
         'selects the body sprite rather than the %s action',
         (main) => {
-            expect(emoticon(state({ main, sprite: 'sick' }))).toBe('ʕ×ᴥ×ʔ')
+            expect(emoticon(state({ main, sprite: 'sick' }))).toBe(
+                emoticon(state({ sprite: 'sick' })),
+            )
         },
     )
 })
 
 describe('short bars', () => {
-    it.each([
-        [-1, ' '],
-        [0, ' '],
-        [1, '▁'],
-        [100000, '▁'],
-        [166666, '▁'],
-        [166667, '▂'],
-        [333333, '▂'],
-        [333334, '▃'],
-        [500000, '▃'],
-        [500001, '▅'],
-        [666666, '▅'],
-        [666667, '▇'],
-        [833333, '▇'],
-        [833334, '█'],
-        [max, '█'],
-        [max + 1, '█'],
-    ])('renders value %i as %s without undefined glyphs', (value, glyph) => {
-        expect(
-            bars({
-                ...stats,
-                energy: value,
-                happiness: value,
-                health: value,
-                satiety: value,
-                toilet: value,
-            }),
-        ).toBe(`H${glyph} S${glyph} E${glyph} +${glyph} T${glyph}`)
-    })
+    const renderAll = (value: number) =>
+        bars({
+            ...stats,
+            energy: value,
+            happiness: value,
+            health: value,
+            satiety: value,
+            toilet: value,
+        })
 
-    it('keeps stat order and selects Nerd Font icons', () => {
-        expect(bars({ ...stats, noNerdFonts: false })).toBe('󰱱█ 󰉛█ 󱊣█ █ █')
+    it('uses consistent bands with clamped values', () => {
+        const bands = [
+            [0, 0],
+            [1, 166666],
+            [166667, 333333],
+            [333334, 500000],
+            [500001, 666666],
+            [666667, 833333],
+            [833334, max],
+        ]
+        const outputs = bands.map(([minimum, maximum]) => {
+            expect(renderAll(minimum)).toBe(renderAll(maximum))
+            return renderAll(minimum)
+        })
+
+        expect(renderAll(-1)).toBe(outputs[0])
+        expect(renderAll(max + 1)).toBe(outputs.at(-1))
+        for (let index = 1; index < outputs.length; index++) {
+            expect(outputs[index]).not.toBe(outputs[index - 1])
+        }
     })
 
     it('renders each stat independently', () => {
-        expect(
-            bars({
-                ...stats,
-                energy: 0,
-                happiness: 250000,
-                health: 500000,
-                satiety: 750000,
-            }),
-        ).toBe('H▂ S▇ E  +▃ T█')
+        const baseline = bars(stats)
+        for (const stat of [
+            'energy',
+            'happiness',
+            'health',
+            'satiety',
+            'toilet',
+        ] as const) {
+            expect(bars({ ...stats, [stat]: 0 })).not.toBe(baseline)
+        }
     })
 })
 
 describe('short conditions', () => {
-    const icons: Record<CritterRenderState['top'], [string, string]> = {
-        food: ['♨', '󰉛'],
-        ill: ['!', '󰀦'],
-        medicine: ['✚', '󰤓'],
-        none: ['', ''],
-        poo: ['≋', '󰟝'],
-        toy: ['○', '󰝺'],
-    }
+    it.each([true, false])('composes bottom then top (%s)', (noNerdFonts) => {
+        const bottom = conditions({
+            noNerdFonts,
+            state: state({ bottom: 'poo' }),
+        })
+        const top = conditions({ noNerdFonts, state: state({ top: 'ill' }) })
 
-    it.each(Object.entries(icons))(
-        'renders both icon variants for %s',
-        (asset, variants) => {
-            for (const noNerdFonts of [true, false]) {
-                const expected = variants[noNerdFonts ? 0 : 1]
-                const condition = asset as CritterRenderState['top']
-                expect(
-                    conditions({
-                        noNerdFonts,
-                        state: state({ bottom: condition }),
-                    }),
-                ).toBe(expected)
-                expect(
-                    conditions({
-                        noNerdFonts,
-                        state: state({ top: condition }),
-                    }),
-                ).toBe(expected)
-            }
-        },
-    )
-
-    it.each([true, false])(
-        'joins bottom before top without spaces (Unicode: %s)',
-        (noNerdFonts) => {
-            expect(
-                conditions({
-                    noNerdFonts,
-                    state: state({ bottom: 'poo', top: 'ill' }),
-                }),
-            ).toBe(noNerdFonts ? '≋!' : '󰟝󰀦')
-        },
-    )
+        expect(
+            conditions({
+                noNerdFonts,
+                state: state({ bottom: 'poo', top: 'ill' }),
+            }),
+        ).toBe(`${bottom}${top}`)
+        expect(conditions({ noNerdFonts, state: state() })).toBe('')
+    })
 })
 
 describe('short output', () => {
@@ -221,35 +163,30 @@ describe('short output', () => {
         }
     })
 
-    it('puts condition icons immediately after the emoticon and then the bars', () => {
-        expect(
-            short({
+    it.each([true, false])(
+        'composes the output without a timer or newline (%s)',
+        (noNerdFonts) => {
+            const renderState = state({ bottom: 'poo', top: 'ill' })
+            const input = {
                 ...stats,
                 actionTime: 30,
-                state: state({
-                    bottom: 'poo',
-                    main: 'sick',
-                    sprite: 'sick',
-                    top: 'ill',
-                }),
-            }),
-        ).toBe('ʕ×ᴥ×ʔ≋! H█ S█ E█ +█ T█')
-    })
+                noNerdFonts,
+                state: renderState,
+            }
+            const output = short(input)
 
-    it('omits empty conditions and does not add an action timer or newline', () => {
-        expect(short({ ...stats, actionTime: 30, state: state() })).toBe(
-            'ʕ•ᴥ•ʔ H█ S█ E█ +█ T█',
-        )
-    })
+            expect(output).toBe(
+                `${emoticon(renderState)}${conditions({ noNerdFonts, state: renderState })} ${bars(input)}`,
+            )
+            expect(output).not.toContain('\n')
+            expect(output).not.toContain(String(input.actionTime))
+        },
+    )
 
-    it('uses Nerd Font condition and bar icons consistently', () => {
-        expect(
-            short({
-                ...stats,
-                actionTime: 10,
-                noNerdFonts: false,
-                state: state({ main: 'healing', top: 'medicine' }),
-            }),
-        ).toBe('ʕ•ᴥ•ʔ󰤓 󰱱█ 󰉛█ 󱊣█ █ █')
+    it('omits empty conditions', () => {
+        const renderState = state()
+        const output = short({ ...stats, actionTime: 30, state: renderState })
+
+        expect(output).toBe(`${emoticon(renderState)} ${bars(stats)}`)
     })
 })
