@@ -207,19 +207,8 @@ var loadSprite = ({
     return `${oriented}${" ".repeat(padding)}`;
   });
 };
-var plain = ({
-  actionTime,
-  age,
-  debug = false,
-  energy,
-  happiness,
-  health,
-  noNerdFonts,
-  satiety,
-  state,
-  toilet
-}) => {
-  const { bottom, main, reverse, sprite, top } = state;
+var plainSprites = ({ state }) => {
+  const { bottom, reverse, sprite, top } = state;
   const topSprite = loadSprite({
     height: iconHeight,
     name: top,
@@ -244,6 +233,20 @@ var plain = ({
     output[i] += topSprite[i];
     output[i + iconHeight] += bottomSprite[i];
   }
+  return output.map((line) => line.trimEnd()).join("\n");
+};
+var plainStats = ({
+  actionTime,
+  age,
+  debug = false,
+  energy,
+  happiness,
+  health,
+  noNerdFonts,
+  satiety,
+  state,
+  toilet
+}) => {
   const stat = (name, value) => {
     const barValue = Math.round(value / max * 10);
     let empty, full, half;
@@ -270,24 +273,24 @@ var plain = ({
     return `${str}: `.padEnd(8);
   };
   const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
-  const o = (line = "") => {
-    output.push(`${line}`);
-  };
-  o();
+  const output = [];
   if (state.stage !== 0) {
-    o(`${main.toUpperCase()}${remaining}`);
-    o(stat("Happy", happiness));
-    o(stat("Hunger", satiety));
-    o(stat("Energy", energy));
-    o(stat("Health", health));
-    o(stat("Toilet", toilet));
+    output.push(state.main.toUpperCase() + remaining);
+    output.push(stat("Happy", happiness));
+    output.push(stat("Hunger", satiety));
+    output.push(stat("Energy", energy));
+    output.push(stat("Health", health));
+    output.push(stat("Toilet", toilet));
   }
-  o(label("Age") + duration(age));
+  output.push(label("Age") + duration(age));
   return output.map((line) => line.trimEnd()).join("\n");
 };
+var plain = (options) => `${plainSprites(options)}
+
+${plainStats(options)}`;
 
 // src/short.ts
-var emoticon = (state) => {
+var emoticon = ({ noNerdFonts = true, state }) => {
   const baseSet = {
     dead: "[RIP]",
     happy: "\u0295\uFF3E\u1D25\uFF3E\u0294",
@@ -304,7 +307,7 @@ var emoticon = (state) => {
     1: baseSet,
     2: baseSet
   };
-  return state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite];
+  return `${state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite]}${conditions({ noNerdFonts, state })}`;
 };
 var bar = (value, icon) => {
   const bars2 = " \u2581\u2582\u2583\u2585\u2587\u2588".split("");
@@ -353,10 +356,64 @@ var short = ({
   state,
   toilet
 }) => {
-  return `${emoticon(state)}${conditions({ noNerdFonts, state })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
+  return `${emoticon({ noNerdFonts, state })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
+};
+
+// src/json.ts
+var json = (options) => {
+  const {
+    action,
+    actionTime,
+    alert,
+    energy,
+    happiness,
+    health,
+    noNerdFonts,
+    poo,
+    satiety,
+    state,
+    toilet
+  } = options;
+  return JSON.stringify(
+    {
+      action,
+      actionTime,
+      alert,
+      Bars: bars({
+        energy,
+        happiness,
+        health,
+        noNerdFonts,
+        satiety,
+        toilet
+      }),
+      emoticon: emoticon({ noNerdFonts, state }),
+      Energy: energy,
+      Happy: happiness,
+      Health: health,
+      Hunger: satiety,
+      plain: plain(options),
+      plainSprites: plainSprites(options),
+      plainStats: plainStats(options),
+      poo,
+      short: short(options),
+      Toilet: toilet
+    },
+    null,
+    2
+  );
 };
 
 // src/critter.ts
+var alertFlags = {
+  dead: 1 << 6,
+  hungry: 1 << 0,
+  ill: 1 << 2,
+  poo: 1 << 4,
+  sad: 1 << 5,
+  sick: 1 << 1,
+  tired: 1 << 3
+};
 var set = (value, smin = 0, smax = max) => {
   return Math.round(Math.min(smax, Math.max(smin, value)));
 };
@@ -366,6 +423,7 @@ var Critter = class {
   action = "idle";
   actionTime = 0;
   age = 0;
+  alert = false;
   alive = true;
   birth = 0;
   energy = normal;
@@ -382,6 +440,7 @@ var Critter = class {
     if (this.age < stagingSchedule.stage0 + stagingSchedule.stage1) return 1;
     return 2;
   }
+  activeAlerts = 0;
   constructor({ command }) {
     let state;
     try {
@@ -401,6 +460,7 @@ var Critter = class {
       this.toilet = set(state?.toilet ?? this.toilet);
       this.health = set(state?.health ?? this.health);
       this.poo = state?.poo ?? this.poo;
+      this.alert = state?.alert ?? this.alert;
       this.actionTime = state?.actionTime ?? this.actionTime;
       this.action = state?.action ?? this.action;
       this.time = state?.time ?? this.time;
@@ -413,6 +473,7 @@ var Critter = class {
       this.action = "idle";
       this.actionTime = 0;
     }
+    this.activeAlerts = this.getAlertConditions();
     this.process();
     if (command === "feed") {
       this.feed();
@@ -432,6 +493,10 @@ var Critter = class {
     if (command === "stop") {
       this.stop();
     }
+    if (command === "dismiss") {
+      this.dismiss();
+    }
+    this.updateMood();
     saveState(this.persistedState());
   }
   clean = () => {
@@ -443,6 +508,10 @@ var Critter = class {
     this.actionTime = 0;
     this.alive = false;
     this.mood = ["dead"];
+    this.updateAlert();
+  };
+  dismiss = () => {
+    this.alert = false;
   };
   feed = () => {
     if (this.stage === 0) return;
@@ -493,6 +562,21 @@ var Critter = class {
       top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
     };
   };
+  json = ({ debug, noNerdFonts }) => json({
+    action: this.action,
+    actionTime: this.actionTime,
+    age: this.age,
+    alert: this.alert,
+    debug,
+    energy: this.energy,
+    happiness: this.happiness,
+    health: this.health,
+    noNerdFonts,
+    poo: this.poo,
+    satiety: this.satiety,
+    state: this.getCritterState(),
+    toilet: this.toilet
+  });
   medicine = () => {
     if (this.stage === 0) return;
     this.action = "healing";
@@ -503,6 +587,7 @@ var Critter = class {
       action,
       actionTime,
       age,
+      alert,
       birth,
       energy,
       happiness,
@@ -515,6 +600,7 @@ var Critter = class {
       action,
       actionTime,
       age,
+      alert,
       birth,
       energy,
       happiness,
@@ -687,6 +773,7 @@ var Critter = class {
         this.health = applyPenalty(this.health);
         this.happiness = applyPenalty(this.happiness);
       }
+      this.updateAlert();
     }
     if (this.stage !== 0) this.updateMood();
   };
@@ -739,6 +826,15 @@ var Critter = class {
     } else if (this.happiness < low) {
       this.mood.push("sad");
     }
+    this.updateAlert();
+  };
+  getAlertConditions = () => (this.satiety < low ? alertFlags.hungry : 0) | (this.health < normal ? alertFlags.sick : 0) | (this.health < low ? alertFlags.ill : 0) | (this.energy < low ? alertFlags.tired : 0) | (this.poo ? alertFlags.poo : 0) | (this.happiness < low ? alertFlags.sad : 0) | (!this.alive ? alertFlags.dead : 0);
+  updateAlert = () => {
+    const currentAlerts = this.getAlertConditions();
+    if ((currentAlerts & ~this.activeAlerts) !== 0) {
+      this.alert = true;
+    }
+    this.activeAlerts = currentAlerts;
   };
 };
 
@@ -758,12 +854,15 @@ Commands:
     play      Cheer it up; playing while tired is less effective
     sleep     Let it rest for two hours
     stop      Stop the current action
+    dismiss   Dismiss the current alert
 
 Options:
     -h, --help           Show this help and exit
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
     -d, --debug           Show exact stat values
     -s, --short           Show only the current state
+    -q, --quiet           Suppress all output
+    -j, --json            Output state as JSON
 
 Daily care: about four meals, two sleeps, and three plays; clean whenever poo appears.
 
@@ -774,8 +873,9 @@ Examples:
     critter -d
 `;
 var parseArgs = (args) => {
+  const quiet = args.some((arg) => ["--quiet", "-q"].includes(arg));
   if (args.some((arg) => ["--help", "-h"].includes(arg))) {
-    process.stdout.write(`${help}
+    if (!quiet) process.stdout.write(`${help}
 `);
     process.exit(0);
   }
@@ -783,56 +883,89 @@ var parseArgs = (args) => {
     (arg) => ["--no-nerd-fonts", "-n"].includes(arg)
   );
   const debug = args.some((arg) => ["--debug", "-d"].includes(arg));
+  const jsonOutput = args.some((arg) => ["--json", "-j"].includes(arg));
   const shortOutput = args.some((arg) => ["--short", "-s"].includes(arg));
   const [command] = args.filter(
     (arg) => ![
       "--debug",
+      "--json",
       "--no-nerd-fonts",
+      "--quiet",
       "--short",
       "-d",
+      "-j",
       "-n",
+      "-q",
       "-s"
     ].includes(arg)
   );
-  if (!command) return { command: void 0, debug, noNerdFonts, shortOutput };
+  if (!command)
+    return {
+      command: void 0,
+      debug,
+      jsonOutput,
+      noNerdFonts,
+      quiet,
+      shortOutput
+    };
   switch (command) {
     case "clean":
+    case "dismiss":
     case "feed":
     case "medicine":
     case "new":
     case "play":
     case "sleep":
     case "stop":
-      return { command, debug, noNerdFonts, shortOutput };
+      return {
+        command,
+        debug,
+        jsonOutput,
+        noNerdFonts,
+        quiet,
+        shortOutput
+      };
     default:
       throw new Error(`Unknown command: ${command}`);
   }
 };
 var cli = async () => {
+  const argv = process.argv.slice(2);
+  const quiet = argv.some((arg) => ["--quiet", "-q"].includes(arg));
   let args;
   try {
-    args = parseArgs(process.argv.slice(2));
+    args = parseArgs(argv);
   } catch (error) {
-    process.stderr.write(
-      `${error instanceof Error ? error.message : String(error)}
+    if (!quiet)
+      process.stderr.write(
+        `${error instanceof Error ? error.message : String(error)}
 `
-    );
+      );
     process.exit(7);
   }
-  const { command, debug, noNerdFonts, shortOutput } = args;
+  const {
+    command,
+    debug,
+    jsonOutput,
+    noNerdFonts,
+    quiet: quietOutput,
+    shortOutput
+  } = args;
   const critter = new Critter({ command });
   if (critter.error) {
-    process.stderr.write(`${critter.error}
+    if (!quietOutput) process.stderr.write(`${critter.error}
 `);
     process.exit(1);
+  }
+  if (quietOutput) return;
+  if (jsonOutput) {
+    console.log(critter.json({ debug, noNerdFonts }));
+  } else if (shortOutput) {
+    console.log(`${critter.short({ noNerdFonts })}
+`);
   } else {
-    if (shortOutput) {
-      console.log(`${critter.short({ noNerdFonts })}
+    console.log(`${critter.plain({ debug, noNerdFonts })}
 `);
-    } else {
-      console.log(`${critter.plain({ debug, noNerdFonts })}
-`);
-    }
   }
 };
 
