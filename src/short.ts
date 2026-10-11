@@ -51,7 +51,6 @@ export const bars = ({
     toilet,
 }: Bars) => {
     return [
-    
         bar(happiness, noNerdFonts ? 'H' : '󰱱'),
         bar(satiety, noNerdFonts ? 'S' : '󰉛'),
         bar(energy, noNerdFonts ? 'E' : '󱊣'),
@@ -77,7 +76,8 @@ export const conditions = ({
     }
     return [state.bottom, state.top]
         .map((condition) => icons[condition][noNerdFonts ? 0 : 1])
-        .filter(Boolean).join("")
+        .filter(Boolean)
+        .join('')
 }
 
 export interface Short extends Bars {

@@ -110,6 +110,7 @@ describe('plain rendering', () => {
                                     pet.happiness = happiness
                                     pet.poo = poo
                                     pet.updateMood()
+                                    pet.alert = false
 
                                     const state = pet.getCritterState()
                                     const layers = [
@@ -134,6 +135,7 @@ describe('plain rendering', () => {
         }
 
         pet.die()
+        pet.alert = false
         const deadState = pet.getCritterState()
         const deadLayers = [
             `stage-${deadState.stage}`,

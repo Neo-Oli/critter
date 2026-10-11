@@ -20,6 +20,7 @@ const state: PersistedCritterState = {
     action: 'idle',
     actionTime: 0,
     age: 0,
+    alert: true,
     birth: 1000000,
     energy: normal,
     happiness: max,

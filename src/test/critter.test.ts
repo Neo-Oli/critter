@@ -50,9 +50,21 @@ describe('construction and persistence', () => {
         const pet = new Critter({ command: 'new' })
         expect(pet.birth).toBe(runtime.time)
         expect(pet.alive).toBe(true)
+        expect(pet.alert).toBe(false)
         expect(pet.satiety).toBe(normal)
         expect(pet.toilet).toBe(low)
         expect(storage.saveState).toHaveBeenCalledWith(pet.persistedState())
+    })
+
+    it('restores and persists the alert flag', () => {
+        const original = healthy()
+        original.alert = true
+        const state = original.persistedState()
+        expect(state.alert).toBe(true)
+
+        storage.loadState.mockReturnValue(state)
+        const restored = new Critter({})
+        expect(restored.alert).toBe(true)
     })
 
     it('restores the saved state before processing commands', () => {
@@ -126,6 +138,17 @@ describe('construction and persistence', () => {
 })
 
 describe('actions', () => {
+    it('dismisses an alert without changing any other state', () => {
+        const pet = healthy()
+        pet.alert = true
+        const before = pet.persistedState()
+
+        pet.dismiss()
+
+        expect(pet.alert).toBe(false)
+        expect(pet.persistedState()).toEqual({ ...before, alert: false })
+    })
+
     it('refuses meals above the high threshold with a small happiness loss', () => {
         const pet = healthy()
         pet.satiety = high + 1
@@ -222,5 +245,104 @@ describe('rendering', () => {
         pet.happiness = 123456
         const output = pet.plain({ debug: true, noNerdFonts: true })
         expect(output).toContain('(123456)')
+    })
+
+    it('keeps the alert out of both current output modes', () => {
+        const pet = healthy()
+        pet.alert = true
+        expect(pet.plain({ noNerdFonts: true })).not.toContain('ALERT!')
+        expect(pet.short({ noNerdFonts: true })).not.toContain('ALERT!')
+        expect(pet.persistedState().alert).toBe(true)
+    })
+})
+
+describe('condition alerts', () => {
+    it('alerts when a simulation tick crosses into a condition', () => {
+        const pet = healthy()
+        pet.satiety = low + 1
+        pet.updateMood()
+        expect(pet.alert).toBe(false)
+
+        runtime.time += 1
+        pet.process()
+
+        expect(pet.satiety).toBeLessThan(low)
+        expect(pet.alert).toBe(true)
+    })
+
+    it.each([
+        [
+            'hungry',
+            (pet: Critter) => {
+                pet.satiety = low - 1
+            },
+        ],
+        [
+            'sick',
+            (pet: Critter) => {
+                pet.health = normal - 1
+            },
+        ],
+        [
+            'tired',
+            (pet: Critter) => {
+                pet.energy = low - 1
+            },
+        ],
+        [
+            'poo',
+            (pet: Critter) => {
+                pet.poo = true
+            },
+        ],
+        [
+            'ill',
+            (pet: Critter) => {
+                pet.health = low - 1
+            },
+        ],
+        [
+            'sad',
+            (pet: Critter) => {
+                pet.happiness = low - 1
+            },
+        ],
+    ] as const)('alerts when the critter becomes %s', (_condition, apply) => {
+        const pet = healthy()
+        apply(pet)
+        pet.updateMood()
+        expect(pet.alert).toBe(true)
+    })
+
+    it('alerts on death', () => {
+        const pet = healthy()
+        pet.die()
+        expect(pet.alert).toBe(true)
+    })
+
+    it('keeps dismissal until the condition clears and occurs again', () => {
+        const pet = healthy()
+        pet.energy = low - 1
+        pet.updateMood()
+        pet.dismiss()
+        pet.updateMood()
+        expect(pet.alert).toBe(false)
+
+        pet.energy = max
+        pet.updateMood()
+        pet.energy = low - 1
+        pet.updateMood()
+        expect(pet.alert).toBe(true)
+    })
+
+    it('alerts when illness worsens from sick to ill after dismissal', () => {
+        const pet = healthy()
+        pet.health = normal - 1
+        pet.updateMood()
+        pet.dismiss()
+
+        pet.health = low - 1
+        pet.updateMood()
+        expect(pet.alert).toBe(true)
     })
 })

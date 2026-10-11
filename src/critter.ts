@@ -32,6 +32,7 @@ export interface PersistedCritterState {
     action: Action
     actionTime: number
     age: number
+    alert: boolean
     birth: number
     energy: number
     happiness: number
@@ -43,7 +44,15 @@ export interface PersistedCritterState {
 }
 
 export type SpriteAsset = 'food' | 'ill' | 'medicine' | 'none' | 'poo' | 'toy'
-type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
+type Command =
+    | 'clean'
+    | 'dismiss'
+    | 'feed'
+    | 'medicine'
+    | 'new'
+    | 'play'
+    | 'sleep'
+    | 'stop'
 interface CritterOptions {
     command?: Command
 }
@@ -51,6 +60,15 @@ type EnergyMood = 'sleeping' | 'tired'
 type FoodMood = 'hungry'
 type HappinessMood = 'happy' | 'sad'
 type HealthMood = 'dead' | 'sick'
+const alertFlags = {
+    dead: 1 << 6,
+    hungry: 1 << 0,
+    ill: 1 << 2,
+    poo: 1 << 4,
+    sad: 1 << 5,
+    sick: 1 << 1,
+    tired: 1 << 3,
+}
 const set = (value: number, smin = 0, smax = max) => {
     return Math.round(Math.min(smax, Math.max(smin, value)))
 }
@@ -64,6 +82,7 @@ export class Critter {
     action: Action = 'idle'
     actionTime = 0
     age = 0
+    alert = false
     alive = true
     birth = 0
     energy = normal
@@ -75,12 +94,13 @@ export class Critter {
     satiety = normal
     time = this.birth
     toilet = low
-
     get stage(): Stage {
         if (this.age < stagingSchedule.stage0) return 0
         if (this.age < stagingSchedule.stage0 + stagingSchedule.stage1) return 1
         return 2
     }
+
+    private activeAlerts = 0
     constructor({ command }: CritterOptions) {
         let state
 
@@ -101,6 +121,7 @@ export class Critter {
             this.toilet = set(state?.toilet ?? this.toilet)
             this.health = set(state?.health ?? this.health)
             this.poo = state?.poo ?? this.poo
+            this.alert = state?.alert ?? this.alert
             this.actionTime = state?.actionTime ?? this.actionTime
             this.action = state?.action ?? this.action
             this.time = state?.time ?? this.time
@@ -113,6 +134,7 @@ export class Critter {
             this.action = 'idle'
             this.actionTime = 0
         }
+        this.activeAlerts = this.getAlertConditions()
         this.process()
         if (command === 'feed') {
             this.feed()
@@ -132,6 +154,10 @@ export class Critter {
         if (command === 'stop') {
             this.stop()
         }
+        if (command === 'dismiss') {
+            this.dismiss()
+        }
+        this.updateMood()
         saveState(this.persistedState())
     }
     clean = () => {
@@ -143,6 +169,10 @@ export class Critter {
         this.actionTime = 0
         this.alive = false
         this.mood = ['dead']
+        this.updateAlert()
+    }
+    dismiss = () => {
+        this.alert = false
     }
     feed = () => {
         if (this.stage === 0) return
@@ -223,6 +253,7 @@ export class Critter {
             action,
             actionTime,
             age,
+            alert,
             birth,
             energy,
             happiness,
@@ -235,6 +266,7 @@ export class Critter {
             action,
             actionTime,
             age,
+            alert,
             birth,
             energy,
             happiness,
@@ -424,6 +456,7 @@ export class Critter {
                 this.health = applyPenalty(this.health)
                 this.happiness = applyPenalty(this.happiness)
             }
+            this.updateAlert()
         }
         if (this.stage !== 0) this.updateMood()
     }
@@ -433,6 +466,7 @@ export class Critter {
         this.actionTime = 30
         this.happiness = applyPenalty(this.happiness)
     }
+
     short = ({ noNerdFonts }: Pick<Short, 'noNerdFonts'>) =>
         short({
             actionTime: this.actionTime,
@@ -444,7 +478,6 @@ export class Critter {
             state: this.getCritterState(),
             toilet: this.toilet,
         })
-
     sleep = () => {
         if (this.stage === 0) return
         if (this.energy >= normal) {
@@ -478,5 +511,21 @@ export class Critter {
         } else if (this.happiness < low) {
             this.mood.push('sad')
         }
+        this.updateAlert()
+    }
+    private getAlertConditions = () =>
+        (this.satiety < low ? alertFlags.hungry : 0) |
+        (this.health < normal ? alertFlags.sick : 0) |
+        (this.health < low ? alertFlags.ill : 0) |
+        (this.energy < low ? alertFlags.tired : 0) |
+        (this.poo ? alertFlags.poo : 0) |
+        (this.happiness < low ? alertFlags.sad : 0) |
+        (!this.alive ? alertFlags.dead : 0)
+    private updateAlert = () => {
+        const currentAlerts = this.getAlertConditions()
+        if ((currentAlerts & ~this.activeAlerts) !== 0) {
+            this.alert = true
+        }
+        this.activeAlerts = currentAlerts
     }
 }

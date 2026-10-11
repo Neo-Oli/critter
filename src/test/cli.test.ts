@@ -65,6 +65,41 @@ afterAll(() => {
 })
 
 describe('CLI and entry point', () => {
+    it.each(['-q', '--quiet'])(
+        'suppresses all output with %s while still running commands',
+        (flag) => {
+            const missing = run(flag)
+            expect(missing.status).toBe(1)
+            expect(missing.stdout).toBe('')
+            expect(missing.stderr).toBe('')
+
+            const help = run('--help', flag)
+            expect(help.status).toBe(0)
+            expect(help.stdout).toBe('')
+            expect(help.stderr).toBe('')
+
+            const created = run('new', flag)
+            expect(created.status).toBe(0)
+            expect(created.stdout).toBe('')
+            expect(created.stderr).toBe('')
+            expect(existsSync(statePath())).toBe(true)
+
+            advancePetToStageOne()
+            const playing = run('play', flag)
+            expect(playing.status).toBe(0)
+            expect(playing.stdout).toBe('')
+            expect(playing.stderr).toBe('')
+            expect(JSON.parse(readFileSync(statePath(), 'utf8')).action).toBe(
+                'playing',
+            )
+
+            const unknown = run('unknown', flag)
+            expect(unknown.status).toBe(7)
+            expect(unknown.stdout).toBe('')
+            expect(unknown.stderr).toBe('')
+        },
+    )
+
     it.each([1, 2] as const)(
         'renders short conditions from saved stage %i state in both font modes',
         (stage) => {
@@ -149,6 +184,7 @@ describe('CLI and entry point', () => {
                 'Usage: critter [options] [command]',
             )
             expect(result.stdout).toContain('With no command, show')
+            expect(result.stdout).toContain('-q, --quiet')
             expect(result.stdout).toContain('replacing your current pet')
             for (const command of [
                 'new',
@@ -158,6 +194,7 @@ describe('CLI and entry point', () => {
                 'play',
                 'sleep',
                 'stop',
+                'dismiss',
             ]) {
                 expect(result.stdout).toMatch(
                     new RegExp(`^[ \\t]+${command}[ \\t]{2,}\\S`, 'm'),
@@ -193,6 +230,7 @@ describe('CLI and entry point', () => {
 
     it.each([
         ['clean', 'idle'],
+        ['dismiss', 'idle'],
         ['feed', 'eating'],
         ['medicine', 'healing'],
         ['play', 'playing'],
@@ -200,6 +238,11 @@ describe('CLI and entry point', () => {
         ['stop', 'idle'],
     ] as const)('runs and persists the %s command', (command, action) => {
         expect(run('new').status).toBe(0)
+        if (command === 'dismiss') {
+            const saved = JSON.parse(readFileSync(statePath(), 'utf8'))
+            saved.alert = true
+            writeFileSync(statePath(), JSON.stringify(saved))
+        }
         advancePetToStageOne()
         const result = run(command)
         expect(result.status).toBe(0)
@@ -213,6 +256,11 @@ describe('CLI and entry point', () => {
         }
         if (savedAction !== 'idle') {
             expect(result.stdout).toContain(savedAction.toUpperCase())
+        }
+        if (command === 'dismiss') {
+            expect(JSON.parse(readFileSync(statePath(), 'utf8')).alert).toBe(
+                false,
+            )
         }
     })
 

@@ -180,6 +180,7 @@ describe('short output', () => {
             )
             expect(output).not.toContain('\n')
             expect(output).not.toContain(String(input.actionTime))
+            expect(output).not.toContain('ALERT!')
         },
     )
 
