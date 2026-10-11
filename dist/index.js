@@ -381,12 +381,13 @@ var json = (options) => {
     energy,
     happiness,
     health,
-    noNerdFonts,
     poo,
     satiety,
     state,
     toilet
   } = options;
+  const nerdOptions = { ...options, noNerdFonts: false };
+  const noNerdOptions = { ...options, noNerdFonts: true };
   return JSON.stringify(
     {
       action,
@@ -396,20 +397,32 @@ var json = (options) => {
         energy,
         happiness,
         health,
-        noNerdFonts,
+        noNerdFonts: false,
         satiety,
         toilet
       }),
-      emoticon: emoticon({ noNerdFonts, state }),
+      "Bars-nonerd": bars({
+        energy,
+        happiness,
+        health,
+        noNerdFonts: true,
+        satiety,
+        toilet
+      }),
+      emoticon: emoticon({ noNerdFonts: false, state }),
+      "emoticon-nonerd": emoticon({ noNerdFonts: true, state }),
       Energy: energy,
       Happy: happiness,
       Health: health,
       Hunger: satiety,
-      plain: plain(options),
+      plain: plain(nerdOptions),
+      "plain-nonerd": plain(noNerdOptions),
       plainSprites: plainSprites(options),
-      plainStats: plainStats(options),
+      plainStats: plainStats(nerdOptions),
+      "plainStats-nonerd": plainStats(noNerdOptions),
       poo,
-      short: short(options),
+      short: short(nerdOptions),
+      "short-nonerd": short(noNerdOptions),
       Toilet: toilet
     },
     null,
@@ -575,7 +588,7 @@ var Critter = class {
       top: this.action === "healing" ? "medicine" : this.health < low ? "ill" : "none"
     };
   };
-  json = ({ debug, noNerdFonts }) => json({
+  json = ({ debug }) => json({
     action: this.action,
     actionTime: this.actionTime,
     age: this.age,
@@ -584,7 +597,6 @@ var Critter = class {
     energy: this.energy,
     happiness: this.happiness,
     health: this.health,
-    noNerdFonts,
     poo: this.poo,
     satiety: this.satiety,
     state: this.getCritterState(),
@@ -972,7 +984,7 @@ var cli = async () => {
   }
   if (quietOutput) return;
   if (jsonOutput) {
-    console.log(critter.json({ debug, noNerdFonts }));
+    console.log(critter.json({ debug }));
   } else if (shortOutput) {
     console.log(`${critter.short({ noNerdFonts })}
 `);
