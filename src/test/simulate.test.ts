@@ -1,0 +1,190 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { high, low, max, schedules } from '../config.ts'
+import { Critter } from '../critter.ts'
+import { day, hour, minute } from '../utils.ts'
+
+const runtime = vi.hoisted(() => ({ speed: 1, time: 1000000 }))
+const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
+
+vi.mock('../config.ts', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../config.ts')>()),
+    get speed() {
+        return runtime.speed
+    },
+}))
+vi.mock('../io.ts', () => storage)
+vi.mock('../utils.ts', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../utils.ts')>()),
+    now: () => runtime.time,
+}))
+
+const advance = (pet: Critter, seconds: number) => {
+    runtime.time += seconds
+    pet.process()
+}
+
+const healthy = () => {
+    const pet = new Critter({ command: 'new' })
+    pet.toilet = max
+    pet.energy = max
+    pet.happiness = max
+    pet.health = max
+    pet.satiety = high
+    return pet
+}
+
+beforeEach(() => {
+    runtime.speed = 1
+    runtime.time = 1000000
+    storage.loadState.mockReset()
+    storage.saveState.mockReset()
+})
+
+describe('stat schedule simulations', () => {
+    it('ends a refusal action after thirty seconds', () => {
+        const pet = healthy()
+        pet.satiety = high + 1
+        pet.feed()
+        expect(pet.action).toBe('refusing')
+        advance(pet, 30)
+        expect(pet.action).toBe('idle')
+        expect(pet.actionTime).toBe(0)
+    })
+
+    it('wakes automatically when sleeping energy reaches max', () => {
+        const pet = healthy()
+        pet.energy = max - 1
+        pet.action = 'sleeping'
+        pet.actionTime = 1
+        advance(pet, 1)
+        expect(pet.energy).toBe(max)
+        expect(pet.action).toBe('idle')
+        expect(pet.actionTime).toBe(0)
+    })
+
+    it('drains energy once per day and fully over ten play sessions', () => {
+        const daily = healthy()
+        daily.satiety = max
+        advance(daily, 1)
+        expect(daily.energy).toBeCloseTo(max - max / day)
+
+        const playing = healthy()
+        for (let session = 0; session < 10; session += 1) {
+            playing.play()
+            advance(playing, 2 * minute)
+        }
+        expect(playing.energy).toBe(0)
+    })
+
+    it('drains satiety three times daily and fully over five play sessions', () => {
+        const daily = healthy()
+        daily.satiety = max
+        advance(daily, 1)
+        expect(daily.satiety).toBeCloseTo(max - max / (day / 3))
+
+        const playing = healthy()
+        for (let session = 0; session < 5; session += 1) {
+            playing.play()
+            advance(playing, 2 * minute)
+        }
+        expect(playing.satiety).toBe(0)
+    })
+
+    it('decays happiness to zero in six hours', () => {
+        const pet = healthy()
+        pet.happiness = max
+        advance(pet, 1)
+        expect(pet.happiness).toBeCloseTo(max - max / (6 * hour))
+    })
+
+    it('takes two healing actions to restore a fully depleted health stat', () => {
+        const pet = healthy()
+        pet.health = 1
+        pet.satiety = 0
+        pet.medicine()
+        advance(pet, schedules.health.healingAction)
+        expect(pet.health).toBe(max / 2 + 1)
+        pet.medicine()
+        advance(pet, schedules.health.healingAction)
+        expect(pet.health).toBe(max)
+    })
+
+    it('stacks poo with hunger and starving health loss', () => {
+        const hungry = healthy()
+        hungry.satiety = low - 1
+        advance(hungry, 1)
+        expect(hungry.health).toBeCloseTo(max - max / schedules.health.hungry)
+
+        const soiled = healthy()
+        soiled.poo = true
+        advance(soiled, 1)
+        expect(soiled.health).toBeCloseTo(max - max / schedules.health.poo)
+
+        const combined = healthy()
+        combined.satiety = low - 1
+        combined.poo = true
+        advance(combined, 1)
+        expect(combined.health).toBeCloseTo(
+            max - max / schedules.health.poo - max / schedules.health.hungry,
+        )
+
+        const starving = healthy()
+        starving.satiety = 0
+        advance(starving, 1)
+        expect(starving.health).toBeCloseTo(
+            max - max / schedules.health.starving,
+        )
+
+        const pooAndStarving = healthy()
+        pooAndStarving.satiety = 0
+        pooAndStarving.poo = true
+        advance(pooAndStarving, 1)
+        expect(pooAndStarving.health).toBeCloseTo(
+            max - max / schedules.health.poo - max / schedules.health.starving,
+        )
+    })
+
+    it('recovers health in six hours when fed and clean', () => {
+        const pet = healthy()
+        pet.health = max - 1
+        for (let hourIndex = 0; hourIndex < 6; hourIndex += 1) {
+            pet.satiety = max
+            advance(pet, hour)
+        }
+        expect(pet.health).toBe(max)
+    })
+})
+
+describe('daily care balance', () => {
+    it('keeps the critter alive for ten days with regular care', () => {
+        const pet = healthy()
+        pet.satiety = max
+        runtime.speed = minute
+
+        for (
+            let elapsedMinutes = 0;
+            elapsedMinutes < 10 * 24 * 60;
+            elapsedMinutes += 1
+        ) {
+            const minuteOfDay = elapsedMinutes % (24 * 60)
+            const hourOfDay = Math.floor(minuteOfDay / 60)
+            if (minuteOfDay % (6 * 60) === 0) pet.feed()
+            if ([2, 10, 16].includes(hourOfDay) && minuteOfDay % 60 === 0) {
+                pet.play()
+            }
+            if ([8, 20].includes(hourOfDay) && minuteOfDay % 60 === 0) {
+                pet.sleep()
+            }
+            advance(pet, 1)
+            if (pet.poo) pet.clean()
+            if (!pet.alive) break
+        }
+
+        expect(
+            pet.alive,
+            `died after ${pet.age / hour} hours with health=${pet.health}, energy=${pet.energy}, satiety=${pet.satiety}, happiness=${pet.happiness}, toilet=${pet.toilet}, poo=${pet.poo}`,
+        ).toBe(true)
+        expect(pet.age).toBe(10 * day)
+    })
+})

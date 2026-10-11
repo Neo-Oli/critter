@@ -9,7 +9,7 @@ import {
     schedules,
 } from '../config.ts'
 import { Critter } from '../critter.ts'
-import { day, hour, minute } from '../utils.ts'
+import { minute } from '../utils.ts'
 
 const runtime = vi.hoisted(() => ({ speed: 1, time: 1000000 }))
 const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
@@ -25,11 +25,6 @@ vi.mock('../utils.ts', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../utils.ts')>()),
     now: () => runtime.time,
 }))
-
-const advance = (pet: Critter, seconds: number) => {
-    runtime.time += seconds
-    pet.process()
-}
 
 const healthy = () => {
     const pet = new Critter({ command: 'new' })
@@ -91,11 +86,9 @@ describe('actions', () => {
         expect(pet.action).toBe('refusing')
         expect(pet.actionTime).toBe(30)
         expect(before - pet.happiness).toBe(happinessPenalty)
-        advance(pet, 30)
-        expect(pet.action).toBe('idle')
     })
 
-    it('refuses sleep at or above normal energy and wakes automatically at max', () => {
+    it('refuses sleep at or above normal energy and allows it below normal', () => {
         const rested = healthy()
         rested.sleep()
         expect(rested.action).toBe('refusing')
@@ -106,15 +99,6 @@ describe('actions', () => {
         tired.sleep()
         expect(tired.action).toBe('sleeping')
         expect(tired.actionTime).toBe(schedules.energy.sleeping)
-
-        const nap = healthy()
-        nap.energy = max - 1
-        nap.action = 'sleeping'
-        nap.actionTime = 1
-        advance(nap, 1)
-        expect(nap.energy).toBe(max)
-        expect(nap.action).toBe('idle')
-        expect(nap.actionTime).toBe(0)
     })
 
     it('cleans up the toilet and clears the poo flag', () => {
@@ -162,100 +146,6 @@ describe('bathroom schedule', () => {
         pet.process()
         expect(pet.poo).toBe(false)
         expect(pet.toilet).toBe(max + 1)
-    })
-})
-
-describe('stat schedules', () => {
-    it('drains energy once per day and fully over ten play sessions', () => {
-        const daily = healthy()
-        daily.satiety = max
-        advance(daily, 1)
-        expect(daily.energy).toBeCloseTo(max - max / day)
-
-        const playing = healthy()
-        for (let session = 0; session < 10; session += 1) {
-            playing.play()
-            advance(playing, 2 * minute)
-        }
-        expect(playing.energy).toBe(0)
-    })
-
-    it('drains satiety three times daily and fully over five play sessions', () => {
-        const daily = healthy()
-        daily.satiety = max
-        advance(daily, 1)
-        expect(daily.satiety).toBeCloseTo(max - max / (day / 3))
-
-        const playing = healthy()
-        for (let session = 0; session < 5; session += 1) {
-            playing.play()
-            advance(playing, 2 * minute)
-        }
-        expect(playing.satiety).toBe(0)
-    })
-
-    it('decays happiness to zero in six hours', () => {
-        const pet = healthy()
-        pet.happiness = max
-        advance(pet, 1)
-        expect(pet.happiness).toBeCloseTo(max - max / (6 * hour))
-    })
-
-    it('takes two healing actions to restore a fully depleted health stat', () => {
-        const pet = healthy()
-        pet.health = 1
-        pet.satiety = 0
-        pet.medicine()
-        advance(pet, schedules.health.healingAction)
-        expect(pet.health).toBe(max / 2 + 1)
-        pet.medicine()
-        advance(pet, schedules.health.healingAction)
-        expect(pet.health).toBe(max)
-    })
-
-    it('stacks poo with hunger and starving health loss', () => {
-        const hungry = healthy()
-        hungry.satiety = low - 1
-        advance(hungry, 1)
-        expect(hungry.health).toBeCloseTo(max - max / schedules.health.hungry)
-
-        const soiled = healthy()
-        soiled.poo = true
-        advance(soiled, 1)
-        expect(soiled.health).toBeCloseTo(max - max / schedules.health.poo)
-
-        const combined = healthy()
-        combined.satiety = low - 1
-        combined.poo = true
-        advance(combined, 1)
-        expect(combined.health).toBeCloseTo(
-            max - max / schedules.health.poo - max / schedules.health.hungry,
-        )
-
-        const starving = healthy()
-        starving.satiety = 0
-        advance(starving, 1)
-        expect(starving.health).toBeCloseTo(
-            max - max / schedules.health.starving,
-        )
-
-        const pooAndStarving = healthy()
-        pooAndStarving.satiety = 0
-        pooAndStarving.poo = true
-        advance(pooAndStarving, 1)
-        expect(pooAndStarving.health).toBeCloseTo(
-            max - max / schedules.health.poo - max / schedules.health.starving,
-        )
-    })
-
-    it('recovers health in six hours when fed and clean', () => {
-        const pet = healthy()
-        pet.health = max - 1
-        for (let hourIndex = 0; hourIndex < 6; hourIndex += 1) {
-            pet.satiety = max
-            advance(pet, hour)
-        }
-        expect(pet.health).toBe(max)
     })
 })
 
