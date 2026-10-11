@@ -66,6 +66,26 @@ describe('construction and persistence', () => {
         expect(restored.actionTime).toBe(2 * minute)
     })
 
+    it('rounds restored stat values to integers', () => {
+        storage.loadState.mockReturnValue({
+            birth: runtime.time,
+            energy: 120.4,
+            happiness: 345.6,
+            health: 789.2,
+            satiety: 456.7,
+            time: runtime.time,
+            toilet: 987.8,
+        })
+
+        const pet = new Critter({})
+
+        expect(pet.energy).toBe(120)
+        expect(pet.happiness).toBe(346)
+        expect(pet.health).toBe(789)
+        expect(pet.satiety).toBe(457)
+        expect(pet.toilet).toBe(988)
+    })
+
     it('refreshes moods even when no time has elapsed', () => {
         const pet = healthy()
         pet.satiety = low - 1
@@ -120,9 +140,7 @@ describe('bathroom schedule', () => {
 
         runtime.time += 1
         highPet.process()
-        runtime.time += 1
         normalPet.process()
-        runtime.time += 1
         lowPet.process()
 
         expect(highPet.toilet).toBeLessThan(normalPet.toilet)

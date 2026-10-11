@@ -48,13 +48,13 @@ type FoodMood = 'hungry'
 type HappinessMood = 'happy' | 'sad'
 type HealthMood = 'dead' | 'healing' | 'sick'
 const set = (value: number, smin = 0, smax = max) => {
-    return Math.min(smax, Math.max(smin, value))
+    return Math.round(Math.min(smax, Math.max(smin, value)))
 }
 const changeBySchedule = (
     value: number,
     secondsPerCycle: number,
     direction: -1 | 1,
-) => set(value + (max / secondsPerCycle) * direction)
+) => set(value + Math.ceil(max / secondsPerCycle) * direction)
 export class Critter {
     action: Action = 'idle'
     actionTime = 0
@@ -85,11 +85,11 @@ export class Critter {
         } else {
             this.birth = state?.birth ?? this.birth
             this.age = state?.age ?? this.age
-            this.satiety = state?.satiety ?? this.satiety
-            this.happiness = state?.happiness ?? this.happiness
-            this.energy = state?.energy ?? this.energy
-            this.toilet = state?.toilet ?? this.toilet
-            this.health = state?.health ?? this.health
+            this.satiety = set(state?.satiety ?? this.satiety)
+            this.happiness = set(state?.happiness ?? this.happiness)
+            this.energy = set(state?.energy ?? this.energy)
+            this.toilet = set(state?.toilet ?? this.toilet)
+            this.health = set(state?.health ?? this.health)
             this.poo = state?.poo ?? this.poo
             this.actionTime = state?.actionTime ?? this.actionTime
             this.action = state?.action ?? this.action

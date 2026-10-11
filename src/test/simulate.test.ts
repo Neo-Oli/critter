@@ -58,6 +58,21 @@ beforeEach(() => {
 })
 
 describe('stat schedule simulations', () => {
+    it('keeps all stat values integral after a fractional schedule tick', () => {
+        const pet = maxed()
+        advance(pet, 1)
+
+        for (const stat of [
+            pet.energy,
+            pet.happiness,
+            pet.health,
+            pet.satiety,
+            pet.toilet,
+        ]) {
+            expect(Number.isInteger(stat)).toBe(true)
+        }
+    })
+
     it('fills half a satiety bar during a one-minute feed action', () => {
         const pet = healthy()
         pet.satiety = normal
@@ -91,7 +106,7 @@ describe('stat schedule simulations', () => {
         const daily = healthy()
         daily.satiety = max
         advance(daily, 1)
-        expect(daily.energy).toBeCloseTo(max - max / day)
+        expect(daily.energy).toBe(Math.round(max - max / day))
 
         const playing = healthy()
         for (let session = 0; session < 10; session += 1) {
@@ -105,7 +120,7 @@ describe('stat schedule simulations', () => {
         const daily = healthy()
         daily.satiety = max
         advance(daily, 1)
-        expect(daily.satiety).toBeCloseTo(max - max / (day / 3))
+        expect(daily.satiety).toBe(Math.round(max - max / (day / 3)))
 
         const playing = healthy()
         for (let session = 0; session < 5; session += 1) {
@@ -119,7 +134,7 @@ describe('stat schedule simulations', () => {
         const pet = healthy()
         pet.happiness = max
         advance(pet, 1)
-        expect(pet.happiness).toBeCloseTo(max - max / (6 * hour))
+        expect(pet.happiness).toBe(max - Math.ceil(max / (6 * hour)))
     })
 
     it('takes two healing actions to restore a fully depleted health stat', () => {
@@ -138,34 +153,44 @@ describe('stat schedule simulations', () => {
         const hungry = healthy()
         hungry.satiety = low - 1
         advance(hungry, 1)
-        expect(hungry.health).toBeCloseTo(max - max / schedules.health.hungry)
+        expect(hungry.health).toBe(
+            Math.round(max - max / schedules.health.hungry),
+        )
 
         const soiled = healthy()
         soiled.poo = true
         advance(soiled, 1)
-        expect(soiled.health).toBeCloseTo(max - max / schedules.health.poo)
+        expect(soiled.health).toBe(Math.round(max - max / schedules.health.poo))
 
         const combined = healthy()
         combined.satiety = low - 1
         combined.poo = true
         advance(combined, 1)
-        expect(combined.health).toBeCloseTo(
-            max - max / schedules.health.poo - max / schedules.health.hungry,
+        expect(combined.health).toBe(
+            Math.round(
+                max -
+                    max / schedules.health.poo -
+                    max / schedules.health.hungry,
+            ),
         )
 
         const starving = healthy()
         starving.satiety = 0
         advance(starving, 1)
-        expect(starving.health).toBeCloseTo(
-            max - max / schedules.health.starving,
+        expect(starving.health).toBe(
+            Math.round(max - max / schedules.health.starving),
         )
 
         const pooAndStarving = healthy()
         pooAndStarving.satiety = 0
         pooAndStarving.poo = true
         advance(pooAndStarving, 1)
-        expect(pooAndStarving.health).toBeCloseTo(
-            max - max / schedules.health.poo - max / schedules.health.starving,
+        expect(pooAndStarving.health).toBe(
+            Math.round(
+                max -
+                    max / schedules.health.poo -
+                    max / schedules.health.starving,
+            ),
         )
     })
 
