@@ -46,14 +46,7 @@ export interface PersistedCritterState {
 
 export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy'
 type Command =
-    | 'clean'
-    | 'dismiss'
-    | 'feed'
-    | 'heal'
-    | 'new'
-    | 'play'
-    | 'sleep'
-    | 'stop'
+    'clean' | 'dismiss' | 'feed' | 'heal' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
 }
@@ -244,6 +237,11 @@ export class Critter {
                       : 'none',
         }
     }
+    heal = () => {
+        if (this.stage === 0) return
+        this.action = 'healing'
+        this.actionTime = schedules.health.healingAction
+    }
     json = ({ debug }: Pick<Plain, 'debug'>) =>
         renderJson({
             action: this.action,
@@ -259,11 +257,6 @@ export class Critter {
             state: this.getCritterState(),
             toilet: this.toilet,
         } satisfies Json)
-    heal = () => {
-        if (this.stage === 0) return
-        this.action = 'healing'
-        this.actionTime = schedules.health.healingAction
-    }
     persistedState = (): PersistedCritterState => {
         const {
             action,

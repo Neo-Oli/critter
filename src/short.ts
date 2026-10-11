@@ -73,8 +73,8 @@ export const conditions = ({
 }) => {
     const icons: Record<CritterRenderState['top'], [string, string]> = {
         food: ['♨', '󰉛'],
-        ill: ['!', '󰚌'],
         heal: ['✚', ''],
+        ill: ['!', '󰚌'],
         none: ['', ''],
         poo: ['≋', ' '],
         toy: ['○', '󰨦'],

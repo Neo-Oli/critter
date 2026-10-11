@@ -18,12 +18,7 @@ export const duration = (seconds: number) => {
 }
 
 export type StatName =
-    | 'age'
-    | 'energy'
-    | 'happiness'
-    | 'health'
-    | 'satiety'
-    | 'toilet'
+    'age' | 'energy' | 'happiness' | 'health' | 'satiety' | 'toilet'
 
 const statIcons: Record<StatName, [string, string]> = {
     age: ['A', '󰥔'],
