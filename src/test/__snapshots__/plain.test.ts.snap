@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`plain rendering > matches snapshots across key life stages > eating 1`] = `
+"                  EATING (45 seconds)
+                  Happy:  󰋑󰋑󰋑󰋑󰋕
+    ▄▀▀▀▀▀▀▄      Hunger: 󰋑󰋑󰋑󰋑󰋕
+  ▄▀  ▀     ▀▄    Energy: 󰋑󰋑󰋑󰋑󰋕
+  █ ▄▄   ▄   █    Health: 󰋑󰋑󰋑󰋑󰋑
+ ██████████████   Clean:  󰋑󰋑󰋑󰋑󰋕
+  █    ▀  ▀▀ █    Age:    30 seconds
+▀▄▄██████████▄▄▀  
+                  "
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > neglected 1`] = `
+"                  SICK
+▄▀▀▀▀▀▀▀▄         Happy:  󰋑󰋕󰋕󰋕󰋕
+█ ▄█ █▄ █▄▄▄▄▄▄   Hunger: 󰋕󰋕󰋕󰋕󰋕
+█   ▄   █     ██  Energy: 󰋕󰋕󰋕󰋕󰋕
+█▄▄▄▄▄▄▄█     █   Health: 󰋑󰋕󰋕󰋕󰋕
+ █            █   Clean:  󰋕󰋕󰋕󰋕󰋕
+ █  █▀█  █▀▀█ █   Age:    2 days
+ █▄▄█ █▄▄█  █▄█   
+                  "
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > newborn 1`] = `
+"█▀█▄▄▄█▀█         IDLE
+█       █         Happy:  󰋑󰋑󰋑󰋑󰋑
+█ █   █ █▄▄▄▄▄▄   Hunger: 󰋑󰋑󰛞󰋕󰋕
+█   ▄   █     ██  Energy: 󰋑󰋑󰛞󰋕󰋕
+█▄▄▄▄▄▄▄█     █   Health: 󰋑󰋑󰋑󰋑󰋕
+ █            █   Clean:  󰋑󰛞󰋕󰋕󰋕
+ █  █▀█  █▀▀█ █   Age:    0 seconds
+ █▄▄█ █▄▄█  █▄█   
+                  "
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > refusing 1`] = `
+"█▀█▄▄▄█▀█         REFUSING (30 seconds)
+█ ▄   ▄ █         Happy:  󰋑󰋑󰋑󰋑󰋑
+█ ▀▀ ▀▀ █▄▄▄▄▄▄   Hunger: 󰋑󰋑󰋑󰋑󰋕
+█ ▄▀▀▀▄ █     ██  Energy: 󰋑󰋑󰛞󰋕󰋕
+█▄▄▄▄▄▄▄█     █   Health: 󰋑󰋑󰋑󰋑󰋕
+ █            █   Clean:  󰋑󰛞󰋕󰋕󰋕
+ █  █▀█  █▀▀█ █   Age:    1 hour
+ █▄▄█ █▄▄█  █▄█   
+                  "
+`;
+
+exports[`plain rendering > matches snapshots across key life stages > sleeping 1`] = `
+"████████████████  SLEEPING (30 minutes)
+██████████▄▄▄ ██  Happy:  󰋑󰋑󰋑󰋑󰋕
+███████████▀▄███  Hunger: 󰋑󰋑󰛞󰋕󰋕
+██████████ ▀▀▀██  Energy: 󰋑󰛞󰋕󰋕󰋕
+████▀▀▀▀████████  Health: 󰋑󰋑󰋑󰋑󰋕
+██████▀▄████████  Clean:  󰋑󰛞󰋕󰋕󰋕
+████▀▄██████████  Age:    8 hours
+████▄▄▄▄████████  
+                  "
+`;

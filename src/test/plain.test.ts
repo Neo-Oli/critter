@@ -1,7 +1,18 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { max } from '../config.ts'
+import { happinessPenalty, high, low, max, normal } from '../config.ts'
+import { Critter } from '../critter.ts'
 import { plain } from '../plain.ts'
+import { hour } from '../utils.ts'
+
+const runtime = vi.hoisted(() => ({ time: 1000000 }))
+const storage = vi.hoisted(() => ({ loadState: vi.fn(), saveState: vi.fn() }))
+
+vi.mock('../io.ts', () => storage)
+vi.mock('../utils.ts', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../utils.ts')>()),
+    now: () => runtime.time,
+}))
 
 const full = String.fromCodePoint(0x25cf)
 const half = String.fromCodePoint(0x25d0)
@@ -19,8 +30,65 @@ const render = (overrides: Partial<Parameters<typeof plain>[0]> = {}) =>
         state: 'idle',
         ...overrides,
     })
+const makeCritter = (state: Partial<Critter> = {}) =>
+    Object.assign(new Critter({ command: 'new' }), state)
+
+beforeEach(() => {
+    runtime.time = 1000000
+    storage.loadState.mockReset()
+    storage.saveState.mockReset()
+})
 
 describe('plain rendering', () => {
+    it('matches snapshots across key life stages', () => {
+        const stages: Record<string, () => Critter> = {
+            newborn: () => makeCritter(),
+            eating: () =>
+                makeCritter({
+                    action: 'eating',
+                    actionTime: 45,
+                    age: 30,
+                    cleanliness: high,
+                    energy: high,
+                    happiness: high,
+                    health: max,
+                    satiety: high,
+                }),
+            refusing: () =>
+                makeCritter({
+                    action: 'refusing',
+                    actionTime: 30,
+                    age: 3600,
+                    happiness: max - happinessPenalty,
+                    satiety: high + 1,
+                }),
+            sleeping: () =>
+                makeCritter({
+                    action: 'sleeping',
+                    actionTime: 1800,
+                    age: 8 * hour,
+                    energy: low,
+                    happiness: high,
+                }),
+            neglected: () =>
+                makeCritter({
+                    age: 2 * 24 * hour,
+                    cleanliness: 0,
+                    energy: 0,
+                    happiness: low - 1,
+                    health: low - 1,
+                    mood: ['sick', 'sad', 'hungry', 'dirty', 'tired'],
+                    satiety: 0,
+                }),
+        }
+
+        for (const [stage, create] of Object.entries(stages)) {
+            expect(create().plain({ noNerdFonts: false })).toMatchSnapshot(
+                stage,
+            )
+        }
+    })
+
     it.each([
         'cleaning',
         'dead',
