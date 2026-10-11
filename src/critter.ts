@@ -1,4 +1,4 @@
-import { high, low, max, normal, speed } from './config.ts'
+import { happinessPenalty, high, low, max, normal, speed } from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { plain } from './plain.ts'
 import { hour, minute, now } from './utils.ts'
@@ -130,7 +130,7 @@ export class Critter {
     refuse = () => {
         this.action = 'refusing'
         this.actionTime = 30
-        this.happiness = set(this.happiness - 10000)
+        this.happiness = set(this.happiness - happinessPenalty)
     }
     getCritterState = (): Action | Mood => {
         if (!this.alive) return 'dead'
@@ -291,7 +291,7 @@ export class Critter {
     }
     stop = () => {
         if (this.action === 'eating' || this.action === 'sleeping') {
-            this.happiness = set(this.happiness - 10000)
+            this.happiness = set(this.happiness - happinessPenalty)
         }
         this.action = 'idle'
         this.actionTime = 0

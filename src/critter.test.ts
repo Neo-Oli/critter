@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { high, low, max, normal } from './config.ts'
+import { happinessPenalty, high, low, max, normal } from './config.ts'
 import { Critter } from './critter.ts'
 import { hour, minute } from './utils.ts'
 
@@ -236,7 +236,9 @@ describe('actions', () => {
             pet.stop()
             expect(pet.action).toBe('idle')
             expect(pet.actionTime).toBe(0)
-            expect(pet.happiness).toBe(action === 'play' ? max : max - 1000)
+            expect(
+                pet.happiness,
+            ).toBe(action === 'play' ? max : max - happinessPenalty)
         },
     )
 })
