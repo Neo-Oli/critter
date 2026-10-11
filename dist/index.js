@@ -257,14 +257,14 @@ var plain = ({
       full = "\u{F02D1}";
     }
     const maxBarValue = Math.min(barValue, 10);
-    let bar = full.repeat(Math.floor(maxBarValue / 2));
+    let bar2 = full.repeat(Math.floor(maxBarValue / 2));
     if (maxBarValue % 2) {
-      bar += half;
+      bar2 += half;
     }
-    bar += empty.repeat(
+    bar2 += empty.repeat(
       Math.max(0, 5 - Math.floor(barValue / 2 + maxBarValue % 2))
     );
-    return `${label(name)}${bar}${debug ? ` (${value})` : ""}`;
+    return `${label(name)}${bar2}${debug ? ` (${value})` : ""}`;
   };
   const label = (str) => {
     return `${str}: `.padEnd(8);
@@ -284,6 +284,59 @@ var plain = ({
   }
   o(label("Age") + duration(age));
   return output.map((line) => line.trimEnd()).join("\n");
+};
+
+// src/short.ts
+var emoticon = (state) => {
+  const baseSet = {
+    dead: "[RIP]",
+    happy: "\u0295\uFF3E\u1D25\uFF3E\u0294",
+    hungry: "\u0295\xBA\u1D25\xBA\u0294",
+    idle: "\u0295\u2022\u1D25\u2022\u0294",
+    refusing: "\u0295\u02CB\u1D25\u02CA\u0294",
+    sad: "\u0295\uFF1B\u1D25\uFF1B\u0294",
+    sick: "\u0295\xD7\u1D25\xD7\u0294",
+    sleeping: "zZz",
+    tired: "\u0295-\u1D25-\u0294"
+  };
+  const bears = {
+    0: { idle: "( . )" },
+    1: baseSet,
+    2: baseSet
+  };
+  return state.stage === 0 ? bears[0].idle : bears[state.stage][state.sprite];
+};
+var bar = (value, icon) => {
+  const bars2 = "\u2581\u2582\u2583\u2585\u2587\u2588".split("");
+  const barValue = Math.round(value / max * bars2.length - 1);
+  return `${icon}${bars2[barValue]}`;
+};
+var bars = ({
+  energy,
+  happiness,
+  health,
+  noNerdFonts,
+  satiety,
+  toilet
+}) => {
+  return [
+    bar(energy, noNerdFonts ? "E" : "\u{F12A3}"),
+    bar(happiness, noNerdFonts ? "H" : "\u{F0C71}"),
+    bar(health, noNerdFonts ? "+" : "\uE221"),
+    bar(satiety, noNerdFonts ? "S" : "\u{F025B}"),
+    bar(toilet, noNerdFonts ? "T" : "\uF2FE")
+  ].join(" ");
+};
+var short = ({
+  energy,
+  happiness,
+  health,
+  noNerdFonts,
+  satiety,
+  state,
+  toilet
+}) => {
+  return `${emoticon(state)} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
 };
 
 // src/critter.ts
@@ -626,6 +679,16 @@ var Critter = class {
     this.actionTime = 30;
     this.happiness = applyPenalty(this.happiness);
   };
+  short = ({ noNerdFonts }) => short({
+    actionTime: this.actionTime,
+    energy: this.energy,
+    happiness: this.happiness,
+    health: this.health,
+    noNerdFonts,
+    satiety: this.satiety,
+    state: this.getCritterState(),
+    toilet: this.toilet
+  });
   sleep = () => {
     if (this.stage === 0) return;
     if (this.energy >= normal) {
@@ -683,6 +746,7 @@ Options:
     -h, --help           Show this help and exit
     -n, --no-nerd-fonts  Use Unicode icons instead of Nerd Font icons
     -d, --debug           Show exact stat values
+    -s, --short           Show only the current state
 
 Daily care: about four meals, two sleeps, and three plays; clean whenever poo appears.
 
@@ -702,10 +766,18 @@ var parseArgs = (args) => {
     (arg) => ["--no-nerd-fonts", "-n"].includes(arg)
   );
   const debug = args.some((arg) => ["--debug", "-d"].includes(arg));
+  const shortOutput = args.some((arg) => ["--short", "-s"].includes(arg));
   const [command] = args.filter(
-    (arg) => !["--debug", "--no-nerd-fonts", "-d", "-n"].includes(arg)
+    (arg) => ![
+      "--debug",
+      "--no-nerd-fonts",
+      "--short",
+      "-d",
+      "-n",
+      "-s"
+    ].includes(arg)
   );
-  if (!command) return { command: void 0, debug, noNerdFonts };
+  if (!command) return { command: void 0, debug, noNerdFonts, shortOutput };
   switch (command) {
     case "clean":
     case "feed":
@@ -714,7 +786,7 @@ var parseArgs = (args) => {
     case "play":
     case "sleep":
     case "stop":
-      return { command, debug, noNerdFonts };
+      return { command, debug, noNerdFonts, shortOutput };
     default:
       throw new Error(`Unknown command: ${command}`);
   }
@@ -730,15 +802,20 @@ var cli = async () => {
     );
     process.exit(7);
   }
-  const { command, debug, noNerdFonts } = args;
+  const { command, debug, noNerdFonts, shortOutput } = args;
   const critter = new Critter({ command });
   if (critter.error) {
     process.stderr.write(`${critter.error}
 `);
     process.exit(1);
   } else {
-    console.log(`${critter.plain({ debug, noNerdFonts })}
+    if (shortOutput) {
+      console.log(`${critter.short({ noNerdFonts })}
 `);
+    } else {
+      console.log(`${critter.plain({ debug, noNerdFonts })}
+`);
+    }
   }
 };
 

@@ -11,6 +11,7 @@ import {
 } from './config.ts'
 import { loadState, saveState } from './io.ts'
 import { type Plain, plain } from './plain.ts'
+import { type Short, short } from './short.ts'
 import { minute, now } from './utils.ts'
 
 export type Action =
@@ -432,6 +433,17 @@ export class Critter {
         this.actionTime = 30
         this.happiness = applyPenalty(this.happiness)
     }
+    short = ({ noNerdFonts }: Pick<Short, 'noNerdFonts'>) =>
+        short({
+            actionTime: this.actionTime,
+            energy: this.energy,
+            happiness: this.happiness,
+            health: this.health,
+            noNerdFonts,
+            satiety: this.satiety,
+            state: this.getCritterState(),
+            toilet: this.toilet,
+        })
 
     sleep = () => {
         if (this.stage === 0) return

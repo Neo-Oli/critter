@@ -88,7 +88,7 @@ export const cli = async () => {
         process.exit(1)
     } else {
         if (shortOutput) {
-            console.log(short(critter.getCritterState()))
+            console.log(`${critter.short({ noNerdFonts })}\n`)
         } else {
             console.log(`${critter.plain({ debug, noNerdFonts })}\n`)
         }
