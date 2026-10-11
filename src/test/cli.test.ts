@@ -20,7 +20,7 @@ import {
     it,
 } from 'vitest'
 
-import { stagingSchedule } from '../config.ts'
+import { low, max, stagingSchedule } from '../config.ts'
 
 let bundleDirectory: string
 let entry: string
@@ -65,6 +65,88 @@ afterAll(() => {
 })
 
 describe('CLI and entry point', () => {
+    it.each([1, 2] as const)(
+        'renders short conditions from saved stage %i state in both font modes',
+        (stage) => {
+            expect(run('new').status).toBe(0)
+            const saved = JSON.parse(readFileSync(statePath(), 'utf8'))
+            const fixtures = [
+                { health: low - 1, icons: ['!', '󰀦'], poo: false },
+                { health: max, icons: ['≋', '󰟝'], poo: true },
+                { health: low - 1, icons: ['≋!', '󰟝󰀦'], poo: true },
+                {
+                    command: 'medicine',
+                    health: low - 1,
+                    icons: ['≋✚', '󰟝󰤓'],
+                    poo: true,
+                },
+            ]
+            for (const fixture of fixtures) {
+                for (const noNerdFonts of [true, false]) {
+                    writeFileSync(
+                        statePath(),
+                        JSON.stringify({
+                            ...saved,
+                            action: 'idle',
+                            actionTime: 0,
+                            age:
+                                stagingSchedule.stage0 +
+                                (stage === 2 ? stagingSchedule.stage1 : 0),
+                            energy: max,
+                            happiness: max,
+                            health: fixture.health,
+                            poo: fixture.poo,
+                            satiety: max,
+                            time: Math.floor(Date.now() / 1000) + 3600,
+                            toilet: max,
+                        }),
+                    )
+                    const result = run(
+                        '--short',
+                        ...(noNerdFonts ? ['--no-nerd-fonts'] : []),
+                        ...(fixture.command ? [fixture.command] : []),
+                    )
+                    const face = fixture.health < low ? 'ʕ×ᴥ×ʔ' : 'ʕ＾ᴥ＾ʔ'
+                    const icons = fixture.icons[noNerdFonts ? 0 : 1]
+                    const bars = noNerdFonts
+                        ? `H█ S█ E█ +${fixture.health < low ? '▂' : '█'} T█`
+                        : `󰱱█ 󰉛█ 󱊣█ ${fixture.health < low ? '▂' : '█'} █`
+                    expect(result.error).toBeUndefined()
+                    expect(result.status).toBe(0)
+                    expect(result.stderr).toBe('')
+                    expect(result.stdout).toBe(`${face}${icons} ${bars}\n\n`)
+                    const persisted = JSON.parse(
+                        readFileSync(statePath(), 'utf8'),
+                    )
+                    expect(persisted.poo).toBe(fixture.poo)
+                    expect(persisted.action).toBe(
+                        fixture.command ? 'healing' : 'idle',
+                    )
+                }
+            }
+        },
+    )
+
+    it.each(['-s', '--short'])('prints only the state with %s', (flag) => {
+        const created = run(flag, '-n', 'new')
+        expect(created.status).toBe(0)
+        expect(created.stdout).toBe('( . ) H▃ S▃ E▃ +▇ T▂\n\n')
+        expect(created.stdout).not.toContain('Age:')
+        advancePetToStageOne()
+        const playing = run('play', flag)
+        expect(playing.status).toBe(0)
+        expect(playing.stdout).toMatch(/^ʕ•ᴥ•ʔ󰝺 /u)
+        expect(playing.stdout).toContain('󱊣')
+        expect(playing.stdout).not.toContain('Happy:')
+        expect(playing.stderr).toBe('')
+        const unicode = run(flag, '-d', '-n')
+        expect(unicode.status).toBe(0)
+        expect(unicode.stdout).toMatch(
+            /^ʕ•ᴥ•ʔ○ H[ ▁▂▃▅▇█] S[ ▁▂▃▅▇█] E[ ▁▂▃▅▇█] \+[ ▁▂▃▅▇█] T[ ▁▂▃▅▇█]\n\n$/u,
+        )
+        expect(unicode.stdout).not.toMatch(/\p{Co}/u)
+    })
+
     it.each(['-h', '--help'])(
         'prints help for %s without creating a pet',
         (flag) => {

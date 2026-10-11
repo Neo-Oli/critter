@@ -23,6 +23,9 @@ critter [new|feed|clean|medicine|play|sleep|stop]
 Run `critter` to check on your pet, `critter -h` for help, or `critter -n`
 without Nerd Fonts. **`new` replaces your current pet.**
 
+Use `critter -s` or `critter --short` to print a bear emoticon matching its
+current state instead of sprites and stat bars.
+
 New critters begin as eggs for five minutes. They become stage 1 for six hours,
 then enter stage 2. The egg cannot be cared for and its stats do not change.
 

@@ -1,0 +1,259 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-0-egg 1`] = `
+"
+( . ) H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-dead 1`] = `
+"
+[RIP] H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-eating-idle-food-none 1`] = `
+"
+ʕ•ᴥ•ʔ♨ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-eating-idle-food-none 2`] = `
+"
+ʕ•ᴥ•ʔ♨ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-eating-sick-food-ill 1`] = `
+"
+ʕ×ᴥ×ʔ♨! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-eating-sick-food-ill 2`] = `
+"
+ʕ×ᴥ×ʔ♨! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-happy 1`] = `
+"
+ʕ＾ᴥ＾ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-none-medicine 1`] = `
+"
+ʕ•ᴥ•ʔ✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-idle-poo-medicine 1`] = `
+"
+ʕ•ᴥ•ʔ≋✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-none-medicine 1`] = `
+"
+ʕ×ᴥ×ʔ✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-healing-sick-poo-medicine 1`] = `
+"
+ʕ×ᴥ×ʔ≋✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-hungry 1`] = `
+"
+ʕºᴥºʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-idle 1`] = `
+"
+ʕ•ᴥ•ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-playing-idle-toy-none 1`] = `
+"
+ʕ•ᴥ•ʔ○ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-playing-idle-toy-none 2`] = `
+"
+ʕ•ᴥ•ʔ○ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-playing-sick-toy-ill 1`] = `
+"
+ʕ×ᴥ×ʔ○! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-playing-sick-toy-ill 2`] = `
+"
+ʕ×ᴥ×ʔ○! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-refusing 1`] = `
+"
+ʕˋᴥˊʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-sad 1`] = `
+"
+ʕ；ᴥ；ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-sick 1`] = `
+"
+ʕ×ᴥ×ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-sleeping 1`] = `
+"
+zZz H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-1-tired 1`] = `
+"
+ʕ-ᴥ-ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-dead 1`] = `
+"
+[RIP] H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-eating-idle-food-none 1`] = `
+"
+ʕ•ᴥ•ʔ♨ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-eating-idle-food-none 2`] = `
+"
+ʕ•ᴥ•ʔ♨ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-eating-sick-food-ill 1`] = `
+"
+ʕ×ᴥ×ʔ♨! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-eating-sick-food-ill 2`] = `
+"
+ʕ×ᴥ×ʔ♨! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-happy 1`] = `
+"
+ʕ＾ᴥ＾ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-none-medicine 1`] = `
+"
+ʕ•ᴥ•ʔ✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-idle-poo-medicine 1`] = `
+"
+ʕ•ᴥ•ʔ≋✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-none-medicine 1`] = `
+"
+ʕ×ᴥ×ʔ✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-healing-sick-poo-medicine 1`] = `
+"
+ʕ×ᴥ×ʔ≋✚ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-hungry 1`] = `
+"
+ʕºᴥºʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-idle 1`] = `
+"
+ʕ•ᴥ•ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-playing-idle-toy-none 1`] = `
+"
+ʕ•ᴥ•ʔ○ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-playing-idle-toy-none 2`] = `
+"
+ʕ•ᴥ•ʔ○ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-playing-sick-toy-ill 1`] = `
+"
+ʕ×ᴥ×ʔ○! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-playing-sick-toy-ill 2`] = `
+"
+ʕ×ᴥ×ʔ○! H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-refusing 1`] = `
+"
+ʕˋᴥˊʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-sad 1`] = `
+"
+ʕ；ᴥ；ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-sick 1`] = `
+"
+ʕ×ᴥ×ʔ H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-sleeping 1`] = `
+"
+zZz H▂ S▇ E  +▃ T█
+"
+`;
+
+exports[`short output > snapshots complete stage, mood, and action output > stage-2-tired 1`] = `
+"
+ʕ-ᴥ-ʔ H▂ S▇ E  +▃ T█
+"
+`;
