@@ -242,6 +242,33 @@ describe('stat schedule simulations', () => {
         advance(pet, schedules.health.healingAction)
         expect(pet.health).toBeGreaterThan(normal)
     })
+
+    it('keeps naturally recovered health at low for thirty days without medicine', () => {
+        const pet = maxed()
+        pet.health = 1
+        runtime.speed = minute
+
+        for (
+            let elapsedMinutes = 0;
+            elapsedMinutes < 30 * 24 * 60;
+            elapsedMinutes += 1
+        ) {
+            pet.energy = max
+            pet.happiness = max
+            pet.satiety = max
+            pet.toilet = max
+            pet.poo = false
+            advance(pet, 1)
+        }
+
+        expect(pet.alive).toBe(true)
+        expect(pet.health).toBe(low)
+
+        runtime.speed = 1
+        pet.medicine()
+        advance(pet, schedules.health.healingAction)
+        expect(pet.health).toBeGreaterThan(normal)
+    })
 })
 
 describe('daily care balance', () => {

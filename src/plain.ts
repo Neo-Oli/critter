@@ -6,6 +6,7 @@ import happy from './sprites/happy.txt' with { type: 'text' }
 import healing from './sprites/healing.txt' with { type: 'text' }
 import hungry from './sprites/hungry.txt' with { type: 'text' }
 import idle from './sprites/idle.txt' with { type: 'text' }
+import ill from './sprites/ill.txt' with { type: 'text' }
 import poo from './sprites/poo.txt' with { type: 'text' }
 import refusing from './sprites/refusing.txt' with { type: 'text' }
 import sad from './sprites/sad.txt' with { type: 'text' }
@@ -35,6 +36,7 @@ const loadSprite = (
         healing,
         hungry,
         idle,
+        ill,
         none: '',
         poo,
         refusing,

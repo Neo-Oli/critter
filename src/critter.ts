@@ -38,7 +38,7 @@ export interface PersistedCritterState {
     toilet: number
 }
 
-export type SpriteAsset = 'food' | 'none' | 'poo' | 'toy'
+export type SpriteAsset = 'food' | 'ill' | 'none' | 'poo' | 'toy'
 type Command = 'clean' | 'feed' | 'medicine' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
     command?: Command
@@ -176,7 +176,7 @@ export class Critter {
             main: main,
             reverse: ['eating', 'playing'].includes(main),
             sprite: main === 'eating' || main === 'playing' ? mood : main,
-            top: 'none',
+            top: this.health < low ? 'ill' : 'none',
         }
     }
     medicine = () => {
@@ -395,7 +395,7 @@ export class Critter {
         if (this.satiety < low) {
             this.mood.push('hungry')
         }
-        if (this.health < low) {
+        if (this.health < normal) {
             this.mood.push('sick')
         }
         if (this.energy < low) {

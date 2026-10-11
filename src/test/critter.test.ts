@@ -95,6 +95,27 @@ describe('construction and persistence', () => {
         pet.process()
         expect(pet.mood).toEqual(['hungry', 'sick', 'tired', 'sad'])
     })
+
+    it('shows sick body art below normal and ill top art below low', () => {
+        const pet = healthy()
+        expect(pet.getCritterState().top).toBe('none')
+        expect(pet.getCritterState().sprite).not.toBe('sick')
+
+        pet.health = normal - 1
+        pet.updateMood()
+        expect(pet.getCritterState().sprite).toBe('sick')
+        expect(pet.getCritterState().top).toBe('none')
+
+        pet.health = low
+        pet.updateMood()
+        expect(pet.getCritterState().sprite).toBe('sick')
+        expect(pet.getCritterState().top).toBe('none')
+
+        pet.health = low - 1
+        pet.updateMood()
+        expect(pet.getCritterState().sprite).toBe('sick')
+        expect(pet.getCritterState().top).toBe('ill')
+    })
 })
 
 describe('actions', () => {

@@ -73,6 +73,7 @@ describe('plain rendering', () => {
                     health: low,
                 }),
             hungry: () => makeCritter({ mood: ['hungry'], satiety: low }),
+            ill: () => makeCritter({ health: low - 1, mood: ['sick'] }),
             playing: () =>
                 makeCritter({
                     action: 'playing',
