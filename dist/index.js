@@ -123,7 +123,13 @@ var spriteWidth = 16;
 var spriteHeight = 8;
 var iconWidth = 8;
 var iconHeight = 4;
-var loadSprite = (name, width = spriteWidth, height = spriteHeight, reverse = false) => {
+var loadSprite = ({
+  height = spriteHeight,
+  name,
+  padding = 0,
+  reverse = false,
+  width = spriteWidth
+}) => {
   const sprites = {
     dead: dead_default,
     food: food_default,
@@ -141,9 +147,11 @@ var loadSprite = (name, width = spriteWidth, height = spriteHeight, reverse = fa
     tired: tired_default,
     toy: toy_default
   };
-  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map(
-    (line) => reverse ? line.padEnd(width).split("").reverse().join("") : line
-  );
+  return sprites[name].split(/\r?\n/).concat(Array(height).fill("")).slice(0, height).map((line) => {
+    const sized = line.slice(0, width).padEnd(width);
+    const oriented = reverse ? sized.split("").reverse().join("") : sized;
+    return `${oriented}${" ".repeat(padding)}`;
+  });
 };
 var plain = ({
   actionTime,
@@ -158,9 +166,23 @@ var plain = ({
   toilet
 }) => {
   const { bottom, main, reverse, sprite, top } = state;
-  const topSprite = loadSprite(top, iconWidth, iconHeight);
-  const bottomSprite = loadSprite(bottom, iconWidth, iconHeight);
-  const output = loadSprite(sprite, spriteWidth, spriteHeight, reverse);
+  const topSprite = loadSprite({
+    height: iconHeight,
+    name: top,
+    width: iconWidth
+  });
+  const bottomSprite = loadSprite({
+    height: iconHeight,
+    name: bottom,
+    width: iconWidth
+  });
+  const output = loadSprite({
+    height: spriteHeight,
+    name: sprite,
+    padding: 1,
+    reverse,
+    width: spriteWidth
+  });
   for (let i = 0; i < iconHeight; i++) {
     output[i] += topSprite[i];
     output[i + iconHeight] += bottomSprite[i];
@@ -202,7 +224,7 @@ var plain = ({
   o(stat("Health", health));
   o(stat("Toilet", toilet));
   o(label("Age") + duration(age));
-  return output.join("\n");
+  return output.map((line) => line.trimEnd()).join("\n");
 };
 
 // src/critter.ts
