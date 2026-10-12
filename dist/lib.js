@@ -15,6 +15,12 @@ var duration = (seconds) => {
   const count = Math.floor(seconds / size);
   return `${count} ${unit}${count === 1 ? "" : "s"}`;
 };
+var actionDuration = (seconds) => {
+  if (seconds <= hour) return duration(seconds);
+  const hours = Math.floor(seconds / hour);
+  const minutes = Math.floor(seconds % hour / minute);
+  return `${hours}h${minutes}m`;
+};
 var statIcons = {
   age: ["A", "\u{F0954}"],
   energy: ["E", "\u{F12A3}"],
@@ -261,7 +267,7 @@ var plainStats = ({
     }
     return `${statIcon(name, noNerdFonts)} ${bar2}${debug ? ` (${value})` : ""}`;
   };
-  const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : "";
+  const remaining = actionTime > 0 ? ` (${actionDuration(actionTime)})` : "";
   const output = [];
   const padding = "  ";
   const ageFormatted = `${statIcon("age", noNerdFonts)} ${duration(age)}`;
