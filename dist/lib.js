@@ -471,7 +471,7 @@ var Critter = class {
   health = high;
   mood = [];
   poo = false;
-  satiety = normal;
+  satiety = low;
   time = this.birth;
   toilet = low;
   get stage() {
