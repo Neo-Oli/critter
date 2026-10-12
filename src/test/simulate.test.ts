@@ -237,6 +237,18 @@ describe('stat schedule simulations', () => {
         expect(pet.satiety).toBe(max)
     })
 
+    it('refuses a meal when eating reaches full satiety', () => {
+        const pet = healthy()
+        pet.satiety = high
+        pet.feed()
+
+        advance(pet, 30)
+
+        expect(pet.satiety).toBe(max)
+        expect(pet.action).toBe('refusing')
+        expect(pet.actionTime).toBeGreaterThan(0)
+    })
+
     it('ends a refusal action after thirty seconds', () => {
         const pet = healthy()
         pet.satiety = high + 1
@@ -327,6 +339,27 @@ describe('stat schedule simulations', () => {
             advance(playing, 2 * minute)
         }
         expect(playing.satiety).toBe(0)
+    })
+
+    it('gains less happiness from play while tired', () => {
+        const happinessGainFromPlaying = (energy: number) => {
+            runtime.time = 1000000
+            const pet = healthy()
+            pet.energy = energy
+            pet.happiness = normal
+            pet.play()
+            advance(pet, 1)
+            return pet.happiness - normal
+        }
+
+        expect(
+            happinessGainFromPlaying(
+                low + Math.ceil(max / schedules.energy.playing),
+            ),
+        ).toBe(Math.ceil(max / schedules.happiness.playing))
+        expect(happinessGainFromPlaying(low - 1)).toBe(
+            Math.ceil(max / schedules.happiness.playingTired),
+        )
     })
 
     it('decays happiness to zero in six hours', () => {
