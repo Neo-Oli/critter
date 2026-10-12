@@ -373,6 +373,29 @@ describe('stat schedule simulations', () => {
         )
     })
 
+    it('preserves more health by cleaning before feeding a soiled critter', () => {
+        const healthAfterMeal = (cleanFirst: boolean) => {
+            runtime.time = 1000000
+            runtime.speed = minute
+            const pet = healthy()
+            pet.poo = true
+            if (cleanFirst) pet.clean()
+            pet.feed()
+            if (!cleanFirst) pet.clean()
+            advance(pet, 1)
+            return pet.health
+        }
+
+        const cleanBeforeFeeding = healthAfterMeal(true)
+        const feedBeforeCleaning = healthAfterMeal(false)
+
+        expect(cleanBeforeFeeding).toBe(max)
+        expect(feedBeforeCleaning).toBeLessThan(cleanBeforeFeeding)
+        expect(feedBeforeCleaning).toBeGreaterThan(
+            Math.round(max * (1 - penalty)),
+        )
+    })
+
     it('stacks poo with hunger and starving health loss', () => {
         const hungry = healthy()
         hungry.satiety = low - 1
