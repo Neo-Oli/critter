@@ -88,7 +88,7 @@ export class Critter {
     health = high
     mood: Mood[] = []
     poo = false
-    satiety = normal
+    satiety = low
     time = this.birth
     toilet = low
     get stage(): Stage {
