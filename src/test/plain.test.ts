@@ -271,13 +271,13 @@ describe('plain rendering', () => {
     })
 
     it('renders zero, half-segment, and full bars with five positions', () => {
-        const full = String.fromCodePoint(0x25cf)
-        const half = String.fromCodePoint(0x25d0)
-        const empty = String.fromCodePoint(0x25cb)
+        const full = '█'
+        const half = '▌'
+        const empty = ' '
         const output = render({ energy: max / 10, happiness: 0 })
-        expect(output).toContain(`H ${empty.repeat(5)}`)
-        expect(output).toContain(`E ${half}${empty.repeat(4)}`)
-        expect(output).toContain(`+ ${full.repeat(5)}`)
+        expect(output).toContain(`H │${empty.repeat(5)}│`)
+        expect(output).toContain(`E │${half}${empty.repeat(4)}│`)
+        expect(output).toContain(`+ │${full.repeat(5)}│`)
     })
 
     it('caps an over-range stat bar without an overflow marker', () => {
