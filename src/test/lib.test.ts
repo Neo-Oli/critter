@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { normal, stagingSchedule } from '../config.ts'
+import { low, normal, stagingSchedule } from '../config.ts'
 import { Critter } from '../lib.ts'
 
 const runtime = vi.hoisted(() => ({ time: 1000000 }))
@@ -83,7 +83,7 @@ describe('library api', () => {
             expect.objectContaining({
                 age,
                 birth: runtime.time - age,
-                satiety: normal,
+                satiety: low,
                 time: runtime.time,
             }),
             true,

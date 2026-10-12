@@ -51,7 +51,7 @@ describe('construction and persistence', () => {
         expect(pet.birth).toBe(runtime.time)
         expect(pet.alive).toBe(true)
         expect(pet.alert).toBe(false)
-        expect(pet.satiety).toBe(normal)
+        expect(pet.satiety).toBe(low)
         expect(pet.toilet).toBe(low)
         expect(storage.saveState).toHaveBeenCalledWith(
             pet.persistedState(),
