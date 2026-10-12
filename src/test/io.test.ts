@@ -90,3 +90,35 @@ describe('isolated state storage', () => {
         expect(() => storage.saveState(state)).toThrow()
     })
 })
+
+describe('browser state storage', () => {
+    let items: Map<string, string>
+
+    beforeEach(() => {
+        items = new Map()
+        vi.stubGlobal('localStorage', {
+            getItem: (key: string) => items.get(key) ?? null,
+            setItem: (key: string, value: string) => items.set(key, value),
+        })
+    })
+
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
+    it('returns undefined when there is no save', () => {
+        expect(storage.loadState(true)).toBeUndefined()
+    })
+
+    it('round trips state without touching the filesystem', () => {
+        storage.saveState(state, true)
+        expect(items.has(binName)).toBe(true)
+        expect(storage.loadState(true)).toEqual(state)
+        expect(existsSync(statePath)).toBe(false)
+    })
+
+    it('does not silently swallow malformed JSON', () => {
+        items.set(binName, '{invalid json')
+        expect(() => storage.loadState(true)).toThrow(SyntaxError)
+    })
+})

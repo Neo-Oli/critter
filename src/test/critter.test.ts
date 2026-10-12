@@ -53,7 +53,10 @@ describe('construction and persistence', () => {
         expect(pet.alert).toBe(false)
         expect(pet.satiety).toBe(normal)
         expect(pet.toilet).toBe(low)
-        expect(storage.saveState).toHaveBeenCalledWith(pet.persistedState())
+        expect(storage.saveState).toHaveBeenCalledWith(
+            pet.persistedState(),
+            false,
+        )
     })
 
     it('restores and persists the alert flag', () => {

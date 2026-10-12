@@ -73,24 +73,6 @@ var schedules = {
   }
 };
 
-// src/io.ts
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-var path = `${process.env.HOME}/.local/share/${binName}/state.json`;
-var loadState = () => {
-  try {
-    return JSON.parse(
-      readFileSync(path, "utf8")
-    );
-  } catch (error) {
-    if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT")
-      throw error;
-  }
-};
-var saveState = (state) => {
-  mkdirSync(path.substring(0, path.lastIndexOf("/")), { recursive: true });
-  writeFileSync(path, JSON.stringify(state, null, 4));
-};
-
 // src/sprites/food.txt
 var food_default = "   \u2584\u2580\n\u2584\u2580\u2580\u2580\u2580\u2580\u2584\n\u2588  \u2580\u2588 \u2588\n\u2580\u2584\u2584\u2584\u2584\u2584\u2580\n";
 
@@ -375,8 +357,8 @@ var short = ({
   return `${emoticon({ noNerdFonts, state })} ${bars({ energy, happiness, health, noNerdFonts, satiety, toilet })}`;
 };
 
-// src/json.ts
-var json = (options) => {
+// src/data.ts
+var data = (options) => {
   const {
     action,
     actionTime,
@@ -391,46 +373,76 @@ var json = (options) => {
   } = options;
   const nerdOptions = { ...options, noNerdFonts: false };
   const noNerdOptions = { ...options, noNerdFonts: true };
-  return JSON.stringify(
-    {
-      action,
-      actionTime,
-      alert,
-      Bars: bars({
-        energy,
-        happiness,
-        health,
-        noNerdFonts: false,
-        satiety,
-        toilet
-      }),
-      "Bars-nonerd": bars({
-        energy,
-        happiness,
-        health,
-        noNerdFonts: true,
-        satiety,
-        toilet
-      }),
-      emoticon: emoticon({ noNerdFonts: false, state }),
-      "emoticon-nonerd": emoticon({ noNerdFonts: true, state }),
-      Energy: energy,
-      Happy: happiness,
-      Health: health,
-      Hunger: satiety,
-      plain: plain(nerdOptions),
-      "plain-nonerd": plain(noNerdOptions),
-      plainSprites: plainSprites(options),
-      plainStats: plainStats(nerdOptions),
-      "plainStats-nonerd": plainStats(noNerdOptions),
-      poo,
-      short: short(nerdOptions),
-      "short-nonerd": short(noNerdOptions),
-      Toilet: toilet
-    },
-    null,
-    2
-  );
+  return {
+    action,
+    actionTime,
+    alert,
+    Bars: bars({
+      energy,
+      happiness,
+      health,
+      noNerdFonts: false,
+      satiety,
+      toilet
+    }),
+    "Bars-nonerd": bars({
+      energy,
+      happiness,
+      health,
+      noNerdFonts: true,
+      satiety,
+      toilet
+    }),
+    emoticon: emoticon({ noNerdFonts: false, state }),
+    "emoticon-nonerd": emoticon({ noNerdFonts: true, state }),
+    Energy: energy,
+    Happy: happiness,
+    Health: health,
+    Hunger: satiety,
+    plain: plain(nerdOptions),
+    "plain-nonerd": plain(noNerdOptions),
+    plainSprites: plainSprites(options),
+    plainStats: plainStats(nerdOptions),
+    "plainStats-nonerd": plainStats(noNerdOptions),
+    poo,
+    short: short(nerdOptions),
+    "short-nonerd": short(noNerdOptions),
+    Toilet: toilet
+  };
+};
+
+// src/io.ts
+var fs = () => process.getBuiltinModule("node:fs");
+var path = () => `${process.env.HOME}/.local/share/${binName}/state.json`;
+var loadState = (browser = false) => {
+  if (browser) {
+    const saved = localStorage.getItem(binName);
+    return saved === null ? void 0 : JSON.parse(saved);
+  }
+  try {
+    return JSON.parse(
+      fs().readFileSync(path(), "utf8")
+    );
+  } catch (error) {
+    if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT")
+      throw error;
+  }
+};
+var saveState = (state, browser = false) => {
+  if (browser) {
+    localStorage.setItem(binName, JSON.stringify(state));
+    return;
+  }
+  const file = path();
+  fs().mkdirSync(file.substring(0, file.lastIndexOf("/")), {
+    recursive: true
+  });
+  fs().writeFileSync(file, JSON.stringify(state, null, 4));
+};
+
+// src/json.ts
+var json = (options) => {
+  return JSON.stringify(data(options), null, 2);
 };
 
 // src/critter.ts
@@ -470,10 +482,12 @@ var Critter = class {
     return 2;
   }
   activeAlerts = 0;
-  constructor({ command }) {
+  browser;
+  constructor({ browser = false, command }) {
+    this.browser = browser;
     let state;
     try {
-      state = loadState();
+      state = loadState(browser);
     } catch {
       state = {};
     }
@@ -498,11 +512,14 @@ var Critter = class {
         return;
       }
     }
+    this.activeAlerts = this.getAlertConditions();
+    this.act(command);
+  }
+  act = (command) => {
     if (this.stage === 0) {
       this.action = "idle";
       this.actionTime = 0;
     }
-    this.activeAlerts = this.getAlertConditions();
     this.process();
     if (command === "feed") {
       this.feed();
@@ -526,12 +543,13 @@ var Critter = class {
       this.dismiss();
     }
     this.updateMood();
-    saveState(this.persistedState());
-  }
+    saveState(this.persistedState(), this.browser);
+  };
   clean = () => {
     if (this.stage === 0) return;
     this.poo = false;
   };
+  data = ({ debug }) => data(this.dataOptions({ debug }));
   die = () => {
     this.action = "idle";
     this.actionTime = 0;
@@ -596,20 +614,7 @@ var Critter = class {
     this.action = "healing";
     this.actionTime = schedules.health.healingAction;
   };
-  json = ({ debug }) => json({
-    action: this.action,
-    actionTime: this.actionTime,
-    age: this.age,
-    alert: this.alert,
-    debug,
-    energy: this.energy,
-    happiness: this.happiness,
-    health: this.health,
-    poo: this.poo,
-    satiety: this.satiety,
-    state: this.getCritterState(),
-    toilet: this.toilet
-  });
+  json = ({ debug }) => json(this.dataOptions({ debug }));
   persistedState = () => {
     const {
       action,
@@ -856,6 +861,20 @@ var Critter = class {
     }
     this.updateAlert();
   };
+  dataOptions = ({ debug }) => ({
+    action: this.action,
+    actionTime: this.actionTime,
+    age: this.age,
+    alert: this.alert,
+    debug,
+    energy: this.energy,
+    happiness: this.happiness,
+    health: this.health,
+    poo: this.poo,
+    satiety: this.satiety,
+    state: this.getCritterState(),
+    toilet: this.toilet
+  });
   getAlertConditions = () => (this.satiety < low ? alertFlags.hungry : 0) | (this.health < normal ? alertFlags.sick : 0) | (this.health < low ? alertFlags.ill : 0) | (this.energy < low ? alertFlags.tired : 0) | (this.poo ? alertFlags.poo : 0) | (this.happiness < low ? alertFlags.sad : 0) | (!this.alive ? alertFlags.dead : 0);
   updateAlert = () => {
     const currentAlerts = this.getAlertConditions();

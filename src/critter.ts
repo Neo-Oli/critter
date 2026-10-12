@@ -9,14 +9,18 @@ import {
     type Stage,
     stagingSchedule,
 } from './config.ts'
+import { type Data, data as renderData } from './data.ts'
 import { loadState, saveState } from './io.ts'
-import { type Json, json as renderJson } from './json.ts'
+import { json as renderJson } from './json.ts'
 import { type Plain, plain } from './plain.ts'
 import { type Short, short } from './short.ts'
 import { minute, now } from './utils.ts'
 
 export type Action =
     'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping'
+
+export type Command =
+    'clean' | 'dismiss' | 'feed' | 'heal' | 'new' | 'play' | 'sleep' | 'stop'
 
 export interface CritterRenderState {
     bottom: SpriteAsset
@@ -43,11 +47,9 @@ export interface PersistedCritterState {
     time: number
     toilet: number
 }
-
 export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy'
-type Command =
-    'clean' | 'dismiss' | 'feed' | 'heal' | 'new' | 'play' | 'sleep' | 'stop'
 interface CritterOptions {
+    browser?: boolean
     command?: Command
 }
 type EnergyMood = 'sleeping' | 'tired'
@@ -95,11 +97,13 @@ export class Critter {
     }
 
     private activeAlerts = 0
-    constructor({ command }: CritterOptions) {
+    private browser: boolean
+    constructor({ browser = false, command }: CritterOptions) {
+        this.browser = browser
         let state
 
         try {
-            state = loadState()
+            state = loadState(browser)
         } catch {
             state = {}
         }
@@ -124,11 +128,14 @@ export class Critter {
                 return
             }
         }
+        this.activeAlerts = this.getAlertConditions()
+        this.act(command)
+    }
+    act = (command?: Command) => {
         if (this.stage === 0) {
             this.action = 'idle'
             this.actionTime = 0
         }
-        this.activeAlerts = this.getAlertConditions()
         this.process()
         if (command === 'feed') {
             this.feed()
@@ -152,12 +159,14 @@ export class Critter {
             this.dismiss()
         }
         this.updateMood()
-        saveState(this.persistedState())
+        saveState(this.persistedState(), this.browser)
     }
     clean = () => {
         if (this.stage === 0) return
         this.poo = false
     }
+    data = ({ debug }: Pick<Plain, 'debug'>) =>
+        renderData(this.dataOptions({ debug }))
     die = () => {
         this.action = 'idle'
         this.actionTime = 0
@@ -243,20 +252,7 @@ export class Critter {
         this.actionTime = schedules.health.healingAction
     }
     json = ({ debug }: Pick<Plain, 'debug'>) =>
-        renderJson({
-            action: this.action,
-            actionTime: this.actionTime,
-            age: this.age,
-            alert: this.alert,
-            debug,
-            energy: this.energy,
-            happiness: this.happiness,
-            health: this.health,
-            poo: this.poo,
-            satiety: this.satiety,
-            state: this.getCritterState(),
-            toilet: this.toilet,
-        } satisfies Json)
+        renderJson(this.dataOptions({ debug }))
     persistedState = (): PersistedCritterState => {
         const {
             action,
@@ -475,7 +471,6 @@ export class Critter {
         this.actionTime = 30
         this.happiness = applyPenalty(this.happiness)
     }
-
     short = ({ noNerdFonts }: Pick<Short, 'noNerdFonts'>) =>
         short({
             actionTime: this.actionTime,
@@ -487,6 +482,7 @@ export class Critter {
             state: this.getCritterState(),
             toilet: this.toilet,
         })
+
     sleep = () => {
         if (this.stage === 0) return
         if (this.energy >= normal) {
@@ -522,6 +518,20 @@ export class Critter {
         }
         this.updateAlert()
     }
+    private dataOptions = ({ debug }: Pick<Plain, 'debug'>): Data => ({
+        action: this.action,
+        actionTime: this.actionTime,
+        age: this.age,
+        alert: this.alert,
+        debug,
+        energy: this.energy,
+        happiness: this.happiness,
+        health: this.health,
+        poo: this.poo,
+        satiety: this.satiety,
+        state: this.getCritterState(),
+        toilet: this.toilet,
+    })
     private getAlertConditions = () =>
         (this.satiety < low ? alertFlags.hungry : 0) |
         (this.health < normal ? alertFlags.sick : 0) |

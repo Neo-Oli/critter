@@ -1,0 +1,101 @@
+import { type Stage } from './config.ts';
+import { type Plain } from './plain.ts';
+import { type Short } from './short.ts';
+export type Action = 'eating' | 'healing' | 'idle' | 'playing' | 'refusing' | 'sleeping';
+export type Command = 'clean' | 'dismiss' | 'feed' | 'heal' | 'new' | 'play' | 'sleep' | 'stop';
+export interface CritterRenderState {
+    bottom: SpriteAsset;
+    main: Action | Mood;
+    reverse: boolean;
+    sprite: Exclude<Action | Mood, 'eating' | 'healing' | 'playing'>;
+    stage: Stage;
+    top: SpriteAsset;
+}
+export type Mood = EnergyMood | FoodMood | HappinessMood | HealthMood;
+export interface PersistedCritterState {
+    action: Action;
+    actionTime: number;
+    age: number;
+    alert: boolean;
+    birth: number;
+    energy: number;
+    happiness: number;
+    health: number;
+    poo: boolean;
+    satiety: number;
+    time: number;
+    toilet: number;
+}
+export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy';
+interface CritterOptions {
+    browser?: boolean;
+    command?: Command;
+}
+type EnergyMood = 'sleeping' | 'tired';
+type FoodMood = 'hungry';
+type HappinessMood = 'happy' | 'sad';
+type HealthMood = 'dead' | 'sick';
+export declare class Critter {
+    action: Action;
+    actionTime: number;
+    age: number;
+    alert: boolean;
+    alive: boolean;
+    birth: number;
+    energy: number;
+    error: string | undefined;
+    happiness: number;
+    health: number;
+    mood: Mood[];
+    poo: boolean;
+    satiety: number;
+    time: number;
+    toilet: number;
+    get stage(): Stage;
+    private activeAlerts;
+    private browser;
+    constructor({ browser, command }: CritterOptions);
+    act: (command?: Command) => void;
+    clean: () => void;
+    data: ({ debug }: Pick<Plain, "debug">) => {
+        action: Action;
+        actionTime: number;
+        alert: boolean;
+        Bars: string;
+        'Bars-nonerd': string;
+        emoticon: string;
+        'emoticon-nonerd': string;
+        Energy: number;
+        Happy: number;
+        Health: number;
+        Hunger: number;
+        plain: string;
+        'plain-nonerd': string;
+        plainSprites: string;
+        plainStats: string;
+        'plainStats-nonerd': string;
+        poo: boolean;
+        short: string;
+        'short-nonerd': string;
+        Toilet: number;
+    };
+    die: () => void;
+    dismiss: () => void;
+    feed: () => void;
+    getCritterState: () => CritterRenderState;
+    heal: () => void;
+    json: ({ debug }: Pick<Plain, "debug">) => string;
+    persistedState: () => PersistedCritterState;
+    plain: ({ debug, noNerdFonts }: Pick<Plain, "debug" | "noNerdFonts">) => string;
+    play: () => void;
+    process: () => void;
+    refuse: () => void;
+    short: ({ noNerdFonts }: Pick<Short, "noNerdFonts">) => string;
+    sleep: () => void;
+    stop: () => void;
+    updateMood: () => void;
+    private dataOptions;
+    private getAlertConditions;
+    private updateAlert;
+}
+export {};

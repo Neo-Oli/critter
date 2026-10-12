@@ -2,7 +2,14 @@
     "name": "critter",
     "version": "0.0.0",
     "description": "",
-    "main": "./dist/index.js",
+    "main": "./dist/lib.js",
+    "types": "./dist/types/lib.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/types/lib.d.ts",
+            "default": "./dist/lib.js"
+        }
+    },
     "scripts": {
         "test": "vitest run",
         "test:check": "pnpm run check",
@@ -11,7 +18,7 @@
         "lint": "eslint . --color --ext js,jsx,ts,tsx --fix && prettier . --write && find . -type d -name node_modules -prune -o -type f \\( -name '*.sh' -o -name '*.bash' \\) -exec shfmt --binary-next-line --space-redirects --indent 4 --case-indent -l -w --simplify {} +",
         "convert": "./convert.sh",
         "check": "tsc --noEmit",
-        "build": "esbuild src/index.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outfile=dist/index.js",
+        "build": "esbuild src/index.ts src/lib.ts --bundle --packages=external --platform=node --format=esm --loader:.txt=text --outdir=dist && tsc -p tsconfig.build.json",
         "start": "vite-node --config vitest.config.ts src/index.ts"
     },
     "bin": {

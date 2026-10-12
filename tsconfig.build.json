@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "rewriteRelativeImportExtensions": true,
+        "declarationDir": "dist/types",
+        "rootDir": "src"
+    },
+    "include": ["src/lib.ts", "src/sprites.d.ts"]
+}

@@ -35,6 +35,42 @@ passes between commands; nothing needs to run in the background.
 
 State is saved to `$HOME/.local/share/critter/state.json`.
 
+## Library
+
+The package can also be imported as an ES module, with TypeScript types
+included. It runs in the browser or in Node.js.
+
+```ts
+import { Critter, type CritterData } from 'critter'
+
+const critter = Critter.isAlive() ? new Critter() : Critter.create()
+
+critter.feed()
+critter.play()
+const data: CritterData = critter.status()
+console.log(data.short)
+```
+
+Options, for both `new Critter(options)` and `Critter.create(options)`:
+
+| Option    | Default | Description                                             |
+| --------- | ------- | ------------------------------------------------------- |
+| `browser` | `true`  | Save to `localStorage`; `false` uses the CLI state file |
+| `debug`   | `false` | Show exact stat values in `plainStats` and `plain`      |
+
+`Critter.isAlive({ browser })` returns whether a living critter is saved.
+`new Critter()` loads it and throws `No Critter` if there is none;
+`Critter.create()` starts a new one, replacing any existing critter.
+
+Actions match the CLI commands: `feed`, `clean`, `heal`, `play`, `sleep`,
+`stop`, and `dismiss`, plus `status` to just read the current state. Each
+applies the time passed since the last call, saves, and returns a plain object
+with the same fields as `critter --json`.
+
+The critter is kept in memory after it is loaded. Changes made elsewhere, for
+example by the CLI using the same state file, are overwritten on the next
+action.
+
 ## Development
 
 Uses Node.js, TypeScript, and pnpm. `pnpm start` runs the TypeScript source
