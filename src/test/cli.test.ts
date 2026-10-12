@@ -264,7 +264,9 @@ describe('CLI and entry point', () => {
     it('exits with status 1 when no critter exists', () => {
         const result = run()
         expect(result.status).toBe(1)
-        expect(result.stderr).toContain('No Critter')
+        expect(result.stderr).toContain(
+            'No Critter. Run `critter new` to birth one.',
+        )
         expect(existsSync(statePath())).toBe(false)
     })
 
