@@ -289,7 +289,7 @@ ${plainStats(options)}`;
 var emoticon = ({ noNerdFonts = true, state }) => {
   const baseSet = {
     dead: "[RIP]",
-    happy: "\u0295\uFF3E\u1D25\uFF3E\u0294",
+    happy: "\u0295^\u1D25^\u0294",
     hungry: "\u0295\xBA\u1D25\xBA\u0294",
     idle: "\u0295\u2022\u1D25\u2022\u0294",
     refusing: "\u0295\u02CB\u1D25\u02CA\u0294",
@@ -471,7 +471,7 @@ var Critter = class {
   health = high;
   mood = [];
   poo = false;
-  satiety = normal;
+  satiety = low;
   time = this.birth;
   toilet = low;
   get stage() {
@@ -561,6 +561,7 @@ var Critter = class {
   };
   feed = () => {
     if (this.stage === 0) return;
+    if (this.poo) this.health = applyPenalty(this.health);
     if (this.satiety > high) {
       this.refuse();
       return;

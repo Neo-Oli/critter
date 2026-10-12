@@ -185,6 +185,7 @@ export class Critter {
     }
     feed = () => {
         if (this.stage === 0) return
+        if (this.poo) this.health = applyPenalty(this.health)
         if (this.satiety > high) {
             this.refuse()
             return

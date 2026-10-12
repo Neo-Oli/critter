@@ -162,6 +162,17 @@ describe('actions', () => {
         expect(pet.happiness).toBe(Math.round(before * (1 - penalty)))
     })
 
+    it('immediately penalizes health when feeding while poo is visible', () => {
+        const pet = healthy()
+        pet.poo = true
+        const before = pet.health
+
+        pet.feed()
+
+        expect(pet.health).toBe(Math.round(before * (1 - penalty)))
+        expect(pet.action).toBe('eating')
+    })
+
     it.each(['eating', 'sleeping'] as const)(
         'applies the percentage penalty when stopping %s',
         (action) => {
