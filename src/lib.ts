@@ -1,3 +1,4 @@
+import { type Stage } from './config.ts'
 import { type Command, Critter as Engine } from './critter.ts'
 import { type CritterData } from './data.ts'
 
@@ -19,8 +20,12 @@ export class Critter {
         if (this.engine.error) throw new Error(this.engine.error)
     }
 
-    static create = (options?: CritterOptions) => {
-        new Engine({ browser: options?.browser ?? true, command: 'new' })
+    static create = (options?: CritterOptions & { stage?: Stage }) => {
+        new Engine({
+            browser: options?.browser ?? true,
+            command: 'new',
+            stage: options?.stage,
+        })
         return new Critter(options)
     }
 

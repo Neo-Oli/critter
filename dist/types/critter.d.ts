@@ -30,6 +30,7 @@ export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy';
 interface CritterOptions {
     browser?: boolean;
     command?: Command;
+    stage?: Stage;
 }
 type EnergyMood = 'sleeping' | 'tired';
 type FoodMood = 'hungry';
@@ -54,7 +55,7 @@ export declare class Critter {
     get stage(): Stage;
     private activeAlerts;
     private browser;
-    constructor({ browser, command }: CritterOptions);
+    constructor({ browser, command, stage }: CritterOptions);
     act: (command?: Command) => void;
     clean: () => void;
     data: ({ debug }: Pick<Plain, "debug">) => {

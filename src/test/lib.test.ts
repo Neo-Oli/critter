@@ -68,6 +68,32 @@ describe('library api', () => {
         expect(storage.loadState).toHaveBeenLastCalledWith(false)
     })
 
+    it.each([0, 1, 2] as const)('creates a critter at stage %i', (stage) => {
+        storage.saveState.mockImplementation((state) =>
+            storage.loadState.mockReturnValue(state),
+        )
+        const critter = Critter.create({ stage })
+        const age =
+            stage === 0
+                ? 0
+                : stagingSchedule.stage0 +
+                  (stage === 2 ? stagingSchedule.stage1 : 0)
+
+        expect(storage.saveState).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                age,
+                birth: runtime.time - age,
+                satiety: normal,
+                time: runtime.time,
+            }),
+            true,
+        )
+        expect(critter.feed().action).toBe(stage === 0 ? 'idle' : 'eating')
+        expect(new Critter().status().action).toBe(
+            stage === 0 ? 'idle' : 'eating',
+        )
+    })
+
     it('keeps the critter in memory between actions', () => {
         storage.loadState.mockReturnValue(adult())
         const critter = new Critter()

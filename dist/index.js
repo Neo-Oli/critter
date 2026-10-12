@@ -483,7 +483,7 @@ var Critter = class {
   }
   activeAlerts = 0;
   browser;
-  constructor({ browser = false, command }) {
+  constructor({ browser = false, command, stage = 0 }) {
     this.browser = browser;
     let state;
     try {
@@ -492,8 +492,9 @@ var Critter = class {
       state = {};
     }
     if (command === "new") {
-      this.birth = now();
-      this.time = this.birth;
+      this.age = stage === 0 ? 0 : stagingSchedule.stage0 + (stage === 2 ? stagingSchedule.stage1 : 0);
+      this.time = now();
+      this.birth = this.time - this.age;
     } else {
       this.birth = state?.birth ?? this.birth;
       this.age = state?.age ?? this.age;

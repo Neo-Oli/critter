@@ -51,6 +51,7 @@ export type SpriteAsset = 'food' | 'heal' | 'ill' | 'none' | 'poo' | 'toy'
 interface CritterOptions {
     browser?: boolean
     command?: Command
+    stage?: Stage
 }
 type EnergyMood = 'sleeping' | 'tired'
 type FoodMood = 'hungry'
@@ -98,7 +99,7 @@ export class Critter {
 
     private activeAlerts = 0
     private browser: boolean
-    constructor({ browser = false, command }: CritterOptions) {
+    constructor({ browser = false, command, stage = 0 }: CritterOptions) {
         this.browser = browser
         let state
 
@@ -108,8 +109,13 @@ export class Critter {
             state = {}
         }
         if (command === 'new') {
-            this.birth = now()
-            this.time = this.birth
+            this.age =
+                stage === 0
+                    ? 0
+                    : stagingSchedule.stage0 +
+                      (stage === 2 ? stagingSchedule.stage1 : 0)
+            this.time = now()
+            this.birth = this.time - this.age
         } else {
             this.birth = state?.birth ?? this.birth
             this.age = state?.age ?? this.age

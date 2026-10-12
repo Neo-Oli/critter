@@ -1,3 +1,4 @@
+import { type Stage } from './config.ts';
 import { type CritterData } from './data.ts';
 export type { CritterData } from './data.ts';
 export interface CritterOptions {
@@ -8,7 +9,9 @@ export declare class Critter {
     readonly debug: boolean;
     private engine;
     constructor({ browser, debug }?: CritterOptions);
-    static create: (options?: CritterOptions) => Critter;
+    static create: (options?: CritterOptions & {
+        stage?: Stage;
+    }) => Critter;
     static isAlive: ({ browser, }?: Pick<CritterOptions, "browser">) => boolean;
     clean: () => CritterData;
     dismiss: () => CritterData;

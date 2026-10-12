@@ -62,6 +62,10 @@ Options, for both `new Critter(options)` and `Critter.create(options)`:
 `new Critter()` loads it and throws `No Critter` if there is none;
 `Critter.create()` starts a new one, replacing any existing critter.
 
+`Critter.create({ stage: 1 })` starts at stage `1` instead of the egg.
+Creation accepts stage `0` (the default), `1`, or `2`, with fresh stats and
+age set to the start of that stage. Loading preserves the saved age and stage.
+
 Actions match the CLI commands: `feed`, `clean`, `heal`, `play`, `sleep`,
 `stop`, and `dismiss`, plus `status` to just read the current state. Each
 applies the time passed since the last call, saves, and returns a plain object
