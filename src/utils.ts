@@ -17,6 +17,15 @@ export const duration = (seconds: number) => {
     return `${count} ${unit}${count === 1 ? '' : 's'}`
 }
 
+export const actionDuration = (seconds: number) => {
+    if (seconds <= hour) return duration(seconds)
+
+    const hours = Math.floor(seconds / hour)
+    const minutes = Math.floor((seconds % hour) / minute)
+
+    return `${hours}h${minutes}m`
+}
+
 export type StatName =
     'age' | 'energy' | 'happiness' | 'health' | 'satiety' | 'toilet'
 

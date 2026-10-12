@@ -299,7 +299,7 @@ describe('plain rendering', () => {
 
     it('shows action time and age using the duration helper', () => {
         const output = render({
-            actionTime: 7200,
+            actionTime: 5400,
             age: 172800,
             state: {
                 bottom: 'none',
@@ -310,7 +310,8 @@ describe('plain rendering', () => {
                 top: 'none',
             },
         })
-        expect(output).toContain('SLEEPING (2 hours)')
+        expect(output).toContain('SLEEPING (1h30m)')
+        expect(render({ actionTime: 7200 })).toContain('IDLE (2h0m)')
         expect(output).toContain('A 2 days')
         expect(render()).toContain('IDLE\n')
     })

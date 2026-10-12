@@ -24,7 +24,7 @@ import sick2 from './sprites/stage-2/sick.txt' with { type: 'text' }
 import sleeping2 from './sprites/stage-2/sleeping.txt' with { type: 'text' }
 import tired2 from './sprites/stage-2/tired.txt' with { type: 'text' }
 import toy from './sprites/toy.txt' with { type: 'text' }
-import { duration, statIcon, type StatName } from './utils.ts'
+import { actionDuration, duration, statIcon, type StatName } from './utils.ts'
 const spriteWidth = 16
 const spriteHeight = 8
 const iconWidth = 8
@@ -176,7 +176,7 @@ export const plainStats = ({
         return `${statIcon(name, noNerdFonts)} ${bar}${debug ? ` (${value})` : ''}`
     }
 
-    const remaining = actionTime > 0 ? ` (${duration(actionTime)})` : ''
+    const remaining = actionTime > 0 ? ` (${actionDuration(actionTime)})` : ''
     const output: string[] = []
     const padding = '  '
     const ageFormatted = `${statIcon('age', noNerdFonts)} ${duration(age)}`
