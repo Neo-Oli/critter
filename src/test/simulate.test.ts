@@ -32,6 +32,19 @@ const advance = (pet: Critter, seconds: number) => {
     pet.process()
 }
 
+const timeUntilDeath = (pet: Critter, limitSeconds: number) => {
+    runtime.speed = minute
+    const limitMinutes = Math.ceil(limitSeconds / minute)
+    for (
+        let elapsedMinutes = 1;
+        elapsedMinutes <= limitMinutes;
+        elapsedMinutes += 1
+    ) {
+        advance(pet, 1)
+        if (!pet.alive) return elapsedMinutes * minute
+    }
+}
+
 const reportDeath = (elapsedSeconds: number) => {
     const days = Math.floor(elapsedSeconds / day)
     const hours = Math.floor((elapsedSeconds % day) / hour)
@@ -79,7 +92,10 @@ const simulateWithHeldHappiness = (
         pet.toilet = max
         pet.poo = false
         advance(pet, 1)
-        if (!pet.alive) break
+        if (!pet.alive) {
+            reportDeath(pet.age - stagingSchedule.stage0)
+            break
+        }
     }
 
     return pet
@@ -577,7 +593,10 @@ describe('daily care balance', () => {
                 }
                 advance(pet, 1)
                 if (pet.poo) pet.clean()
-                if (!pet.alive) break
+                if (!pet.alive) {
+                    reportDeath(elapsedMinutes * minute)
+                    break
+                }
             }
 
             expect(
@@ -640,7 +659,10 @@ describe('daily care balance', () => {
             if (previousAction !== 'sleeping' && pet.action === 'sleeping') {
                 automaticSleeps += 1
             }
-            if (!pet.alive) break
+            if (!pet.alive) {
+                reportDeath(elapsedMinutes * minute)
+                break
+            }
         }
 
         expect(automaticSleeps).toBeGreaterThan(0)
@@ -665,7 +687,10 @@ describe('daily care balance', () => {
                 if (pet.poo && elapsedMinutes % (cleaningHours * 60) === 0) {
                     pet.clean()
                 }
-                if (!pet.alive) break
+                if (!pet.alive) {
+                    reportDeath(elapsedMinutes * minute)
+                    break
+                }
             }
 
             return pet.age / minute
@@ -734,16 +759,29 @@ describe('daily care balance', () => {
         ).toBe(false)
     })
 
-    it('is dead by two days without care when all stats start maxed', () => {
+    it('survives one day but dies within two when neglected from full health', () => {
         const pet = maxed()
-        advance(pet, 2 * day)
-        expect(pet.alive).toBe(false)
+        const survivalTime = timeUntilDeath(pet, 2 * day)
+        if (survivalTime !== undefined) reportDeath(survivalTime)
+
+        expect(survivalTime).toBeGreaterThan(day)
+        expect(survivalTime).toBeLessThanOrEqual(2 * day)
     })
 
-    it('is dead after three days without care when all stats start maxed', () => {
-        const pet = maxed()
-        advance(pet, 3 * day)
-        expect(pet.alive).toBe(false)
+    it('hatches before dying within two days when neglected from birth', () => {
+        const pet = new Critter({ command: 'new' })
+        advance(pet, stagingSchedule.stage0)
+
+        expect(pet.stage).toBe(1)
+        expect(pet.alive).toBe(true)
+
+        const survivalAfterHatching = timeUntilDeath(pet, 2 * day)
+        expect(survivalAfterHatching).toBeGreaterThan(0)
+        expect(survivalAfterHatching).toBeLessThanOrEqual(2 * day)
+        expect(survivalAfterHatching).toBeDefined()
+        if (survivalAfterHatching !== undefined) {
+            reportDeath(stagingSchedule.stage0 + survivalAfterHatching)
+        }
     })
 
     it('does not starve when fed once every five hours', () => {
@@ -760,7 +798,10 @@ describe('daily care balance', () => {
             advance(pet, 1)
             if (pet.poo) pet.clean()
             minimumSatiety = Math.min(minimumSatiety, pet.satiety)
-            if (!pet.alive) break
+            if (!pet.alive) {
+                reportDeath(elapsedSeconds + 1)
+                break
+            }
         }
 
         expect(
@@ -791,7 +832,10 @@ describe('daily care balance', () => {
             }
             advance(pet, 1)
             if (pet.poo) pet.clean()
-            if (!pet.alive) break
+            if (!pet.alive) {
+                reportDeath(elapsedMinutes * minute)
+                break
+            }
         }
 
         expect(
