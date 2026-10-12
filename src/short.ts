@@ -9,7 +9,7 @@ interface EmoticonProps {
 export const emoticon = ({ noNerdFonts = true, state }: EmoticonProps) => {
     const baseSet = {
         dead: '[RIP]',
-        happy: 'ʕ＾ᴥ＾ʔ',
+        happy: 'ʕ^ᴥ^ʔ',
         hungry: 'ʕºᴥºʔ',
         idle: 'ʕ•ᴥ•ʔ',
         refusing: 'ʕˋᴥˊʔ',

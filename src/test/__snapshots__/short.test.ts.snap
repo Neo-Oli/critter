@@ -38,7 +38,7 @@ exports[`short output > snapshots complete stage, mood, and action output > stag
 
 exports[`short output > snapshots complete stage, mood, and action output > stage-1-happy 1`] = `
 "
-ʕ＾ᴥ＾ʔ H▂ S▇ E  +▃ T█
+ʕ^ᴥ^ʔ H▂ S▇ E  +▃ T█
 "
 `;
 
@@ -164,7 +164,7 @@ exports[`short output > snapshots complete stage, mood, and action output > stag
 
 exports[`short output > snapshots complete stage, mood, and action output > stage-2-happy 1`] = `
 "
-ʕ＾ᴥ＾ʔ H▂ S▇ E  +▃ T█
+ʕ^ᴥ^ʔ H▂ S▇ E  +▃ T█
 "
 `;
 
