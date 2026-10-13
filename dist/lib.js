@@ -513,7 +513,7 @@ var Critter = class {
       this.action = state?.action ?? this.action;
       this.time = state?.time ?? this.time;
       if (!this.birth) {
-        this.error = "No Critter";
+        this.error = "No Critter. Run `critter new` to birth one.";
         return;
       }
     }
